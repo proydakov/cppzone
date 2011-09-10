@@ -13,3 +13,4 @@ actor.cbp
 *.cbp
 *.vpp~*
 *.vpp.bak
+file_reader_config.h
