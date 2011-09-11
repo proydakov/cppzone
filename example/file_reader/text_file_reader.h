@@ -18,12 +18,12 @@ public:
 
     bool download_from_file(const std::string& file_name, data_list& data)
     {
-        std::string temp_string;
-        std::ifstream stream(file_name.c_str(), std::ios_base::in);
+        std::ifstream stream(file_name.c_str(), std::ios::in);
         if (!stream.is_open()) {
             std::cerr << "Can't open file" << std::endl;
             return false;
         }
+        std::string temp_string;
         while(1) {
             std::getline(stream, temp_string);
             if (stream.fail())
