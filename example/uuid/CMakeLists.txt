@@ -18,4 +18,3 @@ SET(SOURCE_FILES
         main.cpp)
 
 ADD_EXECUTABLE(example_uuid ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(example_uuid ${Boost_THREAD_LIBRARY})
