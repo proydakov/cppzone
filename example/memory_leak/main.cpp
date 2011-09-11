@@ -11,13 +11,10 @@ int main( int argc, char *argv[] )
     (void)argc;
     (void)argv;
 
-    usleep(10000);
-
-    int* p = new int[32];
-    int* t = new int[32];
-
-    delete [ ] p;
-    delete [ ] t;
+    while(1){
+        int* leek = new int[1024];
+        usleep(100);
+    }
 
     return 1;
 }
