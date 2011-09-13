@@ -16,7 +16,7 @@ LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
 SET(SOURCE_FILES
-        main.cpp)
+        load_cpu.cpp)
 
-ADD_EXECUTABLE(example_thread ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(example_thread ${Boost_THREAD_LIBRARY})
+ADD_EXECUTABLE(example_thread_load_cpu ${SOURCE_FILES})
+TARGET_LINK_LIBRARIES(example_thread_load_cpu ${Boost_THREAD_LIBRARY})
