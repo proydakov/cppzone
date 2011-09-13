@@ -28,6 +28,12 @@ template<typename type>
 void shell_sort(std::vector<type>& data);
 
 template<typename type>
+void merge_sort(std::vector<type>& data);
+
+template<typename type>
+void merge_sort(std::vector<type>& data, index_type begin, index_type end);
+
+template<typename type>
 void quick_sort(std::vector<type>& data);
 
 template<typename type>
@@ -148,6 +154,59 @@ void shell_sort(std::vector<type>& data)
             data[j + increment_seq[increment_index]] = element;
         }
         --increment_index;
+    }
+}
+
+template<typename type>
+void merge(type *a, index_type begin, index_type middle, index_type end) {
+    index_type pos1 = begin;
+    index_type pos2 = middle + 1;
+    index_type pos3 = 0;
+
+    type *temp = new type[end - begin + 1];
+
+    while (pos1 <= middle && pos2 <= end) {
+        if (a[pos1] < a[pos2]) {
+            temp[pos3] = a[pos1];
+            ++pos3;
+            ++pos2;
+        }
+        else {
+            temp[pos3] = a[pos2];
+            ++pos2;
+            ++pos3;
+        }
+    }
+    while (pos2 <= end) {
+        temp[pos3] = a[pos2];
+        ++pos3;
+        ++pos2;
+    }
+    while (pos1 <= middle) {
+        temp[pos3] = a[pos1];
+        ++pos3;
+        ++pos1;
+    }
+    for (pos3 = 0; pos3 < end - begin + 1; ++pos3)
+        a[begin + pos3] = temp[pos3];
+
+    delete [] temp;
+}
+
+template<typename type>
+void merge_sort(std::vector<type>& data)
+{
+    merge_sort(data, 0, data.size() - 1);
+}
+
+template<typename type>
+void merge_sort(std::vector<type>& data, index_type begin, index_type end)
+{
+    if(begin < end) {
+        index_type middle = (begin + end) / 2;
+        merge_sort(data, begin, middle);
+        merge_sort(data, middle + 1, end);
+        merge(data.data(), begin, middle, end);
     }
 }
 
