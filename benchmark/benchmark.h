@@ -2,6 +2,9 @@
  *  Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
  */
 
+#ifndef I_BENCHMARK_H
+#define I_BENCHMARK_H
+
 typedef long timeinterval;
 
 class benchmark
@@ -19,3 +22,5 @@ private:
     struct data;
     data* m_data;
 };
+
+#endif // I_BENCHMARK_H

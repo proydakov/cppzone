@@ -14,9 +14,11 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 FIND_PACKAGE(Boost COMPONENTS date_time REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
-SET(FILES
-        benchmark.h
-	benchmark.cpp)
+SET(HEADER_FILES
+        benchmark.h)
 
-ADD_LIBRARY(benchmark ${FILES})
+SET(SOURCE_FILES
+        benchmark.cpp)
+
+ADD_LIBRARY(benchmark ${HEADER_FILES} ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(benchmark ${Boost_DATE_TIME_LIBRARY})
