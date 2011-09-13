@@ -169,7 +169,7 @@ void merge(type *a, index_type begin, index_type middle, index_type end) {
         if (a[pos1] < a[pos2]) {
             temp[pos3] = a[pos1];
             ++pos3;
-            ++pos2;
+            ++pos1;
         }
         else {
             temp[pos3] = a[pos2];
@@ -187,7 +187,7 @@ void merge(type *a, index_type begin, index_type middle, index_type end) {
         ++pos3;
         ++pos1;
     }
-    for (pos3 = 0; pos3 < end - begin + 1; ++pos3)
+    for (pos3 = 0; pos3 < end - begin + 1; pos3++)
         a[begin + pos3] = temp[pos3];
 
     delete [] temp;
