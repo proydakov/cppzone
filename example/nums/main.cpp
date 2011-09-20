@@ -7,7 +7,7 @@
 
 #include <benchmark.h>
 
-#include "my_function.h"
+#include "operations_with_numbers.h"
 
 typedef double data_type;
 typedef int natural_data_type;

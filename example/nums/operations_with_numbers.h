@@ -2,8 +2,8 @@
  *  Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
  */
 
-#ifndef I_MY_FUNCTION_H
-#define I_MY_FUNCTION_H
+#ifndef I_OPERATIONS_WITH_NUMBERS_H
+#define I_OPERATIONS_WITH_NUMBERS_H
 
 #include <cmath>
 
@@ -185,4 +185,4 @@ data_type largest_common_divisor_modified_euclid(data_type a, data_type b)
     return b;  
 }
 
-#endif // I_MY_FUNCTION_H
+#endif // I_OPERATIONS_WITH_NUMBERS_H

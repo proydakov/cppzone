@@ -16,7 +16,7 @@ FIND_PACKAGE(Boost)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
 SET(HEADER_FILES
-        my_function.h)
+        operations_with_numbers.h)
 
 SET(SOURCE_FILES
         main.cpp)
