@@ -12,8 +12,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${BENCHMARK_DIRECTORY})
 
 SET(HEADER_FILES
-        my_sort.h
-        my_search.h)
+        my_sort.h)
 
 SET(SOURCE_FILES
         main.cpp)

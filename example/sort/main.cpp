@@ -7,10 +7,10 @@
 #include <cstdlib>
 #include <iostream>
 
+#include <benchmark.h>
+
 #include <my_sort.h>
 #include <my_search.h>
-
-#include <benchmark.h>
 
 typedef double data_type;
 
