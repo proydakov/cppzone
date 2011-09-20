@@ -10,7 +10,6 @@
 #include <benchmark.h>
 
 #include <my_sort.h>
-#include <my_search.h>
 
 typedef double data_type;
 
