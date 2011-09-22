@@ -9,11 +9,13 @@ struct benchmark::data
 {
     boost::posix_time::ptime ptime;
     timeinterval m_last_interval;
+    benchmark::unit_intervals m_unit;
 };
 
-benchmark::benchmark()
+benchmark::benchmark(unit_intervals unit)
 {
     m_data = new data;
+    m_data->m_unit = unit;
 }
 
 benchmark::~benchmark()
@@ -33,5 +35,26 @@ void benchmark::stop()
 
 timeinterval benchmark::get_last_interval()
 {
-    return m_data->m_last_interval;
+    switch(m_data->m_unit) {
+    case seconds:
+        return m_data->m_last_interval / 1000000000;
+    case milliseconds:
+        return m_data->m_last_interval / 1000000;
+    case microseconds:
+        return m_data->m_last_interval / 1000;
+    case nanoseconds:
+        return m_data->m_last_interval;
+    default:
+        return -1;
+    }
+}
+
+benchmark::unit_intervals benchmark::get_unit()
+{
+    return m_data->m_unit;
+}
+
+void benchmark::set_unit(unit_intervals unit)
+{
+    m_data->m_unit = unit;
 }
