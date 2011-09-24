@@ -21,6 +21,9 @@ void intersection(const std::vector<data_type>& a, const std::vector<data_type>&
 template<typename data_type>
 void diminution(const std::vector<data_type>& a, const std::vector<data_type>& b, std::vector<data_type>& res);
 
+template<typename data_type>
+data_type binary_search(const std::vector<data_type>& data, const data_type& a);
+
 // ----------------------------- realization ------------------------------- //
 
 template<typename data_type>
@@ -97,6 +100,33 @@ void subtraction(const std::vector<data_type>& a, const std::vector<data_type>& 
         }
         
     }
+}
+
+template<typename data_type>
+data_type binary_search(const std::vector<data_type>& data, const data_type& a)
+{
+    index_type begin = 0;
+    index_type end = data.size() - 1;
+    
+    if(a < data[begin] || a > data[end])
+        return -1;
+    else if(a == data[begin])
+        return begin;
+    else if(a == data[end])
+        return end;
+    
+    while(begin < end) {
+        index_type middle = (end + begin) / 2;
+        if(data[middle] > a) {
+            end = middle;
+        }
+        else if(data[middle] < a) {
+            begin = middle;
+        }
+        else
+            return middle;
+    }
+    return -1;
 }
 
 #endif // I_OPERATIONS_WITH_ARRAYS_H

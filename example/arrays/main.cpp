@@ -2,7 +2,9 @@
  *  Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
  */
 
+#include <ctime>
 #include <vector>
+#include <cstdlib>
 #include <iostream>
 
 #include "operations_with_arrays.h"
@@ -13,13 +15,14 @@ typedef void (*prt_operation)(const std::vector<data_type>&, const std::vector<d
 void test_operations(const std::string& name, prt_operation operation, const std::vector<data_type> a, const std::vector<data_type> b, std::vector<data_type> res);
 
 template<typename T>
-void print_vector(const std::vector<T>& vector)
+std::ostream& operator<<(std::ostream& ostr, const std::vector<T>& vector)
 {
     long size = vector.size();
-    std::cout << "vector[" << size << "]  ";
+    ostr << "vector[" << size << "]  ";
     for(int i = 0; i < size; ++i)
-        std::cout << vector[i];
-    std::cout << std::endl;
+        ostr << vector[i];
+    ostr << std::endl;
+    return ostr;    
 }
 
 int main( int argc, char *argv[] )
@@ -43,6 +46,8 @@ int main( int argc, char *argv[] )
     test_operations("SUBTRACTION", subtraction, a, b, res);
     test_operations("SUBTRACTION", subtraction, b, a, res);
     
+    std::cout << "Binary search:  " << binary_search(a, 4) << std::endl;
+    
     return 1;
 }
 
@@ -50,10 +55,7 @@ void test_operations(const std::string& name, prt_operation operation, const std
 {
     std::cout << "TEST  " << name << std::endl;
     operation(a, b, res);
-    std::cout << "INPUT DATA:  " << std::endl;
-    print_vector(a);
-    print_vector(b);
-    std::cout << "RESULT" << std::endl;
-    print_vector(res);
+    std::cout << "INPUT DATA:  " << std::endl << a << b;
+    std::cout << "RESULT" << res << std::endl;
     std::cout << std::endl;
 }
