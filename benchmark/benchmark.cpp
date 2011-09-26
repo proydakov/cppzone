@@ -5,6 +5,8 @@
 #include <benchmark.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
+namespace benchmark {
+
 struct benchmark::data
 {
     boost::posix_time::ptime ptime;
@@ -58,3 +60,5 @@ void benchmark::set_unit(unit_intervals unit)
 {
     m_data->m_unit = unit;
 }
+
+} // benchmark

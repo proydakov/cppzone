@@ -55,7 +55,7 @@ int main( int argc, char *argv[] )
 void test_fun(const std::string& name, const std::string& type, prt_fun_1 fun, index_type n)
 {
     data_type current_n = 0;
-    benchmark current_benchmark;
+    benchmark::benchmark current_benchmark;
     current_benchmark.start(); {
         current_n = fun(n);
     }
