@@ -1,12 +1,12 @@
 #=============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #=============================================================================
-# Cmake for FILE  READER  EXAMPLE
+# Cmake for FILE  READER  TASK
 #=============================================================================
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
 
-MESSAGE(STATUS "CREATE  FILE  READER  EXAMPLE\n")
+MESSAGE(STATUS "create  file  reader  task")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -24,4 +24,4 @@ SET(HEADER_FILES
 SET(SOURCE_FILES
         main.cpp)
 
-ADD_EXECUTABLE(example_file_reader ${HEADER_FILES} ${SOURCE_FILES} ${ADDITIONAL_FILES} ${CONFIG_FILE})
+ADD_EXECUTABLE(task_file_reader ${HEADER_FILES} ${SOURCE_FILES} ${ADDITIONAL_FILES} ${CONFIG_FILE})

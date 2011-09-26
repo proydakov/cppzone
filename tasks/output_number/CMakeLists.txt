@@ -1,16 +1,16 @@
 #=============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #=============================================================================
-# Cmake for MEMORY  LEAK  EXAMPLE
+# Cmake for MEMORY  LEAK  TASK
 #=============================================================================
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
 
-MESSAGE(STATUS "CREATE  OUTPUT  NUMBER  EXAMPLE\n")
+MESSAGE(STATUS "create  output  number  task")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 SET(SOURCE_FILES
         main.cpp)
 
-ADD_EXECUTABLE(example_output_number ${SOURCE_FILES})
+ADD_EXECUTABLE(task_output_number ${SOURCE_FILES})
