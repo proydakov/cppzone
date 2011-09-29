@@ -4,8 +4,6 @@
 # Cmake for UUID  EXAMPLE
 #=============================================================================
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
-
 MESSAGE(STATUS "create  uuid  example")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})

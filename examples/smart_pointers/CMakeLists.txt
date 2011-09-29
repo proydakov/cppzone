@@ -4,8 +4,6 @@
 # Cmake for SMART  POINTERS  EXAMPLE
 #=============================================================================
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
-
 MESSAGE(STATUS "create  smart  pointers  example")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})

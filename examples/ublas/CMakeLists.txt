@@ -4,8 +4,6 @@
 # Cmake for UBLAS  EXAMPLE
 #=============================================================================
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
-
 MESSAGE(STATUS "create  ublas  example")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
