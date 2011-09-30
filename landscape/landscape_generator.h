@@ -6,5 +6,5 @@ namespace cv {
 class Mat;
 };
 
-void fill_matrix(cv::Mat& matrix, int fill_type);
-void two_dimensional_random_generator(cv::Mat& matrix, int wall_type, int way_type = 0, int pixel_size = 10);
+void generator_mount(cv::Mat& matrix, int hill_type, int lowland_type, int pixel_size = 10);
+void two_dimensional_random_generator(cv::Mat& matrix, int wall_type, int way_type, int pixel_size = 10);
