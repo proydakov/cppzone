@@ -6,5 +6,4 @@ namespace cv {
 class Mat;
 };
 
-void fill_matrix(cv::Mat& matrix, int fill_type);
 void simple_maze_generator(cv::Mat& matrix, int wall_type, int way_type = 0, int pixel_size = 10);
