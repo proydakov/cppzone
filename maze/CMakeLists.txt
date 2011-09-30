@@ -11,10 +11,10 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
 
 SET(HEADER_FILES
-    generator.h)
+    maze_generator.h)
 
 SET(SOURCE_FILES
-    generator.cpp)
+    maze_generator.cpp)
 
 SET(MAIN_FILES
     main.cpp)
