@@ -7,7 +7,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-#include <generator.h>
+#include <maze_generator.h>
 
 // control key
 static const int generate_button_key = 103;
@@ -40,7 +40,7 @@ int main(int argc, char** argv)
     
     cv::namedWindow("maze", CV_WINDOW_FULLSCREEN | CV_WINDOW_AUTOSIZE); 
     int generator_type = 0;
-    cv::createTrackbar("Generator type", "maze", &generator_type, 2);
+    cv::createTrackbar("Generator type", "maze", &generator_type, 1);
     cv::imshow("maze", map );
     
     while(1) {
@@ -48,14 +48,11 @@ int main(int argc, char** argv)
         if(key == exit_button_key || key == quit_button_key)
             break;
         else if(key == generate_button_key) {   
-            switch(generator_type) {
+            switch(generator_type) {    
             case 0:
-                two_dimensional_random_generator(map, map_wall);
-                break;      
-            case 1:
                 simple_maze_generator(map, map_wall);
                 break; 
-            case 2:
+            case 1:
                 break;
             default:
                 break;
