@@ -3,6 +3,8 @@
  */
 
 #include <iostream>
+
+#include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
 #include <generator.h>
@@ -17,8 +19,12 @@ static const int quit_button_key = 113;
 static const int map_width = 640;
 static const int map_height = 480;
 
+static const int pixel_size = 4;
+
 static const int map_way = 0;
 static const int map_wall = 160;
+
+void (*prt_generator(cv::Mat& matrix, int wall_type));
 
 void clear_matrix(cv::Mat& map)
 {
@@ -32,16 +38,28 @@ int main(int argc, char** argv)
     
     cv::Mat map(map_height, map_width, CV_8UC1, cv::Scalar(map_way));
     
-    cv::namedWindow("maze", CV_WINDOW_FULLSCREEN); 
+    cv::namedWindow("maze", CV_WINDOW_FULLSCREEN | CV_WINDOW_AUTOSIZE); 
+    int generator_type = 0;
+    cv::createTrackbar("Generator type", "maze", &generator_type, 2);
     cv::imshow("maze", map );
     
     while(1) {
         int key = cv::waitKey();
         if(key == exit_button_key || key == quit_button_key)
             break;
-        else if(key == generate_button_key) {
-            //create_matrix_border(map, 10, map_wall);
-            generare_maze(map, map_wall);
+        else if(key == generate_button_key) {   
+            switch(generator_type) {
+            case 0:
+                two_dimensional_random_generator(map, map_wall);
+                break;      
+            case 1:
+                simple_maze_generator(map, map_wall);
+                break; 
+            case 2:
+                break;
+            default:
+                break;
+            }
             cv::imshow("maze", map );
         }
         else if(key == clear_button_key) {
@@ -49,7 +67,8 @@ int main(int argc, char** argv)
             cv::imshow("maze", map);
         }
         else
-            std::cout << key << std::endl;
+            std::cout << "Detected new key:  " << key << std::endl;
+        
     }
     cv::destroyAllWindows();
     return 0;

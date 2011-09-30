@@ -14,6 +14,9 @@ SET(HEADER_FILES
     generator.h)
 
 SET(SOURCE_FILES
+    generator.cpp)
+
+SET(MAIN_FILES
     main.cpp)
 
 # find OpenCV
@@ -23,8 +26,14 @@ IF(OpenCV_FOUND)
     MESSAGE(STATUS "OpenCV version:  ${OpenCV_VERSION}")
     INCLUDE_DIRECTORIES(${OpenCV_INCLUDE_DIRS})
     LINK_DIRECTORIES(${OpenCV_LIB_DIR})
-    ADD_EXECUTABLE(maze_generator ${HEADER_FILES} ${SOURCE_FILES})
+    ADD_LIBRARY(maze_generator ${HEADER_FILES} ${SOURCE_FILES})
     TARGET_LINK_LIBRARIES(maze_generator ${OpenCV_LIBS})
+
+    ADD_EXECUTABLE(maze_viewer ${HEADER_FILES} ${MAIN_FILES})
+    ADD_DEPENDENCIES(maze_viewer maze_generator)
+
+    TARGET_LINK_LIBRARIES(maze_viewer ${OpenCV_LIBS})
+    TARGET_LINK_LIBRARIES(maze_viewer maze_generator)
 ELSE(OpenCV_FOUND)
     MESSAGE(ERROR "OpenCV NOT FOUND")
 ENDIF(OpenCV_FOUND)
