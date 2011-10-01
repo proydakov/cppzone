@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011 Dmitry Suvorov <D.Suvorov90@gmail.com>
+ *  Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
  */
 
 namespace cv {

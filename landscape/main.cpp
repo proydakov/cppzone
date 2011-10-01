@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011 Dmitry Suvorov <D.Suvorov90@gmail.com>
+ *  Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
  */
 
 #include <cv_viewer.h>
@@ -10,7 +10,7 @@
 static const int map_width = 640;
 static const int map_height = 480;
 
-static const int pixel_size = 4;
+static const int pixel_size = 10;
 
 static const int map_lowland = 0;
 static const int map_hill = 160;
