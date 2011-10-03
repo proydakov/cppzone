@@ -12,7 +12,7 @@
 typedef int data_type;
 
 typedef void (*prt_operation)(const std::vector<data_type>&, const std::vector<data_type>&, std::vector<data_type>&);
-void test_operations(const std::string& name, prt_operation operation, const std::vector<data_type> a, const std::vector<data_type> b, std::vector<data_type> res);
+void test_operations(const std::string& name, prt_operation operation, const std::vector<data_type>& a, const std::vector<data_type>& b, std::vector<data_type>& res);
 
 template<typename T>
 std::ostream& operator<<(std::ostream& ostr, const std::vector<T>& vector)
@@ -39,19 +39,19 @@ int main( int argc, char *argv[] )
     for(int i = 3; i < 6; ++i) {
         b.push_back(i);
     }
-    std::vector<data_type> res;
+    std::vector<data_type> res(std::min(a.size(), b.size()));
     
     test_operations("MERGE", merge, a, b, res);
-    test_operations("INTERSECTION", intersection, a, b, res);
-    test_operations("SUBTRACTION", subtraction, a, b, res);
-    test_operations("SUBTRACTION", subtraction, b, a, res);
+    test_operations("INTERSECTION", &intersection, a, b, res);
+    test_operations("SUBTRACTION", &subtraction, a, b, res);
+    test_operations("SUBTRACTION", &subtraction, b, a, res);
     
     std::cout << "Binary search:  " << binary_search(a, 4) << std::endl;
     
     return 1;
 }
 
-void test_operations(const std::string& name, prt_operation operation, const std::vector<data_type> a, const std::vector<data_type> b, std::vector<data_type> res)
+void test_operations(const std::string& name, prt_operation operation, const std::vector<data_type>& a, const std::vector<data_type>& b, std::vector<data_type>& res)
 {
     std::cout << "TEST  " << name << std::endl;
     operation(a, b, res);

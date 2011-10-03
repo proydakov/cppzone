@@ -86,7 +86,10 @@ void subtraction(const std::vector<data_type>& a, const std::vector<data_type>& 
     index_type index_a = 0;
     index_type index_b = 0;
     
-    while(index_a < a.size()) {
+    index_type size_a = a.size();
+    index_type size_b = b.size();
+    
+    while(index_a < size_a && index_b < size_b) {
         if(a[index_a] == b[index_b]) {
             ++index_a;
             ++index_b;
@@ -98,7 +101,10 @@ void subtraction(const std::vector<data_type>& a, const std::vector<data_type>& 
             res.push_back(a[index_a]);
             ++index_a;
         }
-        
+    }
+    while(index_a < size_a) {
+        res.push_back(a[index_a]);
+        ++index_a;
     }
 }
 
