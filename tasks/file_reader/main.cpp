@@ -14,19 +14,18 @@ int main( int argc, char *argv[] )
     (void)argc;
     (void)argv;
 
-    text_file_reader reader;
+    text_file_master master;
     data_list list;
-    if(reader.download_from_file(INPUT_FILE, list)) {
+    if(master.download_from_file(INPUT_FILE, list)) {
         print_list(list);
         list.sort();
         print_list(list);
-        reader.written_in_file("output.txt", list);
+        master.written_in_file("output.txt", list);
     }
     else {
         std::cout << "Error download from file";
         return 0;
     }
-
     return 1;
 }
 

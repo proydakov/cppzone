@@ -11,10 +11,10 @@
 
 typedef std::list<std::string> data_list;
 
-class text_file_reader
+class text_file_master
 {
 public:
-    text_file_reader() {}
+    text_file_master() {}
 
     bool download_from_file(const std::string& file_name, data_list& data)
     {
