@@ -8,3 +8,4 @@ MESSAGE(STATUS "BUILD  TASKS\n")
 
 ADD_SUBDIRECTORY(file_reader)
 ADD_SUBDIRECTORY(output_number)
+ADD_SUBDIRECTORY(identification_number)
