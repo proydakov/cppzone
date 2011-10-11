@@ -94,7 +94,7 @@ void generator_hexagonal_world(cv::Mat& matrix, int lowland_type, int hill_type,
         int delta_j = 0;
         if(b) {
             delta_i = side * 3 / 2;
-            delta_j = side *sqrt(3) / 2;
+            delta_j = side * sqrt(3) / 2;
         }
         for(int i = 0; i < width; i += 3 * side) {
             for(int j = 0, k = 0; j < height; j += sqrt(3) * side, ++k) {    
