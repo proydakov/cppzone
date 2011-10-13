@@ -4,7 +4,7 @@
 # Cmake for MAZE  PROJECT
 #=============================================================================
 
-MESSAGE(STATUS "CREATING  PROJECT  MAZE  GENERATOR\n")
+MESSAGE(STATUS "CREATING  MAZE  GENERATOR\n")
 
 # add the include folder to the include path
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})

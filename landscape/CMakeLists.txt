@@ -4,7 +4,7 @@
 # Cmake for LANDSCAPE  PROJECT
 #=============================================================================
 
-MESSAGE(STATUS "CREATING  PROJECT  LANDSCAPE  GENERATOR\n")
+MESSAGE(STATUS "CREATING  LANDSCAPE  GENERATOR\n")
 
 # add the include folder to the include path
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})

@@ -4,7 +4,7 @@
 # Cmake for CV  VIEWER  PROJECT
 #=============================================================================
 
-MESSAGE(STATUS "CREATING  PROJECT  CV  VIEWER\n")
+MESSAGE(STATUS "CREATING  CV  VIEWER\n")
 
 # add the include folder to the include path
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
