@@ -49,7 +49,7 @@ int main( int argc, char *argv[] )
     test_largest_common_divisor("EUCLID", largest_common_divisor_euclid, 100, 90);
     test_largest_common_divisor("MOD EUCLID", largest_common_divisor_modified_euclid, 90, 100);
     
-    return 1;
+    return 0;
 }
 
 void test_fun(const std::string& name, const std::string& type, prt_fun_1 fun, index_type n)

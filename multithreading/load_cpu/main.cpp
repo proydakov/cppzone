@@ -26,5 +26,5 @@ int main( int argc, char *argv[] )
         my_thread[i].join();
     }
 
-    return 1;
+    return 0;
 }

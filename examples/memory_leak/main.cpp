@@ -16,5 +16,5 @@ int main( int argc, char *argv[] )
         usleep(100);
     }
 
-    return 1;
+    return 0;
 }

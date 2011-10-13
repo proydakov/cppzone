@@ -55,7 +55,7 @@ int main( int argc, char *argv[] )
     std::vector<data_type> input_quick_sort_data(input_data);
     test_sort("QUICK", quick_sort, input_quick_sort_data, input_standart_sort_data);
 
-    return 1;
+    return 0;
 }
 
 void test_sort(const std::string& name, prt_sort sort, std::vector<data_type> data, const std::vector<data_type> sorted_data)

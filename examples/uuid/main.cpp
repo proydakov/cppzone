@@ -47,7 +47,7 @@ int main( int argc, char *argv[] )
                   << boost::uuids::to_string(random_gen()) << std::endl;
     }
 
-    return 1;
+    return 0;
 }
 
 void print_uuid_info(boost::uuids::uuid &uuid, std::string description)

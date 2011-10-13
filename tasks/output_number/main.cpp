@@ -14,7 +14,7 @@ int main( int argc, char *argv[] )
     recursive_output_number(10);
     std::cout << std::endl;
 
-    return 1;
+    return 0;
 }
 
 void recursive_output_number(int num)

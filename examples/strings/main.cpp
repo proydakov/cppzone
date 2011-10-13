@@ -21,7 +21,7 @@ int main( int argc, char *argv[] )
     
     test_sub_string("BF", substring_search_bf, string, sub_string);
     
-    return 1;
+    return 0;
 }
 
 void test_sub_string(const std::string& name, prt_fun fun, const std::string& string, const std::string& sub_string)

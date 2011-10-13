@@ -147,7 +147,7 @@ int main( int argc, char *argv[] )
         std::cout << "Error download from file";
         return 0;
     }
-    return 1;
+    return 0;
 }
 
 bool download_from_file(const std::string& file_name, data_list& data)

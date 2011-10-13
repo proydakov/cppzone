@@ -71,5 +71,5 @@ int main( int argc, char *argv[] )
 
     vector.push_back(a_prt(new B(77, boost::uuids::to_string(random_gen()))));
 
-    return 1;
+    return 0;
 }

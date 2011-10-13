@@ -30,5 +30,5 @@ int main( int argc, char *argv[] )
     boost::numeric::ublas::identity_matrix<int> identity_matrix(3);
     std::cout << identity_matrix << std::endl;
     
-    return 1;
+    return 0;
 }

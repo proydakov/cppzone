@@ -48,7 +48,7 @@ int main( int argc, char *argv[] )
     
     std::cout << "Binary search:  " << binary_search(a, 4) << std::endl;
     
-    return 1;
+    return 0;
 }
 
 void test_operations(const std::string& name, prt_operation operation, const std::vector<data_type>& a, const std::vector<data_type>& b, std::vector<data_type>& res)
