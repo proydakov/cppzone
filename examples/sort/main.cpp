@@ -29,7 +29,7 @@ int main( int argc, char *argv[] )
     }
 
     std::cout << "Sort array size:  " << array_size << "  elements\n" << std::endl;
-
+	
     // ETALON  STD  SORT
     std::vector<data_type> input_standart_sort_data(input_data);
     std::sort(input_standart_sort_data.begin(), input_standart_sort_data.end());
@@ -52,6 +52,9 @@ int main( int argc, char *argv[] )
     std::vector<data_type> input_merge_sort_data(input_data);
     test_sort("MERGE", merge_sort, input_merge_sort_data, input_standart_sort_data);
 
+    std::vector<data_type> input_heap_sort_data(input_data);
+    test_sort("HEAP", heap_sort, input_heap_sort_data, input_standart_sort_data);
+    
     std::vector<data_type> input_quick_sort_data(input_data);
     test_sort("QUICK", quick_sort, input_quick_sort_data, input_standart_sort_data);
 

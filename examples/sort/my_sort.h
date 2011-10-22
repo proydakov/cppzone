@@ -5,6 +5,7 @@
 #ifndef I_MY_SORT_H
 #define I_MY_SORT_H
 
+#include <set>
 #include <vector>
 #include <algorithm>
 
@@ -32,6 +33,9 @@ void merge_sort(std::vector<type>& data);
 
 template<typename type>
 void merge_sort(std::vector<type>& data, index_type begin, index_type end);
+
+template<typename type>
+void heap_sort(std::vector<type>& data);
 
 template<typename type>
 void quick_sort(std::vector<type>& data);
@@ -207,6 +211,23 @@ void merge_sort(std::vector<type>& data, index_type begin, index_type end)
         merge_sort(data, begin, middle);
         merge_sort(data, middle + 1, end);
         merge(data.data(), begin, middle, end);
+    }
+}
+
+template<typename type>
+void heap_sort(std::vector<type>& data)
+{
+    std::multiset<type> multiset;
+    
+    int size = data.size();
+    for(index_type i = 0; i < size; ++i) {
+        multiset.insert(data[i]);
+    }
+    
+    index_type i = 0;
+    typename std::multiset<type>::const_iterator endIt = multiset.end();
+    for(typename std::multiset<type>::const_iterator it = multiset.begin(); it != endIt; ++it, ++i) {
+        data[i] = *it;
     }
 }
 
