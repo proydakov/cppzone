@@ -1,12 +1,16 @@
 #=============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #=============================================================================
-# Cmake for TASKS  PROJECT
+# Cmake for DISTANCE  ON  THE  TREE  TASK
 #=============================================================================
 
-MESSAGE(STATUS "BUILD  TASKS\n")
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
 
-ADD_SUBDIRECTORY(file_reader)
-ADD_SUBDIRECTORY(output_number)
-ADD_SUBDIRECTORY(identification_number)
-ADD_SUBDIRECTORY(distance_on_the_tree)
+MESSAGE(STATUS "create  distance  on  the  tree  task")
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+
+SET(SOURCE_FILES
+        main.cpp)
+
+ADD_EXECUTABLE(task_distance_on_the_tree ${SOURCE_FILES})
