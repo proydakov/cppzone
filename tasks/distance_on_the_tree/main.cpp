@@ -77,15 +77,18 @@ int main(int argc, char *argv[])
     for(task::const_iterator it = my_task.begin(); it != endIt; ++it) {
 #ifdef TEST
         std::cout << "PAIR:  " << it->first << " " << it->second << std::endl;
+        std::cout << "LENGTH:  ";
 #endif
-        std::cout << "LENGTH:  " << search_distances_on_the_graph(my_graph, *it) << std::endl;
+        std::cout << search_distances_on_the_graph(my_graph, *it) << std::endl;
     }
     return 0;
 }
 
 void read_input_data(graph& data)
 {
+#ifdef TEST
 	std::cout << "Enter number of graph vertices: ";
+#endif
 	int input_size = 0;
 	std::cin >> input_size;
 	
@@ -98,8 +101,9 @@ void read_input_data(graph& data)
 	data.insert(graph_element(node_name, my_node));
 	
 	for(int i = 2; i <= input_size; ++i) {
-		
+#ifdef TEST
 		std::cout << "Enter data graph for the element " << i << " (parent, element, length_to_the_parent):  ";
+#endif
 		std::cin >> graph_parent_name;
 		std::cin >> graph_node_name;
 		std::cin >> length_to_the_parent;
@@ -114,7 +118,9 @@ void read_input_data(graph& data)
 
 void read_input_task(task& data)
 {
+#ifdef TEST
 	std::cout << "Enter the number of pairs to find: ";
+#endif
 	int size = 0;
 	std::cin >> size;
 	
@@ -122,7 +128,9 @@ void read_input_task(task& data)
 	index_type second;
 	
 	for(int i = 1; i <= size; ++i) {
+#ifdef TEST
 		std::cout << "Enter to find a pair " << i << " (element a, element b):  ";
+#endif
 		std::cin >> first;
 		std::cin >> second;
 		data.push_back(task_pair(first, second));
