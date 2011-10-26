@@ -8,7 +8,7 @@
 #include <iostream>
 #include <algorithm>
 
-#define TEST // DEFINE FOR BUILD TEST EXAMPLE
+//#define TEST // DEFINE FOR BUILD TEST EXAMPLE
 #define COMMENT
 
 typedef long long length_type;
@@ -133,7 +133,7 @@ void read_input_data(graph& data)
 	
 	index_type graph_parent_name;
 	index_type graph_node_name;
-	length_type length_to_the_parent;
+	index_type length_to_the_parent;
 	
 	node my_node;
 	data[0] = my_node;
@@ -146,9 +146,9 @@ void read_input_data(graph& data)
 		std::cin >> graph_node_name;
 		std::cin >> length_to_the_parent;
 		
-		my_node.length_to_the_parent = length_to_the_parent;
-		my_node.parent_name = graph_parent_name;
-		my_node.parent = &data[graph_parent_name - 1];
+		my_node.m_length_to_the_parent = length_to_the_parent;
+		my_node.m_parent_name = graph_parent_name;
+		my_node.m_parent = &data[graph_parent_name - 1];
 		
 		data[graph_node_name - 1] = my_node;
 	}	
@@ -228,41 +228,41 @@ void create_example_graph_1(graph& data)
     // node 2
     graph_node_name = 2;
     graph_parent_name = 1;
-    my_node.length_to_the_parent = 7;
-    my_node.parent = &data[graph_parent_name - 1];
-    my_node.parent_name = graph_parent_name;
+    my_node.m_length_to_the_parent = 7;
+    my_node.m_parent = &data[graph_parent_name - 1];
+    my_node.m_parent_name = graph_parent_name;
     data[1] = my_node;
 
     // node 3
     graph_node_name = 3;
     graph_parent_name = 2;
-    my_node.length_to_the_parent = 3;
-    my_node.parent = &data[graph_parent_name - 1];
-    my_node.parent_name = graph_parent_name;
+    my_node.m_length_to_the_parent = 3;
+    my_node.m_parent = &data[graph_parent_name - 1];
+    my_node.m_parent_name = graph_parent_name;
     data[2] = my_node;
     
     // node 4
     graph_node_name = 4;
     graph_parent_name = 2;
-    my_node.length_to_the_parent = 6;
-    my_node.parent = &data[graph_parent_name - 1];
-    my_node.parent_name = graph_parent_name;
+    my_node.m_length_to_the_parent = 6;
+    my_node.m_parent = &data[graph_parent_name - 1];
+    my_node.m_parent_name = graph_parent_name;
     data[3] = my_node;
     
     // node 5
     graph_node_name = 5;
     graph_parent_name = 4;
-    my_node.length_to_the_parent = 3;
-    my_node.parent = &data[graph_parent_name - 1];
-    my_node.parent_name = graph_parent_name;
+    my_node.m_length_to_the_parent = 3;
+    my_node.m_parent = &data[graph_parent_name - 1];
+    my_node.m_parent_name = graph_parent_name;
     data[4] = my_node;
 
     // node 6
     graph_node_name = 6;
     graph_parent_name = 5;
-    my_node.length_to_the_parent = 1;
-    my_node.parent = &data[graph_parent_name - 1];
-    my_node.parent_name = graph_parent_name;
+    my_node.m_length_to_the_parent = 1;
+    my_node.m_parent = &data[graph_parent_name - 1];
+    my_node.m_parent_name = graph_parent_name;
     data[5] = my_node;
 }
 
