@@ -9,7 +9,7 @@
 #include <algorithm>
 
 //#define TEST // DEFINE FOR BUILD TEST EXAMPLE
-#define COMMENT
+//#define COMMENT
 
 typedef long long length_type;
 typedef int index_type;
@@ -19,13 +19,17 @@ class node
 public:
 	node() :
 	    m_parent(NULL), 
-	    m_length_to_the_parent(0), 
+	    m_length_to_the_parent(-1), 
 	    m_parent_name(0)
 	{
 	}
 	
 	bool is_head() const {
 		return m_parent == NULL;
+	}
+	
+	bool is_valid() {
+		return m_length_to_the_parent != -1;
 	}
 	
 	friend bool operator==(const node& a_node, const node& b_node) {
@@ -81,6 +85,7 @@ length_type search_distances_on_the_graph(const graph& data, const task_pair& pa
 
 void create_example_graph_1(graph& data);
 void create_example_graph_2(graph& data);
+
 void create_example_task_1(task& data);
 void create_example_task_2(task& data);
 
@@ -138,6 +143,8 @@ void read_input_data(graph& data)
 	node my_node;
 	data[0] = my_node;
 	
+	//print(data);
+	
 	for(int i = 1; i < input_size; ++i) {
 #ifdef COMMENT
 		std::cout << "Enter data graph for the element " << i << " (parent, element, length_to_the_parent):  ";
@@ -146,11 +153,26 @@ void read_input_data(graph& data)
 		std::cin >> graph_node_name;
 		std::cin >> length_to_the_parent;
 		
+		//std::cout << "graph_parent_name:  " << graph_parent_name << std::endl;
+		//std::cout << "graph_node_name:  "  << graph_node_name << std::endl;
+		//std::cout << "length_to_the_parent:  "  << length_to_the_parent << std::endl;
+		
+		if(data[graph_node_name - 1].is_valid()) {
+			std::swap(graph_parent_name, graph_node_name);
+			//std::cout << "\nSWAP\n" << std::endl;
+		}
+		
+		//std::cout << "graph_parent_name:  " << graph_parent_name << std::endl;
+		//std::cout << "graph_node_name:  "  << graph_node_name << std::endl;
+		//std::cout << "length_to_the_parent:  "  << length_to_the_parent << std::endl;
+		
 		my_node.m_length_to_the_parent = length_to_the_parent;
 		my_node.m_parent_name = graph_parent_name;
 		my_node.m_parent = &data[graph_parent_name - 1];
 		
 		data[graph_node_name - 1] = my_node;
+		
+		//print(data);
 	}	
 }
 
@@ -232,7 +254,7 @@ void create_example_graph_1(graph& data)
     my_node.m_parent = &data[graph_parent_name - 1];
     my_node.m_parent_name = graph_parent_name;
     data[1] = my_node;
-
+    
     // node 3
     graph_node_name = 3;
     graph_parent_name = 2;
@@ -256,7 +278,7 @@ void create_example_graph_1(graph& data)
     my_node.m_parent = &data[graph_parent_name - 1];
     my_node.m_parent_name = graph_parent_name;
     data[4] = my_node;
-
+    
     // node 6
     graph_node_name = 6;
     graph_parent_name = 5;
