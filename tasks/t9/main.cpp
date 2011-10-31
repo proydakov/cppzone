@@ -428,11 +428,11 @@ void read_input_data(dictionary &data)
 #ifdef COMMENT
     std::cout << "Enter the size of the dictionary:  ";
 #endif // COMMENT
-    benchmark::benchmark create;
-    create.start();
-    
     index lenght;
     std::cin >> lenght;
+    
+    benchmark::benchmark create;
+    create.start();
     
     data.create(lenght);
     
