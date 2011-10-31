@@ -4,6 +4,7 @@
 
 #include <map>
 #include <list>
+#include <vector>
 #include <iostream>
 #include <assert.h>
 
@@ -100,6 +101,10 @@ int main(int argc, char *argv[])
 {
     (void)argc;
     (void)argv;
+    
+    dictionary i_dictionary;
+    phone i_phone(&i_dictionary);
+    string task;
     
     read_input_data(i_dictionary);
     
@@ -226,11 +231,11 @@ void dictionary::continue_search()
                 }
             }
         }
+        ++it;
         if(delete_element) {
             m_selection.erase(delete_it);
             delete_element = false;
         }
-        ++it;
     }
     while(it != endIt);
 }
