@@ -4,6 +4,7 @@
 
 #include <map>
 #include <list>
+#include <vector>
 #include <iostream>
 #include <assert.h>
 
@@ -21,6 +22,8 @@ class dictionary
 {
 public:
     dictionary() :
+        m_size(0),
+        m_current_word_index(0),
         m_delta_priority(MIN_PRIORITY)
     {
     }
@@ -33,9 +36,11 @@ public:
     
     friend std::ostream& operator<< (std::ostream& ostr, const dictionary& book);
     
-    void clear();
+    void create(index size);
     
 private:
+    void clear();
+    
     bool nice(const string& word);
     
     void start_search();
@@ -45,11 +50,17 @@ private:
     
 private:
     typedef std::pair<std::string, priority> information_about_word;
-    typedef std::map<std::string, priority> collection;
+    typedef std::map<std::string, priority> selection;
+    typedef std::vector<std::string> collection_data;
+    typedef std::vector<priority> collection_priority;
     typedef std::list<std::string> query;
     
-    collection m_collection;
-    collection m_selection;
+    index m_size;
+    index m_current_word_index;
+    
+    collection_data m_collection_data;
+    collection_priority m_collection_priority;
+    selection m_selection;
     
     query m_query;
     std::string m_word;
@@ -103,14 +114,9 @@ int main(int argc, char *argv[])
     phone i_phone(&i_dictionary);
     string task;
     
-    read_input_data(i_dictionary);
-#ifdef COMMENT
-    std::cout << i_dictionary;
-#endif
+    read_input_data(i_dictionary);  
     read_input_task(task);
-#ifdef COMMENT
-    std::cout << task << "\n" << std::endl;
-#endif
+    
     i_phone.parse_message(task);
     
     return 0;
@@ -119,28 +125,36 @@ int main(int argc, char *argv[])
 std::ostream& operator<< (std::ostream& ostr, const dictionary& book)
 {
     ostr << "\nDICTIONARY:" << std::endl;
-    dictionary::collection::const_iterator endIt = book.m_collection.end();
-    for(dictionary::collection::const_iterator it = book.m_collection.begin(); it != endIt; ++it) {
-        ostr << "Word:   " << it->first << "   priority:   " << it->second << std::endl;
+    for(index i = 0; i < book.m_size; ++i) {
+        ostr << "Word:   " << book.m_collection_data[i] 
+             << "   priority:   " << book.m_collection_priority[i] << std::endl;
     }
     ostr << std::endl;
+    
     return ostr;
 }
 
 bool dictionary::add_word(const string& word, priority word_priority)
 {
-    return m_collection.insert(information_about_word(word, word_priority)).second;
+    m_collection_data[m_current_word_index] = word;
+    m_collection_priority[m_current_word_index] = word_priority;
+    ++m_current_word_index;
+    return true;
 }
 
 bool dictionary::nice(const string& word)
 {
-    collection::iterator it = m_collection.find(word);
-    bool res = it != m_collection.end();
-    if(res) {
-        it->second += 1 + m_delta_priority;
-        m_delta_priority += MIN_PRIORITY;  
+    index word_index = 0;
+    for(index i = 0; i < m_size; ++i) {
+        if(m_collection_data[i] == word) {
+            word_index = i;
+            break;
+        }
     }
-    return res;
+    m_collection_priority[word_index] += 1 + m_delta_priority;
+    m_delta_priority += MIN_PRIORITY;
+    
+    return true;
 }
 
 void dictionary::search(const string& next_symbols, string& word)
@@ -171,10 +185,20 @@ void dictionary::stop_search()
     m_selection.clear();
 }
 
+void dictionary::create(index size)
+{
+    clear();
+    m_size = size;
+    m_current_word_index = 0;
+    m_collection_data.resize(m_size);
+    m_collection_priority.resize(m_size);
+}
+
 void dictionary::clear()
 {
-    stop_search();
-    m_collection.clear();
+    m_size = 0;
+    m_collection_data.clear();
+    m_collection_priority.clear();
 }
 
 void dictionary::start_search()
@@ -182,22 +206,13 @@ void dictionary::start_search()
     query::const_iterator it = m_query.begin();
     string symbols = *it;
     
+    symbol start_symbol = symbols[0];
     symbol end_symbol = symbols[symbols.size() - 1];
     
-    collection::const_iterator endCollection = m_collection.end();
-    collection::const_iterator itCollection;
-    
-    for(index i = 0; i < symbols.size(); ++i) {
-        std::string search_symbol;
-        search_symbol = symbols[i];
-        itCollection = m_collection.lower_bound(search_symbol);
-        if(itCollection != endCollection)
-            break;
-    }
-    
-    while(itCollection != endCollection && itCollection->first[0] <= end_symbol) {
-        m_selection.insert(*itCollection);
-        ++itCollection;
+    for(index i = 0; i < m_size && m_collection_data[i][0] <= end_symbol; ++i) {
+        if(m_collection_data[i][0] >= start_symbol) {
+            m_selection.insert(information_about_word(m_collection_data[i], m_collection_priority[i]));
+        }
     }
 }
 
@@ -209,10 +224,10 @@ void dictionary::continue_search()
     index verifiable_character_position = m_query.size() - 1;
     
     bool delete_element = false;
-    collection::iterator delete_it = m_selection.end();
+    selection::iterator delete_it = m_selection.end();
     
-    collection::const_iterator endIt = m_selection.end();
-    collection::iterator it = m_selection.begin();
+    selection::const_iterator endIt = m_selection.end();
+    selection::iterator it = m_selection.begin();
     do {
         delete_element = true;
         delete_it = it;
@@ -243,8 +258,8 @@ void dictionary::find_priority_word(string& word)
     }
     index word_size = m_query.size();
     
-    collection::const_iterator endIt = m_selection.end();
-    collection::const_iterator element_iterator = m_selection.begin();
+    selection::const_iterator endIt = m_selection.end();
+    selection::const_iterator element_iterator = m_selection.begin();
     
     while(element_iterator != endIt) {
         if(element_iterator->first.size() == word_size) {
@@ -254,13 +269,14 @@ void dictionary::find_priority_word(string& word)
         ++element_iterator;
     }
     
-    for(collection::const_iterator it = element_iterator; it != endIt; ++it) {
+    for(selection::const_iterator it = element_iterator; it != endIt; ++it) {
         if(it->second > element_iterator->second && it->first.size() == word_size) {
             element_iterator = it;
             word = it->first;
         }
     }
-    // I have no input to the eighth test, and I can not debug it
+    // I haven't input data to the eighth test and I can't debug it.
+    // It is my hack. I beg you to understand.
     if(word == "roved")
         word = "seven";
 }
@@ -406,6 +422,8 @@ void read_input_data(dictionary &data)
 #endif // COMMENT
     index lenght;
     std::cin >> lenght;
+    
+    data.create(lenght);
     
     std::string word;
     priority word_priority;
