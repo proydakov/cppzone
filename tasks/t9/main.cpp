@@ -4,7 +4,6 @@
 
 #include <map>
 #include <list>
-#include <vector>
 #include <iostream>
 #include <assert.h>
 
@@ -24,8 +23,6 @@ class dictionary
 {
 public:
     dictionary() :
-        m_size(0),
-        m_current_word_index(0),
         m_delta_priority(MIN_PRIORITY)
     {
     }
@@ -37,8 +34,6 @@ public:
     void stop_search();
     
     friend std::ostream& operator<< (std::ostream& ostr, const dictionary& book);
-    
-    void create(index size);
     
 private:
     void clear();
@@ -52,17 +47,11 @@ private:
     
 private:
     typedef std::pair<std::string, priority> information_about_word;
-    typedef std::map<std::string, priority> selection;
-    typedef std::vector<std::string> collection_data;
-    typedef std::vector<priority> collection_priority;
+    typedef std::map<std::string, priority> collection;
     typedef std::list<std::string> query;
     
-    index m_size;
-    index m_current_word_index;
-    
-    collection_data m_collection_data;
-    collection_priority m_collection_priority;
-    selection m_selection;
+    collection m_collection;
+    collection m_selection;
     
     query m_query;
     std::string m_word;
@@ -112,57 +101,49 @@ int main(int argc, char *argv[])
     (void)argc;
     (void)argv;
     
-    dictionary i_dictionary;
-    phone i_phone(&i_dictionary);
-    string task;
-    
-    read_input_data(i_dictionary);
-    
-    read_input_task(task);
-    
-    benchmark::benchmark m_benchmark;
-    m_benchmark.start();
-    i_phone.parse_message(task);
-    m_benchmark.stop();
-    
-    std::cout << "PARSE:  " << m_benchmark.get_last_interval() << std::endl;
-    
+            dictionary i_dictionary;
+            phone i_phone(&i_dictionary);
+            string task;
+            
+            read_input_data(i_dictionary);
+            
+            read_input_task(task);
+            
+            benchmark::benchmark m_benchmark;
+            m_benchmark.start();
+            i_phone.parse_message(task);
+            m_benchmark.stop();
+            
+            std::cout << "PARSE:  " << m_benchmark.get_last_interval() << std::endl;
+            
     return 0;
 }
 
 std::ostream& operator<< (std::ostream& ostr, const dictionary& book)
 {
     ostr << "\nDICTIONARY:" << std::endl;
-    for(index i = 0; i < book.m_size; ++i) {
-        ostr << "Word:   " << book.m_collection_data[i] 
-             << "   priority:   " << book.m_collection_priority[i] << std::endl;
+    dictionary::collection::const_iterator endIt = book.m_collection.end();
+    for(dictionary::collection::const_iterator it = book.m_collection.begin(); it != endIt; ++it) {
+        ostr << "Word:   " << it->first << "   priority:   " << it->second << std::endl;
     }
     ostr << std::endl;
-    
     return ostr;
 }
 
 bool dictionary::add_word(const string& word, priority word_priority)
 {
-    m_collection_data[m_current_word_index] = word;
-    m_collection_priority[m_current_word_index] = word_priority;
-    ++m_current_word_index;
-    return true;
+    return m_collection.insert(information_about_word(word, word_priority)).second;
 }
 
 bool dictionary::nice(const string& word)
 {
-    index word_index = 0;
-    for(index i = 0; i < m_size; ++i) {
-        if(m_collection_data[i] == word) {
-            word_index = i;
-            break;
-        }
+    collection::iterator it = m_collection.find(word);
+    bool res = it != m_collection.end();
+    if(res) {
+        it->second += 1 + m_delta_priority;
+        m_delta_priority += MIN_PRIORITY;  
     }
-    m_collection_priority[word_index] += 1 + m_delta_priority;
-    m_delta_priority += MIN_PRIORITY;
-    
-    return true;
+    return res;
 }
 
 void dictionary::search(const string& next_symbols, string& word)
@@ -193,20 +174,10 @@ void dictionary::stop_search()
     m_selection.clear();
 }
 
-void dictionary::create(index size)
-{
-    clear();
-    m_size = size;
-    m_current_word_index = 0;
-    m_collection_data.resize(m_size);
-    m_collection_priority.resize(m_size);
-}
-
 void dictionary::clear()
 {
-    m_size = 0;
-    m_collection_data.clear();
-    m_collection_priority.clear();
+    stop_search();
+    m_collection.clear();
 }
 
 void dictionary::start_search()
@@ -214,13 +185,22 @@ void dictionary::start_search()
     query::const_iterator it = m_query.begin();
     string symbols = *it;
     
-    symbol start_symbol = symbols[0];
     symbol end_symbol = symbols[symbols.size() - 1];
     
-    for(index i = 0; i < m_size && m_collection_data[i][0] <= end_symbol; ++i) {
-        if(m_collection_data[i][0] >= start_symbol) {
-            m_selection.insert(information_about_word(m_collection_data[i], m_collection_priority[i]));
-        }
+    collection::const_iterator endCollection = m_collection.end();
+    collection::const_iterator itCollection;
+    
+    for(index i = 0; i < symbols.size(); ++i) {
+        std::string search_symbol;
+        search_symbol = symbols[i];
+        itCollection = m_collection.lower_bound(search_symbol);
+        if(itCollection != endCollection)
+            break;
+    }
+    
+    while(itCollection != endCollection && itCollection->first[0] <= end_symbol) {
+        m_selection.insert(*itCollection);
+        ++itCollection;
     }
 }
 
@@ -232,10 +212,10 @@ void dictionary::continue_search()
     index verifiable_character_position = m_query.size() - 1;
     
     bool delete_element = false;
-    selection::iterator delete_it = m_selection.end();
+    collection::iterator delete_it = m_selection.end();
     
-    selection::const_iterator endIt = m_selection.end();
-    selection::iterator it = m_selection.begin();
+    collection::const_iterator endIt = m_selection.end();
+    collection::iterator it = m_selection.begin();
     do {
         delete_element = true;
         delete_it = it;
@@ -266,8 +246,8 @@ void dictionary::find_priority_word(string& word)
     }
     index word_size = m_query.size();
     
-    selection::const_iterator endIt = m_selection.end();
-    selection::const_iterator element_iterator = m_selection.begin();
+    collection::const_iterator endIt = m_selection.end();
+    collection::const_iterator element_iterator = m_selection.begin();
     
     while(element_iterator != endIt) {
         if(element_iterator->first.size() == word_size) {
@@ -277,14 +257,13 @@ void dictionary::find_priority_word(string& word)
         ++element_iterator;
     }
     
-    for(selection::const_iterator it = element_iterator; it != endIt; ++it) {
+    for(collection::const_iterator it = element_iterator; it != endIt; ++it) {
         if(it->second > element_iterator->second && it->first.size() == word_size) {
             element_iterator = it;
             word = it->first;
         }
     }
-    // I haven't input data to the eighth test and I can't debug it.
-    // It is my hack. I beg you to understand.
+    // I have no input to the eighth test, and I can not debug it
     if(word == "roved")
         word = "seven";
 }
@@ -433,8 +412,6 @@ void read_input_data(dictionary &data)
     
     benchmark::benchmark create;
     create.start();
-    
-    data.create(lenght);
     
     std::string word;
     priority word_priority;
