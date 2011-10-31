@@ -8,8 +8,6 @@
 #include <iostream>
 #include <assert.h>
 
-#include <benchmark.h>
-
 //#define COMMENT
 
 typedef unsigned int    index;
@@ -52,6 +50,7 @@ private:
     typedef std::list<string> query;
     
     collection m_collection;
+    collection::iterator m_hint_it;
     collection m_selection;
     
     query m_query;
@@ -110,12 +109,7 @@ int main(int argc, char *argv[])
     
     read_input_task(task);
     
-    benchmark::benchmark m_benchmark;
-    m_benchmark.start();
     i_phone.parse_message(task);
-    m_benchmark.stop();
-    
-    std::cout << "PARSE:  " << m_benchmark.get_last_interval() << std::endl;
     
     return 0;
 }
@@ -264,9 +258,6 @@ void dictionary::find_priority_word(string& word)
             word = it->first;
         }
     }
-    // I have no input to the eighth test, and I can not debug it
-    if(word == "roved")
-        word = "seven";
 }
 
 void phone::parse_message(const string& message)
@@ -411,22 +402,19 @@ void read_input_data(dictionary &data)
     index lenght;
     std::cin >> lenght;
     
-    benchmark::benchmark create;
-    create.start();
-    
-    std::string word;
+    string word;
     priority word_priority;
     
-    for(index i = 1; i <= lenght; ++i) {
+    for(index i = 0; i < lenght; ++i) {
 #ifdef COMMENT
         std::cout << "Enter data about next word (text, priority): ";
 #endif // COMMENT
         std::cin >> word;
         std::cin >> word_priority;
+        
         data.add_word(word, word_priority);
     }
-    create.stop();
-    std::cout << "CREATE: " << create.get_last_interval() << std::endl;
+    std::getline(std::cin, word);
 }
 
 void read_input_task(string& task)
@@ -434,8 +422,6 @@ void read_input_task(string& task)
 #ifdef COMMENT
     std::cout << "Enter a sequence of characters entered by: ";
 #endif // COMMENT
-    std::cin >> task;
-    std::string temp;
-    std::getline(std::cin ,temp);
-    task += temp;
+    //std::cin >> task;
+    std::getline(std::cin, task);
 }
