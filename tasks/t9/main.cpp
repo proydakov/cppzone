@@ -46,15 +46,15 @@ private:
     void find_priority_word(string& word);
     
 private:
-    typedef std::pair<std::string, priority> information_about_word;
-    typedef std::map<std::string, priority> collection;
-    typedef std::list<std::string> query;
+    typedef std::pair<string, priority> information_about_word;
+    typedef std::map<string, priority> collection;
+    typedef std::list<string> query;
     
     collection m_collection;
     collection m_selection;
     
     query m_query;
-    std::string m_word;
+    string m_word;
     
     priority m_delta_priority;
 };
