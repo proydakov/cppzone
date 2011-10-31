@@ -101,21 +101,17 @@ int main(int argc, char *argv[])
     (void)argc;
     (void)argv;
     
-            dictionary i_dictionary;
-            phone i_phone(&i_dictionary);
-            string task;
-            
-            read_input_data(i_dictionary);
-            
-            read_input_task(task);
-            
-            benchmark::benchmark m_benchmark;
-            m_benchmark.start();
-            i_phone.parse_message(task);
-            m_benchmark.stop();
-            
-            std::cout << "PARSE:  " << m_benchmark.get_last_interval() << std::endl;
-            
+    read_input_data(i_dictionary);
+    
+    read_input_task(task);
+    
+    benchmark::benchmark m_benchmark;
+    m_benchmark.start();
+    i_phone.parse_message(task);
+    m_benchmark.stop();
+    
+    std::cout << "PARSE:  " << m_benchmark.get_last_interval() << std::endl;
+    
     return 0;
 }
 
