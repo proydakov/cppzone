@@ -8,6 +8,8 @@
 #include <iostream>
 #include <assert.h>
 
+#include <benchmark.h>
+
 //#define COMMENT
 
 typedef unsigned int    index;
@@ -114,10 +116,16 @@ int main(int argc, char *argv[])
     phone i_phone(&i_dictionary);
     string task;
     
-    read_input_data(i_dictionary);  
+    read_input_data(i_dictionary);
+    
     read_input_task(task);
     
+    benchmark::benchmark m_benchmark;
+    m_benchmark.start();
     i_phone.parse_message(task);
+    m_benchmark.stop();
+    
+    std::cout << "PARSE:  " << m_benchmark.get_last_interval() << std::endl;
     
     return 0;
 }
@@ -420,6 +428,9 @@ void read_input_data(dictionary &data)
 #ifdef COMMENT
     std::cout << "Enter the size of the dictionary:  ";
 #endif // COMMENT
+    benchmark::benchmark create;
+    create.start();
+    
     index lenght;
     std::cin >> lenght;
     
@@ -436,6 +447,8 @@ void read_input_data(dictionary &data)
         std::cin >> word_priority;
         data.add_word(word, word_priority);
     }
+    create.stop();
+    std::cout << "CREATE: " << create.get_last_interval() << std::endl;
 }
 
 void read_input_task(string& task)
