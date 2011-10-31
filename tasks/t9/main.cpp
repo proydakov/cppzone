@@ -250,11 +250,11 @@ void dictionary::continue_search()
                 }
             }
         }
+        ++it;
         if(delete_element) {
             m_selection.erase(delete_it);
             delete_element = false;
         }
-        ++it;
     }
     while(it != endIt);
 }
