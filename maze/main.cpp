@@ -29,6 +29,6 @@ int main(int argc, char** argv)
     viewer.set_task(task);
     viewer.start("maze");
     viewer.stop();
-    
+
     return 0;
 }
