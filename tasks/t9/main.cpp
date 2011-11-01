@@ -5,6 +5,8 @@
 #include <map>
 #include <list>
 #include <vector>
+#include <string>
+#include <cstdlib>
 #include <iostream>
 #include <assert.h>
 
@@ -22,6 +24,7 @@ class dictionary
 {
 public:
     dictionary() :
+        m_word_position(0),
         m_delta_priority(MIN_PRIORITY)
     {
     }
@@ -47,17 +50,15 @@ private:
 private:
     typedef std::pair<string, priority> information_about_word;
     typedef std::map<string, priority> selection;
-    typedef std::vector<string> collection_data;
-    typedef std::vector<priority> collection_priority;
     typedef std::map<string, priority> collection;
     typedef std::list<string> query;
     
     collection m_collection;
-    collection::iterator m_hint_it;
     collection m_selection;
     
     query m_query;
     string m_word;
+    index m_word_position;
     
     priority m_delta_priority;
 };
@@ -253,7 +254,7 @@ void dictionary::find_priority_word(string& word)
             break;
         }
         ++element_iterator;
-    }
+    };
     
     for(collection::const_iterator it = element_iterator; it != endIt; ++it) {
         if(it->second > element_iterator->second && it->first.size() == word_size) {
@@ -406,18 +407,22 @@ void read_input_data(dictionary &data)
     std::cin >> lenght;
     
     string word;
+    std::getline(std::cin, word);
     priority word_priority;
+    
+    string line;
     
     for(index i = 0; i < lenght; ++i) {
 #ifdef COMMENT
         std::cout << "Enter data about next word (text, priority): ";
 #endif // COMMENT
-        std::cin >> word;
-        std::cin >> word_priority;
+        std::getline(std::cin, line);
+        index p = line.find(' ');
+        word = line.substr(0, p);
+        word_priority = atoi(line.substr(p, line.size()).c_str());
         
         data.add_word(word, word_priority);
     }
-    std::getline(std::cin, word);
 }
 
 void read_input_task(string& task)
@@ -425,6 +430,5 @@ void read_input_task(string& task)
 #ifdef COMMENT
     std::cout << "Enter a sequence of characters entered by: ";
 #endif // COMMENT
-    //std::cin >> task;
     std::getline(std::cin, task);
 }
