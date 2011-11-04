@@ -7,8 +7,11 @@
 #include <vector>
 #include <string>
 #include <cstdlib>
+#include <stdio.h>
 #include <iostream>
 #include <assert.h>
+
+#include <benchmark.h>
 
 //#define COMMENT
 
@@ -20,44 +23,45 @@ typedef std::string     string;
 const index MAX_NUM_WORDS   = 100000;
 const priority MIN_PRIORITY = (priority) 1 / MAX_NUM_WORDS;
 
+const index MAX_WORD_SIZE = 20;
+const priority MAX_PRIORITY = 2000;
+
 class dictionary
 {
 public:
     dictionary() :
+        m_query_size(0),
         m_word_position(0),
         m_delta_priority(MIN_PRIORITY)
     {
+        m_query.resize(MAX_WORD_SIZE);
     }
     
     bool add_word(const string& word, priority word_priority);
     
-    void search(const string& next_symbols, string& word);
-    void next(string& word);
-    void stop_search();
+    void search(const string& next_symbols);
+    void next();
+    void stop_search(string& word);
     
     friend std::ostream& operator<< (std::ostream& ostr, const dictionary& book);
     
 private:
-    void clear();
-    
+    void parsing_query();
+    void find_priority_word(string& word);
     bool nice(const string& word);
     
-    void start_search();
-    void continue_search();
-    
-    void find_priority_word(string& word);
+    void clear();
     
 private:
-    typedef std::pair<string, priority> information_about_word;
-    typedef std::map<string, priority> selection;
     typedef std::map<string, priority> collection;
-    typedef std::list<string> query;
+    typedef std::multimap<priority, string> selection;
+    typedef std::vector<string> query;
     
     collection m_collection;
-    collection m_selection;
+    selection m_selection;
     
     query m_query;
-    string m_word;
+    index m_query_size;
     index m_word_position;
     
     priority m_delta_priority;
@@ -89,7 +93,7 @@ private:
     void phone_keypad_transformer(symbol key, string& symbols);  
     
     void print_mark(const string& marks, index& current_mark_index, bool& mark_enter_state);
-    void print_word(const string& word, bool& word_enter_state);
+    void print_word(bool& word_enter_state);
     
 private:
     dictionary* m_dictionary;
@@ -110,10 +114,13 @@ int main(int argc, char *argv[])
     string task;
     
     read_input_data(i_dictionary);
-    
     read_input_task(task);
     
+    benchmark::benchmark parsing;
+    parsing.start();
     i_phone.parse_message(task);
+    parsing.stop();
+    std::cout << "PARSING:  " << parsing.get_last_interval() << "  " << parsing.get_unit() << std::endl;
     
     return 0;
 }
@@ -125,64 +132,47 @@ std::ostream& operator<< (std::ostream& ostr, const dictionary& book)
     for(dictionary::collection::const_iterator it = book.m_collection.begin(); it != endIt; ++it) {
         ostr << "Word:   " << it->first << "   priority:   " << it->second << std::endl;
     }
-    ostr << std::endl;
     return ostr;
 }
 
 bool dictionary::add_word(const string& word, priority word_priority)
 {
-    return m_collection.insert(information_about_word(word, word_priority)).second;
+    return m_collection.insert(collection::value_type(word, word_priority)).second;
 }
 
-bool dictionary::nice(const string& word)
+void dictionary::search(const string& next_symbols)
 {
-    collection::iterator it = m_collection.find(word);
-    bool res = it != m_collection.end();
-    if(res) {
-        it->second += 1 + m_delta_priority;
-        m_delta_priority += MIN_PRIORITY;  
+    m_query[m_query_size] = next_symbols;
+    ++m_query_size;
+}
+
+void dictionary::next()
+{
+    ++m_word_position;
+}
+
+void dictionary::stop_search(string& word)
+{
+    parsing_query();
+    /*
+    std::cout << "\nSELECTION:" << std::endl;
+    selection::const_iterator endIt = m_selection.end();
+    for(selection::const_iterator it = m_selection.begin(); it != endIt; ++it) {
+        std::cout << "Word:   " << it->second << "   priority:   " << it->first << std::endl;
     }
-    return res;
-}
-
-void dictionary::search(const string& next_symbols, string& word)
-{
-    m_query.push_back(next_symbols);
+    */
+    find_priority_word(word);
     
-    if(m_query.size() < 2) {
-        start_search();
-    }
-    else {
-        continue_search();
-    }
-    find_priority_word(word);
-    m_word = word;
-}
-
-void dictionary::next(string& word)
-{
-    m_selection.erase(m_word);
-    find_priority_word(word);
-    m_word = word;
-}
-
-void dictionary::stop_search()
-{
-    nice(m_word);
-    m_query.clear();
     m_selection.clear();
+    m_query_size = 0;
+    m_word_position = 0;
+    
+    nice(word);
 }
 
-void dictionary::clear()
+void dictionary::parsing_query()
 {
-    stop_search();
-    m_collection.clear();
-}
-
-void dictionary::start_search()
-{
-    query::const_iterator it = m_query.begin();
-    string symbols = *it;
+    string symbols = m_query[0];
     
     symbol end_symbol = symbols[symbols.size() - 1];
     
@@ -197,45 +187,37 @@ void dictionary::start_search()
             break;
     }
     
+    //string first = itCollection->first;
+    
+    index lower_bound_test = 1;
+    index upper_bound_test = m_query_size;
+    
+    string word;
+    
+    bool insert_word;
     while(itCollection != endCollection && itCollection->first[0] <= end_symbol) {
-        m_selection.insert(*itCollection);
-        ++itCollection;
-    }
-}
-
-void dictionary::continue_search()
-{
-    query::const_iterator lastIt = m_query.end();
-    --lastIt;
-    string symbols = *lastIt;
-    index verifiable_character_position = m_query.size() - 1;
-    
-    bool delete_element = false;
-    collection::iterator delete_it = m_selection.end();
-    
-    collection::const_iterator endIt = m_selection.end();
-    collection::iterator it = m_selection.begin();
-    do {
-        delete_element = true;
-        delete_it = it;
+        insert_word = true;
         
-        if(it->first.size() < verifiable_character_position)
-            delete_element = false;
-        if(delete_element) {
-            for(index i = 0; i < symbols.size(); ++i) {
-                if(it->first[verifiable_character_position] == symbols[i]) {
-                    delete_element = false;
+        //string iter_word = itCollection->first;
+        //(void)iter_word;
+        
+        if(itCollection->first.size() != upper_bound_test) {
+            insert_word = false;
+        }
+        else {
+            for(index i = lower_bound_test; i < upper_bound_test; ++i) {
+                if(m_query[i].find_first_of(itCollection->first[i]) == -1) {
+                    insert_word = false;
                     break;
                 }
             }
         }
-        ++it;
-        if(delete_element) {
-            m_selection.erase(delete_it);
-            delete_element = false;
+        if(insert_word) {
+            m_selection.insert(selection::value_type(MAX_PRIORITY - itCollection->second, itCollection->first));
+            word = itCollection->first;
         }
+        ++itCollection;
     }
-    while(it != endIt);
 }
 
 void dictionary::find_priority_word(string& word)
@@ -243,25 +225,36 @@ void dictionary::find_priority_word(string& word)
     if(m_selection.empty()) {
         assert(!"selection data empty");
     }
-    index word_size = m_query.size();
-    
-    collection::const_iterator endIt = m_selection.end();
-    collection::const_iterator element_iterator = m_selection.begin();
-    
-    while(element_iterator != endIt) {
-        if(element_iterator->first.size() == word_size) {
-            word = element_iterator->first;
-            break;
-        }
-        ++element_iterator;
-    };
-    
-    for(collection::const_iterator it = element_iterator; it != endIt; ++it) {
-        if(it->second > element_iterator->second && it->first.size() == word_size) {
-            element_iterator = it;
-            word = it->first;
-        }
+    selection::const_iterator it = m_selection.begin();
+    for(index i = 0; i < m_word_position; ++i) {
+        ++it;
     }
+    word = it->second;
+}
+
+bool dictionary::nice(const string& word)
+{
+    collection::iterator it = m_collection.find(word);
+    bool res = it != m_collection.end();
+    if(res) {
+        it->second += 1 + m_delta_priority;
+        m_delta_priority += MIN_PRIORITY;  
+    }
+    else {
+        assert(!"Word not found");
+    }
+    return res;
+}
+
+void dictionary::clear()
+{
+    m_collection.clear();
+    m_selection.clear();
+    
+    m_query.clear();
+    m_word_position = 0;
+    
+    m_delta_priority = MIN_PRIORITY;
 }
 
 void phone::parse_message(const string& message)
@@ -271,7 +264,6 @@ void phone::parse_message(const string& message)
     string marks = ".,?";
     index current_mark_index = 0;
     
-    string word;
     string symbols;
     
     index message_size = message.size();
@@ -300,7 +292,7 @@ void phone::parse_message(const string& message)
         switch(m_state) {
         case state_enter_space:
             if(started_writing_word) {
-                print_word(word, started_writing_word);
+                print_word(started_writing_word);
             }
             else if(started_writing_mark) {
                 print_mark(marks, current_mark_index, started_writing_mark);
@@ -310,7 +302,7 @@ void phone::parse_message(const string& message)
             
         case state_enter_mark:
             if(started_writing_word) {
-                print_word(word, started_writing_word);
+                print_word(started_writing_word);
             }
             else if(started_writing_mark) {
                 print_mark(marks, current_mark_index, started_writing_mark);
@@ -325,12 +317,12 @@ void phone::parse_message(const string& message)
             }
             started_writing_word = true;
             phone_keypad_transformer(message[i], symbols);
-            m_dictionary->search(symbols, word);
+            m_dictionary->search(symbols);
             break;
             
         case state_next_element:
             if(started_writing_word) {
-                m_dictionary->next(word);
+                m_dictionary->next();
             }
             else if(started_writing_mark) {
                 ++current_mark_index;
@@ -343,7 +335,7 @@ void phone::parse_message(const string& message)
         }
     }
     if(started_writing_word) {
-        print_word(word, started_writing_word);
+        print_word(started_writing_word);
     }
     else if(started_writing_mark) {
         print_mark(marks, current_mark_index, started_writing_mark);
@@ -391,9 +383,10 @@ void phone::print_mark(const string& marks, index& current_mark_index, bool& mar
     std::cout << marks[current_mark_index];
 }
 
-void phone::print_word(const string& word, bool& word_enter_state)
+void phone::print_word(bool& word_enter_state)
 {
-    m_dictionary->stop_search();
+    string word;
+    m_dictionary->stop_search(word);
     word_enter_state = false;
     std::cout << word;
 }
@@ -405,6 +398,9 @@ void read_input_data(dictionary &data)
 #endif // COMMENT
     index lenght;
     std::cin >> lenght;
+    
+    benchmark::benchmark parsing;
+    parsing.start();
     
     string word;
     std::getline(std::cin, word);
@@ -423,12 +419,18 @@ void read_input_data(dictionary &data)
         
         data.add_word(word, word_priority);
     }
+    parsing.stop();
+    std::cout << "DATA READ:  " << parsing.get_last_interval() << "  " << parsing.get_unit() << std::endl;
 }
 
 void read_input_task(string& task)
 {
+    benchmark::benchmark parsing;
+    parsing.start();
 #ifdef COMMENT
     std::cout << "Enter a sequence of characters entered by: ";
 #endif // COMMENT
     std::getline(std::cin, task);
+    parsing.stop();
+    std::cout << "TASK READ:  " << parsing.get_last_interval() << "  " << parsing.get_unit() << std::endl;
 }
