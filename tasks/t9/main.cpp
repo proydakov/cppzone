@@ -2,6 +2,7 @@
  *  Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
  */
 
+#include <set>
 #include <map>
 #include <vector>
 #include <string>
@@ -14,7 +15,7 @@
 //#define READ_FROM_FILE
 
 typedef uint64_t        index;
-typedef long double     hash;
+typedef std::string     hash;
 typedef long long       loop_index;
 typedef long double     priority;
 typedef char            symbol;
@@ -24,10 +25,10 @@ class dictionary
 {
 private:
     static const index MAX_NUM_WORDS = 50000;
-    static const index MAX_WORD_SIZE = 20;    
+    static const index MAX_WORD_SIZE = 25;    
     
     static const priority MAX_WORD_PRIORITY = 3000;
-    static const priority MIN_PRIORITY =  0.000001;
+    static const priority MIN_PRIORITY =  0.00001;
     
 public:
     dictionary() :
@@ -46,26 +47,47 @@ public:
     void stop_search(string& word);
     
 private:
-    hash hash_fun(const string& word) const;
+    struct word_info
+    {
+        friend bool operator<(const word_info& T1, const word_info& T2) {
+            if(T1.m_priority < T2.m_priority)
+                return true;
+            else if(T1.m_priority > T2.m_priority)
+                return false;
+            else
+                return T1.m_word < T2.m_word;
+        }
+        priority m_priority;
+        string m_word;
+    };
+    
+    typedef std::set<word_info> data_element;
+    //typedef std::multimap<priority, string> data_element;
+    typedef std::map<hash, data_element> data_container;
+    typedef std::vector<data_container> container;
+    typedef std::vector<symbol> query;
+    
+private:
+    void hash_fun(const string& word, hash& word_hash) const;
+    void hash_fun(const query& word_query, index query_size, hash& word_hash) const;
     
     inline index hash_index(hash word_hash) const {
-        return static_cast<index>(word_hash) % MAX_NUM_WORDS;
+        index word_index = 0;
+        for(loop_index i = 0; i < word_hash.size(); ++i) {
+            word_index = (word_index << 3) + word_hash[i];
+        }
+        return word_index % MAX_NUM_WORDS;
     }
     
     inline index index_from_num_symbol(symbol s) const {
         return (index)s - (index)'0';
     }
     
-    inline index index_from_text_symbol(symbol s) const;
+    inline symbol num_symbol_from_text_symbol(symbol s) const;
     
     void get_priority_word(string& word);
     
 private:
-    typedef std::multimap<priority, string> data_element;
-    typedef std::map<hash, data_element> data_container;
-    typedef std::vector<data_container> container;
-    typedef std::vector<index> query;
-    
     container m_data;
     
     query m_query;
@@ -129,21 +151,28 @@ bool dictionary::add_word(const string& word, priority word_priority)
 {
     bool res = true;
     
-    hash word_hash = hash_fun(word);
+    hash word_hash;
+    hash_fun(word, word_hash);
     index position = hash_index(word_hash);
+    
+    word_info new_word;
     
     bool insert = true;
     if(!m_data[position].empty()) {
         data_container::iterator it = m_data[position].find(word_hash);
         data_container::iterator endIt = m_data[position].end();
         if(it != endIt) {
-            it->second.insert(data_element::value_type(MAX_WORD_PRIORITY - word_priority, word));
+            new_word.m_priority = MAX_WORD_PRIORITY - word_priority;
+            new_word.m_word = word;
+            it->second.insert(new_word);
             insert = false;
         }
     }
     if(insert) {
         data_element element;
-        element.insert(data_element::value_type(MAX_WORD_PRIORITY - word_priority, word));
+        new_word.m_priority = MAX_WORD_PRIORITY - word_priority;
+        new_word.m_word = word;
+        element.insert(new_word);
         res = m_data[position].insert(data_container::value_type(word_hash, element)).second;
     }
     return res;
@@ -151,7 +180,7 @@ bool dictionary::add_word(const string& word, priority word_priority)
 
 void dictionary::search(const symbol& key)
 {
-    m_query[m_query_size] = index_from_num_symbol(key);
+    m_query[m_query_size] = key;
     ++m_query_size;
 }
 
@@ -168,55 +197,55 @@ void dictionary::stop_search(string& word)
     m_word_position = 0;
 }
 
-hash dictionary::hash_fun(const string &word) const
+void dictionary::hash_fun(const string &word, hash& word_hash) const
 {
-    hash k = 1;
-    hash word_hash = 0;
-    for(loop_index  i = word.size() - 1; i >= 0; --i) {
-        index t = index_from_text_symbol(word[i]);
-        word_hash += t * k;
-        k *= 10;
+    word_hash = "";
+    for(loop_index  i = 0; i < word.size(); ++i) {
+        word_hash += num_symbol_from_text_symbol(word[i]);
     }
-    return word_hash;
 }
 
-index dictionary::index_from_text_symbol(symbol s) const
+void dictionary::hash_fun(const query& word_query, index query_size, hash& word_hash) const
+{
+    word_hash = "";
+    for(loop_index i = 0; i < query_size; ++i) {
+        word_hash += m_query[i];
+    }  
+}
+
+symbol dictionary::num_symbol_from_text_symbol(symbol s) const
 {
     if(s >= 'a' && s <= 'c') {
-        return 2;
+        return '2';
     }
     else if(s >= 'd' && s <= 'f') {
-        return 3;
+        return '3';
     }
     else if(s >= 'g' && s <= 'i') {
-        return 4;
+        return '4';
     }
     else if(s >= 'j' && s <= 'l') {
-        return 5;
+        return '5';
     }
     else if(s >= 'm' && s <= 'o') {
-        return 6;
+        return '6';
     }
     else if(s >= 'p' && s <= 's') {
-        return 7;
+        return '7';
     }
     else if(s >= 't' && s <= 'v') {
-        return 8;
+        return '8';
     }
     else if(s >= 'w' && s <= 'z') {
-        return 9;
+        return '9';
     }
     assert(!"invalid input data");
 }
 
 void dictionary::get_priority_word(string& word)
 {
-    hash word_hash = 0;
-    hash k = 1;
-    for(loop_index i = m_query_size - 1; i >= 0; --i) {
-        word_hash += m_query[i] * k;
-        k *= 10;
-    }
+    hash word_hash("");
+    hash_fun(m_query, m_query_size, word_hash);
     index position = hash_index(word_hash);
     data_container::iterator data_it = m_data[position].find(word_hash);
     data_element::iterator word_it = data_it->second.begin();
@@ -224,11 +253,14 @@ void dictionary::get_priority_word(string& word)
     for(index i = 0; i < m_word_position; ++i) {
         ++word_it;
     }
-    word = word_it->second;
-    priority word_priority = word_it->first - 1 - m_delta_priority;
+    word = word_it->m_word;
+    priority word_priority = word_it->m_priority - 1 - m_delta_priority;
     
     data_it->second.erase(word_it);
-    data_it->second.insert(data_element::value_type(word_priority, word));
+    word_info new_word;
+    new_word.m_word = word;
+    new_word.m_priority = word_priority;
+    data_it->second.insert(new_word);
     
     m_delta_priority += MIN_PRIORITY;
 }
@@ -348,15 +380,12 @@ void read_input_data(dictionary &data, string& task)
     priority word_priority;
     string line;
     
-    std::getline(data_stream, line);
-    
     for(index i = 0; i < lenght; ++i) {
-        std::getline(data_stream, line);
-        index p = line.find(' ');
-        word = line.substr(0, p);
-        word_priority = atoi(line.substr(p, line.size()).c_str());
+        data_stream >> word;
+        data_stream >> word_priority;
         data.add_word(word, word_priority);
     }
+    std::getline(data_stream, line);
     
     // read task
     std::getline(data_stream, task);
