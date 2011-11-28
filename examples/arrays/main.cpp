@@ -21,7 +21,6 @@ std::ostream& operator<<(std::ostream& ostr, const std::vector<T>& vector)
     ostr << "vector[" << size << "]  ";
     for(int i = 0; i < size; ++i)
         ostr << vector[i];
-    ostr << std::endl;
     return ostr;    
 }
 
@@ -36,7 +35,7 @@ int main( int argc, char *argv[] )
         a.push_back(i);
     }
     std::vector<data_type> b;
-    for(int i = 3; i < 6; ++i) {
+    for(int i = 3; i < 8; ++i) {
         b.push_back(i);
     }
     std::vector<data_type> res(std::min(a.size(), b.size()));
@@ -46,7 +45,9 @@ int main( int argc, char *argv[] )
     test_operations("SUBTRACTION", &subtraction, a, b, res);
     test_operations("SUBTRACTION", &subtraction, b, a, res);
     
-    std::cout << "Binary search:  " << binary_search(a, 4) << std::endl;
+    data_type value = 4;
+    std::cout << "input data: " << a << std::endl << "search element: " << value << " position:  " 
+              << binary_search(a, value) << std::endl;
     
     return 0;
 }
@@ -55,7 +56,7 @@ void test_operations(const std::string& name, prt_operation operation, const std
 {
     std::cout << "TEST  " << name << std::endl;
     operation(a, b, res);
-    std::cout << "INPUT DATA:  " << std::endl << a << b;
-    std::cout << "RESULT" << res << std::endl;
+    std::cout << "INPUT DATA:  " << std::endl << a << std::endl << b << std::endl;
+    std::cout << "RESULT: " << std::endl << res << std::endl;
     std::cout << std::endl;
 }
