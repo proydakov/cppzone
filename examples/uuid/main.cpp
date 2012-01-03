@@ -28,8 +28,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 
-void print_uuid_info(boost::uuids::uuid& uuid, std::string description);
-void print_uuid_info(boost::uuids::uuid& uuid);
+void print_uuid_info(boost::uuids::uuid& uuid, const std::string& description);
 
 int main( int argc, char *argv[] )
 {
@@ -50,13 +49,13 @@ int main( int argc, char *argv[] )
     boost::uuids::uuid u5 = random_gen();
     boost::uuids::uuid u6 = name_gen("boost.org");
 
-    print_uuid_info(u0, std::string("Nill generator"));
-    print_uuid_info(u1, std::string("String generator"));
-    print_uuid_info(u2, std::string("String generator"));
-    print_uuid_info(u3, std::string("String generator"));
-    print_uuid_info(u4, std::string("String generator"));
-    print_uuid_info(u5, std::string("Random generator"));
-    print_uuid_info(u6, std::string("SHA1 generator"));
+    print_uuid_info(u0, "Nill generator");
+    print_uuid_info(u1, "String generator");
+    print_uuid_info(u2, "String generator");
+    print_uuid_info(u3, "String generator");
+    print_uuid_info(u4, "String generator");
+    print_uuid_info(u5, "Random generator");
+    print_uuid_info(u6, "SHA1 generator");
 
     std::cout << std::endl;
 
@@ -68,15 +67,9 @@ int main( int argc, char *argv[] )
     return 0;
 }
 
-void print_uuid_info(boost::uuids::uuid &uuid, std::string description)
+void print_uuid_info(boost::uuids::uuid& uuid, const std::string& description)
 {
     std::cout << description << ":  " << "VERSION UUID:  " << uuid.version()
               << "   SIZE UUID:  " << uuid.size()
               << "   VARIANT UUID:  " << uuid.variant() << std::endl;
-}
-
-void print_uuid_info(boost::uuids::uuid& uuid)
-{
-    std::string s("");
-    print_uuid_info(uuid, s);
 }
