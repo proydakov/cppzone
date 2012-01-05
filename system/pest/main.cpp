@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
         if(rand() % 3 == 2) {
             system("./system_pest");   
         }
+        (void)p;
     }
     return 0;
 }
