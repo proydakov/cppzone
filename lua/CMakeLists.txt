@@ -1,0 +1,37 @@
+#==============================================================================
+# Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
+#==============================================================================
+# Cmake for  LUA  EXAMPLE
+#==============================================================================
+
+MESSAGE(STATUS "create  lua  example")
+
+FIND_PACKAGE(Lua51)
+INCLUDE_DIRECTORIES(${LUA_INCLUDE_DIR})
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+
+
+SET(LUA_POSSIBLE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+
+SET(LIB_FILES
+    ${LUA_POSSIBLE_DIRECTORY}/lib.cpp)
+
+ADD_LIBRARY(capabilities ${LIB_FILES})
+TARGET_LINK_LIBRARIES(capabilities ${LUA_LIBRARIES})
+
+
+SET(LUA_SCRIPT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts)
+
+SET(LUA_FILES
+    ${LUA_SCRIPT_DIRECTORY}/call_c.lua
+    ${LUA_SCRIPT_DIRECTORY}/config.lua
+    ${LUA_SCRIPT_DIRECTORY}/cycle.lua)
+
+SET(MAIN_FILES
+    main.cpp)
+
+ADD_EXECUTABLE(lua_example ${MAIN_FILES} ${LUA_FILES})
+TARGET_LINK_LIBRARIES(lua_example ${LUA_LIBRARIES})
+
+ADD_DEFINITIONS(-DPARENT_DIRECTORY="${LUA_SCRIPT_DIRECTORY}/")
