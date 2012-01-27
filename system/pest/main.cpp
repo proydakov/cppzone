@@ -24,10 +24,16 @@
 #include <spawn.h>
 #include <stdlib.h>
 
+#define UNUSED(x) (void)x;
+
 int main(int argc, char *argv[])
 {
-    (void)argc;
-    (void)argv;
+    UNUSED(argc);
+    UNUSED(argv);
+    
+    if(argc == 3) {
+        while(true);
+    }
     
     srand(time(NULL));
     pid_t pid;
@@ -36,19 +42,17 @@ int main(int argc, char *argv[])
     
     while(true) {
         int *p = new int [36];
-        std::string name("pest_");
-        name += rand() % 10000;
-        char *const param[] = {"param", "hello", "world"};
-        if(rand() % 3 == 0) {
-            system("./multithreading_load_cpu");
+        UNUSED(p);
+        char *const param_load[] = {"load", "cpu"};
+        char *const param_create[] = {"create"};
+        int condition = rand() % 2;
+        
+        if(condition == 0) {
+            posix_spawn(&pid, "./system_pest", &action, &attr, param_load, NULL);
         }
-        if(rand() % 3 == 1) {
-            posix_spawn(&pid, "./system_pest", &action, &attr, param, NULL);
+        if(condition == 1) {
+            posix_spawn(&pid, "./system_pest", &action, &attr, param_create, NULL);
         }
-        if(rand() % 3 == 2) {
-            system("./system_pest");   
-        }
-        (void)p;
     }
     return 0;
 }
