@@ -39,7 +39,7 @@ int main( int argc, char *argv[] )
     (void)argc;
     (void)argv;
 
-    index_type array_size = 3000;
+    index_type array_size = 10000;
     srand(time(NULL));
     std::vector<data_type> input_data;
     for(int i = 0; i < array_size; ++i) {

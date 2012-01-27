@@ -32,13 +32,13 @@ typedef long index_type;
 // ----------------------------- declaration ------------------------------- //
 
 template<typename type>
+void selection_sort(std::vector<type>& data);
+
+template<typename type>
 void bubble_sort(std::vector<type>& data);
 
 template<typename type>
 void shaker_sort(std::vector<type>& data);
-
-template<typename type>
-void selection_sort(std::vector<type>& data);
 
 template<typename type>
 void insertion_sort(std::vector<type>& data);
@@ -96,7 +96,7 @@ void shaker_sort(std::vector<type>& data)
             }
         }
         end = index - 1;
-
+        
         for(index = end; index > begin; --index) {
             if(data[index] < data[index - 1]) {
                 std::swap(data[index], data[index - 1]);
@@ -129,10 +129,8 @@ void insertion_sort(std::vector<type>& data)
     for(index_type i = 1; i < size; ++i) {
         type element = data[i];
         index_type j = i - 1;
-        while(j >= 0 && data[j] > element) {
+        for(;j >= 0 && data[j] > element;--j)
             data[j + 1] = data[j];
-            --j;
-        }
         data[j + 1] = element;
     }
 }
@@ -184,10 +182,10 @@ void merge(type *a, index_type begin, index_type middle, index_type end) {
     index_type pos1 = begin;
     index_type pos2 = middle + 1;
     index_type pos3 = 0;
-
+    
     type *temp = new type[end - begin + 1];
-
-    while (pos1 <= middle && pos2 <= end) {
+    
+    while(pos1 <= middle && pos2 <= end) {
         if (a[pos1] < a[pos2]) {
             temp[pos3] = a[pos1];
             ++pos3;
@@ -199,19 +197,19 @@ void merge(type *a, index_type begin, index_type middle, index_type end) {
             ++pos3;
         }
     }
-    while (pos2 <= end) {
+    while(pos2 <= end) {
         temp[pos3] = a[pos2];
         ++pos3;
         ++pos2;
     }
-    while (pos1 <= middle) {
+    while(pos1 <= middle) {
         temp[pos3] = a[pos1];
         ++pos3;
         ++pos1;
     }
-    for (pos3 = 0; pos3 < end - begin + 1; pos3++)
+    for(pos3 = 0; pos3 < end - begin + 1; ++pos3)
         a[begin + pos3] = temp[pos3];
-
+    
     delete [] temp;
 }
 
@@ -225,7 +223,7 @@ template<typename type>
 void merge_sort(std::vector<type>& data, index_type begin, index_type end)
 {
     if(begin < end) {
-        index_type middle = (begin + end) / 2;
+        index_type middle = (begin + end) >> 1;
         merge_sort(data, begin, middle);
         merge_sort(data, middle + 1, end);
         merge(data.data(), begin, middle, end);
