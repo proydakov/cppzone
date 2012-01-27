@@ -44,7 +44,7 @@ void generator_mounts(cv::Mat& matrix, int lowland_type, int hill_type, int pixe
     fill_matrix(matrix, lowland_type);
     
     srand(time(NULL));
-    int col = 5;
+    int col = 50;
     
     typedef std::multimap<int ,cv::Point> mount_map;
     typedef std::pair<int ,cv::Point> mount_pair;
