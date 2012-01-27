@@ -126,5 +126,5 @@ int main(int argc, char *argv[])
     std::cout << "sizeof set:     " << sizeof(s) << std::endl;
     std::cout << "sizeof map:     " << sizeof(m) << std::endl;
     
-    return 1;
+    return 0;
 }

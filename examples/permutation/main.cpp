@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     symbol_container ex1 = "012345";
     generate_permutation(ex1);
     
-    return 1;
+    return 0;
 }
 
 void generate_permutation(const symbol_container& data)
@@ -52,9 +52,8 @@ void generate_permutation_recursive_step(symbol_container& data, index start, in
         std::cout << data << std::endl;
         return;
     }
-    
-    for(int i = start; i <= end; ++i) {
-        std::swap(data[start], data[i]);
+    for(index i = start; i <= end; ++i) {
+        std::swap(data[i], data[start]);
         symbol_container temp = data;
         generate_permutation_recursive_step(temp, start + 1, end);
     }
