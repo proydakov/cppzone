@@ -1,7 +1,7 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# Cmake for FUNCTION  EXAMPLE
+# CMake for  FUNCTION  EXAMPLE
 #==============================================================================
 
 MESSAGE(STATUS "create  nums  example")

@@ -1,7 +1,7 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# Cmake for IDENTIFICATION  NUMBER  TASK
+# CMake for  IDENTIFICATION  NUMBER  TASK
 #==============================================================================
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)

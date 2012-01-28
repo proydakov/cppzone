@@ -1,7 +1,7 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# Cmake for MEMORY  LEAK  EXAMPLE
+# CMake for  MEMORY  LEAK  EXAMPLE
 #==============================================================================
 
 MESSAGE(STATUS "create  memory  leak  example")

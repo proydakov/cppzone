@@ -1,7 +1,7 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# Cmake for LANDSCAPE  PROJECT
+# CMake for  LANDSCAPE  PROJECT
 #==============================================================================
 
 MESSAGE(STATUS "CREATING  LANDSCAPE  GENERATOR\n")

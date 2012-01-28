@@ -1,7 +1,7 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# Cmake for SMART  POINTERS  EXAMPLE
+# CMake for  SMART  POINTERS  EXAMPLE
 #==============================================================================
 
 MESSAGE(STATUS "create  smart  pointers  example")

@@ -1,7 +1,7 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# Cmake for LOAD  CPU  EXAMPLE
+# CMake for  LOAD  CPU  EXAMPLE
 #==============================================================================
 
 MESSAGE(STATUS "create  multithreading  load  cpu  example")

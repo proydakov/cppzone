@@ -1,7 +1,7 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# Cmake for DISTANCE  ON  THE  TREE  TASK
+# CMake for  DISTANCE  ON  THE  TREE  TASK
 #==============================================================================
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)

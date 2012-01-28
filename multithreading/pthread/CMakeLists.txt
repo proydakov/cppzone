@@ -1,7 +1,7 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# Cmake for PTHREAD  EXAMPLE
+# CMake for  PTHREAD  EXAMPLE
 #==============================================================================
 
 MESSAGE(STATUS "create  multithreading  pthread  example")

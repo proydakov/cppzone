@@ -1,7 +1,7 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# Cmake for STRINGS  EXAMPLE
+# CMake for  STRINGS  EXAMPLE
 #==============================================================================
 
 MESSAGE(STATUS "create  strings  example")

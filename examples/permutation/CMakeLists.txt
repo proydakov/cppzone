@@ -1,7 +1,7 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# Cmake for PERMUTATION  EXAMPLE
+# CMake for  PERMUTATION  EXAMPLE
 #==============================================================================
 
 MESSAGE(STATUS "create  permutation  example")

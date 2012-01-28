@@ -1,7 +1,7 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# Cmake for BENCHMARK  LIBRARY
+# CMake for  BENCHMARK  LIBRARY
 #==============================================================================
 
 MESSAGE(STATUS "CREATE  BENCHMARK  LIBRARY\n")
