@@ -43,8 +43,8 @@ int main(int argc, char *argv[])
     while(true) {
         int *p = new int [36];
         UNUSED(p);
-        char *const param_load[] = {"load", "cpu"};
-        char *const param_create[] = {"create"};
+        char *const param_load[] = {(char*)"load", (char*)"cpu"};
+        char *const param_create[] = {(char*)"create"};
         int condition = rand() % 2;
         
         if(condition == 0) {
