@@ -4,5 +4,7 @@
 # CMake for  SYSTEM  PROJECT
 #==============================================================================
 
+MESSAGE(STATUS "BUILD  SYSTEM\n")
+
 ADD_SUBDIRECTORY(pest)
 ADD_SUBDIRECTORY(memory_leak)

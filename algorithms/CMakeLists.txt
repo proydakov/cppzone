@@ -1,14 +1,13 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  HANOI  EXAMPLE
+# CMake for  ALGORITHMS  PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "create  hanoi  example")
+MESSAGE(STATUS "BUILD  ALGORITHMS\n")
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-
-SET(SOURCE_FILES
-        main.cpp)
-
-ADD_EXECUTABLE(example_hanoi ${SOURCE_FILES})
+ADD_SUBDIRECTORY(arrays)
+ADD_SUBDIRECTORY(nums)
+ADD_SUBDIRECTORY(permutation)
+ADD_SUBDIRECTORY(sort)
+ADD_SUBDIRECTORY(strings)

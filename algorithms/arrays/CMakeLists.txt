@@ -1,23 +1,17 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  FUNCTION  EXAMPLE
+# CMake for  ARRAY  EXAMPLE
 #==============================================================================
 
-MESSAGE(STATUS "create  nums  example")
+MESSAGE(STATUS "create  arrays  algorithms")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-INCLUDE_DIRECTORIES(${BENCHMARK_DIRECTORY})
-
-# find Boost
-FIND_PACKAGE(Boost)
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
 SET(HEADER_FILES
-        operations_with_numbers.h)
+        operations_with_arrays.h)
 
 SET(SOURCE_FILES
         main.cpp)
 
-ADD_EXECUTABLE(example_nums ${HEADER_FILES} ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(example_nums benchmark)
+ADD_EXECUTABLE(algorithms_arrays ${HEADER_FILES} ${SOURCE_FILES})

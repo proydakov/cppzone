@@ -1,17 +1,20 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  ARRAY  EXAMPLE
+# CMake for  SORT  EXAMPLE
 #==============================================================================
 
-MESSAGE(STATUS "create  arrays  example")
+MESSAGE(STATUS "create  sort  algorithms")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${BENCHMARK_DIRECTORY})
 
 SET(HEADER_FILES
-        operations_with_arrays.h)
+        my_sort.h)
 
 SET(SOURCE_FILES
         main.cpp)
 
-ADD_EXECUTABLE(example_arrays ${HEADER_FILES} ${SOURCE_FILES})
+ADD_EXECUTABLE(algorithms_sort ${HEADER_FILES} ${SOURCE_FILES})
+ADD_DEPENDENCIES(algorithms_sort benchmark)
+TARGET_LINK_LIBRARIES(algorithms_sort benchmark)

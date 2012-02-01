@@ -4,7 +4,7 @@
 # CMake for  STRINGS  EXAMPLE
 #==============================================================================
 
-MESSAGE(STATUS "create  strings  example")
+MESSAGE(STATUS "create  strings  algorithms")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${BENCHMARK_DIRECTORY})
@@ -15,6 +15,6 @@ SET(HEADER_FILES
 SET(SOURCE_FILES
         main.cpp)
 
-ADD_EXECUTABLE(example_strings ${HEADER_FILES} ${SOURCE_FILES})
-ADD_DEPENDENCIES(example_strings benchmark)
-TARGET_LINK_LIBRARIES(example_strings benchmark)
+ADD_EXECUTABLE(algorithms_strings ${HEADER_FILES} ${SOURCE_FILES})
+ADD_DEPENDENCIES(algorithms_strings benchmark)
+TARGET_LINK_LIBRARIES(algorithms_strings benchmark)

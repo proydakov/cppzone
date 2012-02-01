@@ -1,20 +1,24 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  LOAD  CPU  EXAMPLE
+# CMake for  FUNCTION  EXAMPLE
 #==============================================================================
 
-MESSAGE(STATUS "create  multithreading  load  cpu  multithreading")
+MESSAGE(STATUS "create  nums  algorithms")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${BENCHMARK_DIRECTORY})
 
 # find Boost
-FIND_PACKAGE(Boost COMPONENTS thread REQUIRED)
-LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+FIND_PACKAGE(Boost)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+
+SET(HEADER_FILES
+        operations_with_numbers.h)
 
 SET(SOURCE_FILES
         main.cpp)
 
-ADD_EXECUTABLE(multithreading_load_cpu ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(multithreading_load_cpu ${Boost_THREAD_LIBRARY})
+ADD_EXECUTABLE(algorithms_nums ${HEADER_FILES} ${SOURCE_FILES})
+ADD_DEPENDENCIES(algorithms_nums benchmark)
+TARGET_LINK_LIBRARIES(algorithms_nums benchmark)

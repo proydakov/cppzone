@@ -4,6 +4,7 @@
 # CMake for  LUA  EXAMPLE
 #==============================================================================
 
+MESSAGE(STATUS "BUILD  LUA\n")
 MESSAGE(STATUS "create  lua  example")
 
 FIND_PACKAGE(Lua51)
