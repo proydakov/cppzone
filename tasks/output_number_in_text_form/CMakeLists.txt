@@ -1,15 +1,14 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  TASKS  PROJECT
+# CMake for  OUTPUT  NUMBER  IN  TEXT  FORM  TASK
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  TASKS\n")
+MESSAGE(STATUS "create  output  number  in text form  task")
 
-ADD_SUBDIRECTORY(distance_on_the_tree)
-ADD_SUBDIRECTORY(file_reader)
-ADD_SUBDIRECTORY(hanoi)
-ADD_SUBDIRECTORY(identification_number)
-ADD_SUBDIRECTORY(output_number)
-ADD_SUBDIRECTORY(output_number_in_text_form)
-ADD_SUBDIRECTORY(t9)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+
+SET(SOURCE_FILES
+    main.cpp)
+
+ADD_EXECUTABLE(task_output_number_in_text_form ${SOURCE_FILES})
