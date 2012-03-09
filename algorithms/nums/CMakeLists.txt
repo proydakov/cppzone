@@ -14,10 +14,10 @@ FIND_PACKAGE(Boost)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
 SET(HEADER_FILES
-        operations_with_numbers.h)
+    operations_with_numbers.h)
 
 SET(SOURCE_FILES
-        main.cpp)
+    main.cpp)
 
 ADD_EXECUTABLE(algorithms_nums ${HEADER_FILES} ${SOURCE_FILES})
 ADD_DEPENDENCIES(algorithms_nums benchmark)

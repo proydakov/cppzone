@@ -13,10 +13,10 @@ FIND_PACKAGE(Boost COMPONENTS date_time REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
 SET(HEADER_FILES
-        benchmark.h)
+    benchmark.h)
 
 SET(SOURCE_FILES
-        benchmark.cpp)
+    benchmark.cpp)
 
 ADD_LIBRARY(benchmark ${FILES} ${HEADER_FILES} ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(benchmark ${Boost_DATE_TIME_LIBRARY})

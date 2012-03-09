@@ -9,6 +9,6 @@ MESSAGE(STATUS "create  sizeof  example")
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 SET(SOURCE_FILES
-        main.cpp)
+    main.cpp)
 
 ADD_EXECUTABLE(example_sizeof ${SOURCE_FILES})

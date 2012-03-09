@@ -4,8 +4,6 @@
 # CMake for  T9  TASK
 #==============================================================================
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
-
 MESSAGE(STATUS "create  t9  task")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
