@@ -1,13 +1,14 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  EXAMPLE  PROJECT
+# CMake for  CALLER  EXAMPLE 
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  EXAMPLE\n")
+MESSAGE(STATUS "create  caller  example")
 
-ADD_SUBDIRECTORY(sizeof)
-ADD_SUBDIRECTORY(smart_pointers)
-ADD_SUBDIRECTORY(ublas)
-ADD_SUBDIRECTORY(uuid)
-#ADD_SUBDIRECTORY(caller)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+
+SET(SOURCE_FILES
+    main.cpp)
+
+ADD_EXECUTABLE(example_caller ${SOURCE_FILES})
