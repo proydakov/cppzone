@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
+ *  Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,7 @@ using namespace common;
 class convert_number_system
 {
 public:
-    static number_type convert(number_type num, number_type num_base) ;
+    static number_type convert(number_type num, number_type num_base);
 };
 
 
@@ -57,9 +57,7 @@ struct translation_main
     main_container m_text_data;
     text_container m_text_short_tens;
     
-    text_container m_thousand_text;
-    text_container m_million_text;
-    text_container m_billion_text;
+    main_container m_degree_text;
 };
 
 
@@ -69,18 +67,12 @@ public:
     struct texception_info
     {
         texception_info() {}
-        texception_info(index_type pos, number_type value) :
-            m_pos(pos),
-            m_value(value)
-        {
-        }
+        texception_info(index_type pos, number_type value);
+        
+        bool operator<(const texception_info& info) const;
         
         index_type  m_pos;
         number_type m_value;
-        
-        bool operator<(const texception_info& info) const {
-            return (m_pos * 10 + m_value) > (info.m_pos * 10 + info.m_value);
-        }
     };
     
     typedef std::map<texception_info, mstring> exception_container;
@@ -99,7 +91,7 @@ class conversion_rules
 {
 public:
     enum text_comment_size { text_short = 0, text_normal, text_long };
-    enum degree_size { degree_thousands, degree_millions, degree_billions };
+    enum degree_size { degree_thousands = 0, degree_millions, degree_billions };
     
 public:
     conversion_rules(const translation_main& tr_main, const translation_exceptions& tr_ex);
@@ -139,7 +131,8 @@ private:
     enum { AVALIABLE_SIZE  = 11 };
     
 private:
-    typedef std::list<mstring> text_container;
+    typedef std::list<mstring>  text_container;
+    typedef std::vector<bool>   degree_state_container;
     static void text_from_list(const text_container& list, mstring& text);
 };
 
@@ -152,7 +145,7 @@ int main(int argc, char *argv[])
     (void)argc;
     (void)argv;
     
-    number_type input;
+    number_type input = 123;
     std::cout << "Ведите число [-68719476735, 68719476735]: ";
     std::cin >> input;
     
@@ -247,17 +240,24 @@ translation_main* create_translation_main()
     tr_main->m_text_short_tens.push_back("восемнадцать");
     tr_main->m_text_short_tens.push_back("девятнадцать");
     
-    tr_main->m_thousand_text.push_back("тысяча");
-    tr_main->m_thousand_text.push_back("тысячи");
-    tr_main->m_thousand_text.push_back("тысяч");
+    translation_main::text_container thousand_text;
+    thousand_text.push_back("тысяча");
+    thousand_text.push_back("тысячи");
+    thousand_text.push_back("тысяч");
     
-    tr_main->m_million_text.push_back("миллион");
-    tr_main->m_million_text.push_back("миллиона");
-    tr_main->m_million_text.push_back("миллионов");
+    translation_main::text_container million_text;
+    million_text.push_back("миллион");
+    million_text.push_back("миллиона");
+    million_text.push_back("миллионов");
     
-    tr_main->m_billion_text.push_back("миллиард");
-    tr_main->m_billion_text.push_back("миллиарда");
-    tr_main->m_billion_text.push_back("миллиардов");
+    translation_main::text_container billion_text;
+    billion_text.push_back("миллиард");
+    billion_text.push_back("миллиарда");
+    billion_text.push_back("миллиардов");
+    
+    tr_main->m_degree_text.push_back(thousand_text);
+    tr_main->m_degree_text.push_back(million_text);
+    tr_main->m_degree_text.push_back(billion_text);
     
     return tr_main;
 }
@@ -299,6 +299,17 @@ number_type convert_number_system::convert(number_type num, number_type num_base
 }
 
 // ------------------------------------------------------------------------- //
+
+translation_exceptions::texception_info::texception_info(index_type pos, number_type value) :
+    m_pos(pos),
+    m_value(value)
+{
+}
+
+bool translation_exceptions::texception_info::operator<(const texception_info& info) const 
+{
+    return (m_pos * 10 + m_value) > (info.m_pos * 10 + info.m_value);
+}
 
 translation_exceptions::translation_exceptions(const exception_container& container) :
     m_exception_container(container)
@@ -345,24 +356,9 @@ void conversion_rules::get_short_text_of_sign(number_type num, mstring& text) co
 void conversion_rules::get_degree_text(mstring& text, int degree, int size) const
 {
     assert(size >= text_short && size <= text_long);
+    assert(degree >= degree_thousands && degree <= degree_billions);
     
-    switch(degree) {
-    case degree_thousands:
-        text = m_translation.m_thousand_text[static_cast<translation_main::text_container::size_type>(size)];
-        break;
-        
-    case degree_millions:
-        text = m_translation.m_million_text[static_cast<translation_main::text_container::size_type>(size)];
-        break;
-        
-    case degree_billions:
-        text = m_translation.m_billion_text[static_cast<translation_main::text_container::size_type>(size)];
-        break;
-        
-    default:
-        assert(!"INVALID INPUT DATA");
-        break;
-    }
+    text = m_translation.m_degree_text[degree][size];
 }
 
 bool conversion_rules::get_exception(index_type pos, number_type num, mstring& text) const
@@ -400,54 +396,50 @@ void converter_num_to_text::convert(number_type num, mstring& text, const conver
     
     num = std::abs(num);
     
-    text_container text_list;    
+    degree_state_container degree_state(AVALIABLE_SIZE / 3, false);
+    text_container text_list;
     number_type modulo;
     mstring text_iter;
     bool step = false;
+    int k = 0;
     
     for(index_type i = 0; num > 0; ++i) {
         if(i > AVALIABLE_SIZE)
             assert(!"INVALID INPUT DATA");
         
+        step = false;
+        
         modulo = num % 100;
         if(modulo > 10 && modulo < 20 && !(i % 3)) {
-            num -= modulo;
-            num /= 100;
+            k = 100;
             rules.get_short_text_of_sign(modulo, text_iter);
             step = true;
         }
         else {
             modulo = num % 10;
-            num -= modulo;
-            num /= 10;
+            k = 10;
             rules.get_text_from_num(modulo, i % 3, text_iter);
-            step = false;
         }
+        num -= modulo;
+        num /= k;
         
         mstring text_exception;
         if(rules.get_exception(i, modulo, text_exception))
             text_iter = text_exception;
         
-        mstring degree;
-        
-        int csize;
-        if(modulo == 1)
+        int csize = conversion_rules::text_long;
+        if(modulo == 1 && !(i % 3))
             csize = conversion_rules::text_short;
         else if(modulo >= 2 && modulo <= 4)
             csize = conversion_rules::text_normal;
-        else
-            csize = conversion_rules::text_long;
         
-        if(i == 3)    
-            rules.get_degree_text(degree, conversion_rules::degree_thousands, csize);
-        else if(i == 6)
-            rules.get_degree_text(degree, conversion_rules::degree_millions, csize);
-        else if(i == 9)
-            rules.get_degree_text(degree, conversion_rules::degree_billions, csize);
-        
-        if(degree.size())
+        mstring degree;
+        int j = i / 3 - 1;
+        if(modulo && i > 2 && !degree_state[j]) {  
+            rules.get_degree_text(degree, j, csize);
+            degree_state[j] = true;
             text_iter += " " + degree;
-        
+        }
         text_list.push_front(text_iter);
         
         if(step)
@@ -464,7 +456,6 @@ void converter_num_to_text::text_from_list(const text_container& list, mstring& 
         if((*it).size())
             text += " ";
     }
-    
     while(text[text.size() - 1] == ' ')
         text.erase(text.size() - 1, 1);
     
@@ -473,4 +464,3 @@ void converter_num_to_text::text_from_list(const text_container& list, mstring& 
             text.erase(i, 1);
     }
 }
-
