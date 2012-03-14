@@ -1,10 +1,14 @@
 #==============================================================================
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  SYNTAX  PROJECT
+# CMake for  ADRESS  BASE  EXAMPLE
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  SYNTAX\n")
+MESSAGE(STATUS "create  adress  base  syntax")
 
-ADD_SUBDIRECTORY(adress_base)
-ADD_SUBDIRECTORY(exception_base)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+
+SET(SOURCE_FILES
+    main.cpp)
+
+ADD_EXECUTABLE(syntax_adress_base ${SOURCE_FILES})
