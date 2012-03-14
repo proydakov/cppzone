@@ -20,38 +20,38 @@
  *  THE SOFTWARE.
  */
 
-#include <iostream>
-#include <diamond_inheritance.h>
-
-int main(int argc, char *argv[])
+struct A
 {
-    (void)argc;
-    (void)argv;
-    
-    // create
-    std::cout << "CREATE a ";
-    A* a = new D;
-    std::cout << std::endl << "CREATE b ";
-    B* b = new D;
-    std::cout << std::endl << "CREATE c ";
-    C* c = new D;
-    
-    // call
-    std::cout << std::endl << std::endl;
-    
-    a->fun();
-    b->fun();
-    c->fun();
-    
-    // destroy
-    std::cout << std::endl << "DELETE a ";
-    delete a;
-    std::cout << std::endl << "DELETE b ";
-    delete b;
-    std::cout << std::endl << "DELETE c ";
-    delete c;
-    
-    std::cout << std::endl;
-    
-    return 0;
-}
+    A() { std::cout << "A"; }
+    virtual ~A() { std::cout << "~A"; }
+    virtual void fun() {
+        std::cout << "A::fun" << std::endl;
+    }
+};
+
+struct B : virtual public A
+{
+    B() { std::cout << "B"; }
+    virtual ~B() { std::cout << "~B"; }
+    virtual void fun() {
+        std::cout << "B::fun" << std::endl;
+    }
+};
+
+struct C : virtual public A
+{
+    C() { std::cout << "C"; }
+    virtual ~C() { std::cout << "~C"; }
+    virtual void fun() {
+        std::cout << "C::fun" << std::endl;
+    }
+};
+
+struct D : public B, public C
+{
+    D() { std::cout << "D"; }
+    virtual ~D() { std::cout << "~D"; }
+    virtual void fun() {
+        std::cout << "D::fun" << std::endl;
+    }
+};
