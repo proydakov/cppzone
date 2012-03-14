@@ -1,13 +1,14 @@
 #==============================================================================
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  SYNTAX  PROJECT
+# CMake for  STD  FOR  EACH  EXAMPLE
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  SYNTAX\n")
+MESSAGE(STATUS "create  std  for  each  syntax")
 
-ADD_SUBDIRECTORY(adress_base)
-ADD_SUBDIRECTORY(diamond_inheritance_basic)
-ADD_SUBDIRECTORY(exception_base)
-ADD_SUBDIRECTORY(inheritance_basic)
-ADD_SUBDIRECTORY(std_for_each)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+
+SET(SOURCE_FILES
+    main.cpp)
+
+ADD_EXECUTABLE(syntax_std_for_each ${SOURCE_FILES})
