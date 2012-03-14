@@ -1,11 +1,14 @@
 #==============================================================================
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  SYNTAX  PROJECT
+# CMake for  INHERITANCE  BASIC  EXAMPLE
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  SYNTAX\n")
+MESSAGE(STATUS "create  inheritance  basic  syntax")
 
-ADD_SUBDIRECTORY(adress_base)
-ADD_SUBDIRECTORY(exception_base)
-ADD_SUBDIRECTORY(inheritance_basic)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+
+SET(SOURCE_FILES
+    main.cpp)
+
+ADD_EXECUTABLE(syntax_inheritance_basic ${SOURCE_FILES})
