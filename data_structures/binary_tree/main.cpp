@@ -38,6 +38,8 @@ int main( int argc, char *argv[] )
     
     ctree tree;
     
+    std::cout << "SIZE : " << sizeof(ctree) << std::endl;
+    
     index size = 15;
     srand(time(NULL));
     for(index i = 0; i < size; ++i) {
