@@ -1,14 +1,14 @@
 #==============================================================================
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  SYNTAX  PROJECT
+# CMake for  INHERITANCE  CASTING  EXAMPLE
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  SYNTAX\n")
+MESSAGE(STATUS "create  inheritance  casting  syntax")
 
-ADD_SUBDIRECTORY(adress_base)
-ADD_SUBDIRECTORY(diamond_inheritance_basic)
-ADD_SUBDIRECTORY(exception_basic)
-ADD_SUBDIRECTORY(inheritance_basic)
-ADD_SUBDIRECTORY(inheritance_casting)
-ADD_SUBDIRECTORY(std_for_each)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+
+SET(SOURCE_FILES
+    main.cpp)
+
+ADD_EXECUTABLE(syntax_inheritance_casting ${SOURCE_FILES})
