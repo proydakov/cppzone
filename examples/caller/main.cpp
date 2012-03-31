@@ -82,7 +82,7 @@ public:
 	
 private:
     virtual void run() {
-        (m_p_object->*m_p_function)();
+        (caller_base<T, F>::m_p_object->*caller_base<T, F>::m_p_function)();
     }
 };
 
@@ -98,7 +98,7 @@ public:
     
 private:
     virtual void run() {
-        (m_p_object->*m_p_function)(m_param1);
+        (caller_base<T, F>::m_p_object->*caller_base<T, F>::m_p_function)(m_param1);
     }
     
     P1  m_param1;
@@ -117,7 +117,7 @@ public:
 	
 private:
     virtual void run() {
-        (m_p_object->*m_p_function)(m_param1, m_param2);
+        (caller_base<T, F>::m_p_object->*caller_base<T, F>::m_p_function)(m_param1, m_param2);
     }
 	
     P1  m_param1;
@@ -137,16 +137,16 @@ int main()
     A a;
     B b;
     caller_p0<A, pointer1>      a_fun1(&a, &A::fun1);
-    //caller_p1<A, pointer2, int> a_fun2(&a, &A::fun2, 10);
-    //caller_p1<A, pointer2, int> a_fun3(&a, &A::fun2, 20);
-    //caller_p2<B, pointer3, double, std::string> a_fun4(&b, &B::method2, 11.1, "abc");
-    //caller_p1<A, pointer4, std::string> a_fun5(&a, &A::fun3, "bde");
+    caller_p1<A, pointer2, int> a_fun2(&a, &A::fun2, 10);
+    caller_p1<A, pointer2, int> a_fun3(&a, &A::fun2, 20);
+    caller_p2<B, pointer3, double, std::string> a_fun4(&b, &B::method2, 11.1, "abc");
+    caller_p1<A, pointer4, std::string> a_fun5(&a, &A::fun3, "bde");
     
     list.push_back(&a_fun1);
-    //list.push_back(&a_fun2);
-    //list.push_back(&a_fun3);
-    //list.push_back(&a_fun4);
-    //list.push_back(&a_fun5);
+    list.push_back(&a_fun2);
+    list.push_back(&a_fun3);
+    list.push_back(&a_fun4);
+    list.push_back(&a_fun5);
     
     call_list::const_iterator it = list.begin();
     while(it != list.end()) {
