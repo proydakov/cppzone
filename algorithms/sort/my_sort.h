@@ -31,39 +31,45 @@ typedef long index_type;
 
 // ----------------------------- declaration ------------------------------- //
 
-template<typename type>
+template<class type>
 void selection_sort(std::vector<type>& data);
 
-template<typename type>
+template<class type>
 void bubble_sort(std::vector<type>& data);
 
-template<typename type>
+template<class type>
 void shaker_sort(std::vector<type>& data);
 
-template<typename type>
+template<class type>
 void insertion_sort(std::vector<type>& data);
 
-template<typename type>
+template<class type>
 void shell_sort(std::vector<type>& data);
 
-template<typename type>
+template<class type>
 void merge_sort(std::vector<type>& data);
 
-template<typename type>
+template<class type>
 void merge_sort(std::vector<type>& data, index_type begin, index_type end);
 
-template<typename type>
+template<class type>
 void heap_sort(std::vector<type>& data);
 
-template<typename type>
+template<class type>
 void quick_sort(std::vector<type>& data);
 
-template<typename type>
+template<class type>
 void quick_sort(std::vector<type> &data, index_type begin, index_type end);
+
+template<class type>
+void quick_sort_new(std::vector<type>& data);
+
+template<class type>
+void quick_sort_new(std::vector<type> &data, index_type begin, index_type end);
 
 // ----------------------------- realization ------------------------------- //
 
-template<typename type>
+template<class type>
 void bubble_sort(std::vector<type>& data)
 {
     bool key = true;
@@ -82,7 +88,7 @@ void bubble_sort(std::vector<type>& data)
     }
 }
 
-template<typename type>
+template<class type>
 void shaker_sort(std::vector<type>& data)
 {
     index_type size = data.size() - 1;
@@ -106,7 +112,7 @@ void shaker_sort(std::vector<type>& data)
     }
 }
 
-template<typename type>
+template<class type>
 void selection_sort(std::vector<type>& data)
 {
     index_type min_element_index;
@@ -122,7 +128,7 @@ void selection_sort(std::vector<type>& data)
     }
 }
 
-template<typename type>
+template<class type>
 void insertion_sort(std::vector<type>& data)
 {
     index_type size = data.size();
@@ -135,13 +141,13 @@ void insertion_sort(std::vector<type>& data)
     }
 }
 
-template<typename type, class index>
-void shell_sort_increment(std::vector<type>& data, index size)
+template<class type>
+void shell_sort_increment(std::vector<type>& data, index_type size)
 {
-    index p1 = 1;
-    index p2 = 1;
-    index p3 = 1;
-    index s = -1;
+    index_type p1 = 1;
+    index_type p2 = 1;
+    index_type p3 = 1;
+    index_type s = -1;
     do {
         if (++s % 2) {
             data.push_back(8*p1 - 6*p2 + 1);
@@ -156,7 +162,7 @@ void shell_sort_increment(std::vector<type>& data, index size)
     while(3 * data[s] < size);
 }
 
-template<typename type>
+template<class type>
 void shell_sort(std::vector<type>& data)
 {
     index_type size = data.size();
@@ -177,7 +183,7 @@ void shell_sort(std::vector<type>& data)
     }
 }
 
-template<typename type>
+template<class type>
 void merge(type *a, index_type begin, index_type middle, index_type end) {
     index_type pos1 = begin;
     index_type pos2 = middle + 1;
@@ -213,13 +219,13 @@ void merge(type *a, index_type begin, index_type middle, index_type end) {
     delete [] temp;
 }
 
-template<typename type>
+template<class type>
 void merge_sort(std::vector<type>& data)
 {
     merge_sort(data, 0, data.size() - 1);
 }
 
-template<typename type>
+template<class type>
 void merge_sort(std::vector<type>& data, index_type begin, index_type end)
 {
     if(begin < end) {
@@ -230,7 +236,7 @@ void merge_sort(std::vector<type>& data, index_type begin, index_type end)
     }
 }
 
-template<typename type>
+template<class type>
 void heap_sort(std::vector<type>& data)
 {
     std::multiset<type> multiset;
@@ -247,7 +253,7 @@ void heap_sort(std::vector<type>& data)
     }
 }
 
-template<typename type>
+template<class type>
 void quick_sort(std::vector<type>& data)
 {
     quick_sort(data, 0, data.size() - 1);
@@ -274,6 +280,38 @@ void quick_sort(std::vector<type> &data, index_type begin, index_type end)
         quick_sort(data, i, end);
     if(j > begin)
         quick_sort(data, begin, j);
+}
+
+template<class type>
+void quick_sort_new(std::vector<type>& data)
+{
+    quick_sort_new(data, 0, data.size() - 1);
+}
+
+template<class type>
+void quick_sort_new(std::vector<type> &data, index_type begin, index_type end)
+{
+    if(end - begin < 1)
+        return;
+    
+    index_type index = (begin + end) >> 1;
+    type pivot = data[index];
+    
+    {
+        index_type k = begin;
+        std::swap(data[index], data[end]);
+        for(index_type i = begin; i < end; ++i) {
+            if(data[i] <= pivot) {
+                std::swap(data[i], data[k]);
+                ++k;
+            }
+        }
+        std::swap(data[k], data[end]);
+        index = k;
+    }
+    
+    quick_sort_new(data, begin, index - 1);
+    quick_sort_new(data, index + 1, end);
 }
 
 #endif // I_MY_SORT_H

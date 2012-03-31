@@ -76,6 +76,9 @@ int main( int argc, char *argv[] )
     std::vector<data_type> input_quick_sort_data(input_data);
     test_sort("QUICK", quick_sort, input_quick_sort_data, input_standart_sort_data);
 
+    std::vector<data_type> input_quick_sort_new_data(input_data);
+    test_sort("QUICK NEW", quick_sort_new, input_quick_sort_new_data, input_standart_sort_data);
+    
     return 0;
 }
 
