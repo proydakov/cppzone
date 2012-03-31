@@ -30,37 +30,69 @@
 
 // ----------------------------- declaration ------------------------------- //
 
-template<typename data_type, typename index_type>
-data_type fibonacci_recursive(index_type n);
+template<class T>
+T pow_simple(T base, T factor);
 
-template<typename data_type, typename index_type>
-data_type fibonacci_matrix(index_type n);
+template<class T>
+T pow_advance(T base, T factor);
 
-template<typename data_type, typename index_type>
-data_type factorial_recursive(index_type n);
+template<class T>
+T fibonacci_recursive(T n);
 
-template<typename data_type, typename index_type>
-data_type factorial_cyclic(index_type n);
+template<class T>
+T fibonacci_matrix(T n);
 
-template<typename data_type, typename index_type>
-data_type factorial_stirling(index_type n);
+template<class T>
+T factorial_recursive(T n);
 
-template<typename data_type, typename index_type>
-data_type sum_divided_by_the_factorial(index_type n);
+template<class T>
+T factorial_cyclic(T n);
 
-template<typename data_type>
-data_type lowest_common_divisor(data_type a, data_type b);
+template<class T>
+T factorial_stirling(T n);
 
-template<typename data_type>
-data_type lowest_common_divisor_euclid(data_type a, data_type b);
+template<class T>
+T sum_divided_by_the_factorial(T n);
 
-template<typename data_type>
-data_type lowest_common_divisor_modified_euclid(data_type a, data_type b);
+template<class T>
+T lowest_common_divisor(T a, T b);
+
+template<class T>
+T lowest_common_divisor_euclid(T a, T b);
+
+template<class T>
+T lowest_common_divisor_modified_euclid(T a, T b);
 
 // ----------------------------- realization ------------------------------- //
 
-template<typename data_type, typename index_type>
-data_type fibonacci_recursive(index_type n)
+template<class T>
+T pow_simple(T base, T factor)
+{
+    T res = 1;
+    for(int i = 0; i < factor; ++i)
+        res *= base;
+    return res;
+}
+
+template<class T>
+T pow_advance(T base, T factor)
+{
+    T res = 1;
+    if(factor == 1)
+        return base;
+    else {
+        T c = base * base;
+        T ans = pow_advance(c, factor / 2);
+        if(factor % 2)
+            return base * ans;
+        else
+            return ans;
+    }
+    return res;
+}
+
+template<class T>
+T fibonacci_recursive(T n)
 {
     if(n == 0) {
         return 0;
@@ -69,14 +101,14 @@ data_type fibonacci_recursive(index_type n)
         return 1;
     }
     else {
-        data_type start = 0;
-        start += fibonacci_recursive<data_type, index_type>(n - 1) + fibonacci_recursive<data_type, index_type>(n - 2);
+        T start = 0;
+        start += fibonacci_recursive<T>(n - 1) + fibonacci_recursive<T>(n - 2);
         return start;
     }
 }
 
-template<typename data_type, typename index_type>
-data_type fibonacci_matrix(index_type n)
+template<class T>
+T fibonacci_matrix(T n)
 {
     if(n == 0) {
         return 0;
@@ -85,47 +117,47 @@ data_type fibonacci_matrix(index_type n)
         return 1;
     }
     else {
-        boost::numeric::ublas::matrix<data_type> matrix(2, 2);
+        boost::numeric::ublas::matrix<T> matrix(2, 2);
         matrix(0, 0) = 1;
         matrix(0, 1) = 1;
         matrix(1, 0) = 1;
         matrix(1, 1) = 0;
         
-        boost::numeric::ublas::matrix<data_type> res_matrix(matrix);
+        boost::numeric::ublas::matrix<T> res_matrix(matrix);
         for(int i = 0; i < n; ++i)
             res_matrix = prod(res_matrix, matrix);
         
-        boost::numeric::ublas::vector<data_type> vector(2);
+        boost::numeric::ublas::vector<T> vector(2);
         vector[0] = 0;
         vector[1] = 1;
         
-        boost::numeric::ublas::vector<data_type> res = prod(res_matrix, vector);
+        boost::numeric::ublas::vector<T> res = prod(res_matrix, vector);
         
         return res[1];
     }
 }
 
-template<typename data_type, typename index_type>
-data_type factorial_recursive(index_type n)
+template<class T>
+T factorial_recursive(T n)
 {
     if(n == 0) {
         return 1;
     }
     else {
-        data_type start = static_cast<data_type>(n);
-        start *= factorial_recursive<data_type, index_type>(n - 1);
+        T start = static_cast<T>(n);
+        start *= factorial_recursive<T>(n - 1);
         return start;
     }
 }
 
-template<typename data_type, typename index_type>
-data_type factorial_cyclic(index_type n)
+template<class T>
+T factorial_cyclic(T n)
 {
     if(n == 0) {
         return 1;
     }
     else {
-        data_type start = 1;
+        T start = 1;
         for(int i = 2; i <= n; ++i) {
             start *= i;
         }
@@ -133,34 +165,34 @@ data_type factorial_cyclic(index_type n)
     }
 }
 
-template<typename data_type, typename index_type>
-data_type factorial_stirling(index_type n)
+template<class T>
+T factorial_stirling(T n)
 {
     return sqrt(2 * 3.14159265 * n) * pow(n / 2.718281828, n) * 
             (1 + 1/(12 * n) + 1/(128 * pow(n, 2)) - 139/(51840 * pow(n, 3)));
 }
 
-template<typename data_type, typename index_type>
-data_type sum_divided_by_the_factorial(index_type n)
+template<class T>
+T sum_divided_by_the_factorial(T n)
 {
     if(n == 0) {
         return 1;
     }
     else {
-        data_type factorial = 1;
-        data_type res = 1;
+        T factorial = 1;
+        T res = 1;
         for(int i = 2; i <= n; ++i) {
             factorial *= i;
-            res += 1/factorial;
+            res += 1 / factorial;
         }
         return res;
     }
 }
 
-template<typename data_type>
-data_type largest_common_divisor(data_type a, data_type b)
+template<class T>
+T largest_common_divisor(T a, T b)
 {
-    data_type k = std::min(a, b);
+    T k = std::min(a, b);
     while(k > 0) {
         if(!(a % k) && !(b % k))
             break;
@@ -169,8 +201,8 @@ data_type largest_common_divisor(data_type a, data_type b)
     return k;
 }
 
-template<typename data_type>
-data_type largest_common_divisor_euclid(data_type a, data_type b)
+template<class T>
+T largest_common_divisor_euclid(T a, T b)
 {
     while(a > 0 && b > 0) {
         if(a > b) {
@@ -186,8 +218,8 @@ data_type largest_common_divisor_euclid(data_type a, data_type b)
     return b;
 }
 
-template<typename data_type>
-data_type largest_common_divisor_modified_euclid(data_type a, data_type b)
+template<class T>
+T largest_common_divisor_modified_euclid(T a, T b)
 {
     while(a > 0 && b > 0) {
         if(a > b) {
