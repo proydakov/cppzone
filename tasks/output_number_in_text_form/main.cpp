@@ -32,7 +32,7 @@
 // common types
 namespace common {
 typedef long long   number_type;
-typedef long long   index_type;
+typedef int         index_type;
 typedef std::string mstring;
 };
 
@@ -104,7 +104,7 @@ public:
     bool get_exception(index_type pos, number_type num, mstring& text) const;
     
 private:
-    translation_main        m_translation;
+    translation_main         m_translation;
     translation_exceptions   m_exceptions;
 };
 
@@ -112,13 +112,7 @@ private:
 class output_num_to_text
 {
 public:
-    output_num_to_text(const mstring& comment);
-    
-    void output(const mstring& text);
-    void set_comment(const mstring& comment);
-    
-private:
-    mstring m_comment;
+    static void output(const mstring& text, const mstring& comment);
 };
 
 
@@ -128,7 +122,7 @@ public:
     static void convert(number_type num, mstring& text, const conversion_rules& rules);
     
 private:
-    enum { AVALIABLE_SIZE  = 11 };
+    enum { AVALIABLE_SIZE = 11 };
     
 private:
     typedef std::list<mstring>  text_container;
@@ -144,7 +138,7 @@ int main(int argc, char *argv[])
 {
     (void)argc;
     (void)argv;
-    
+
     number_type input = 123;
     std::cout << "Ведите число [-68719476735, 68719476735]: ";
     std::cin >> input;
@@ -171,10 +165,8 @@ int main(int argc, char *argv[])
     converter_num_to_text::convert(num_ten, num_ten_text, rules);
     converter_num_to_text::convert(num_eight, num_eight_text, rules);
     
-    output_num_to_text outputer("в десятичной системе");
-    outputer.output(num_ten_text);
-    outputer.set_comment("в восьмеричной системе");
-    outputer.output(num_eight_text);
+	output_num_to_text::output(num_ten_text, "в десятичной системе");
+	output_num_to_text::output(num_eight_text, "в восьмеричной системе");
     
     return 0;
 }
@@ -292,7 +284,7 @@ number_type convert_number_system::convert(number_type num, number_type num_base
     number_type result = 0;
     
     for(index_type i = 0; num != 0; ++i) {
-        result += num % num_base * pow(10, i);
+        result += num % num_base * static_cast<number_type>(pow(10.0, i));
         num /= num_base;
     }
     return result;
@@ -368,19 +360,9 @@ bool conversion_rules::get_exception(index_type pos, number_type num, mstring& t
 
 // ------------------------------------------------------------------------- //
 
-output_num_to_text::output_num_to_text(const mstring& comment) :
-    m_comment(comment)
+void output_num_to_text::output(const mstring& text, const mstring& comment)
 {
-}
-
-void output_num_to_text::output(const mstring& text)
-{
-    std::cout << text << " " << m_comment << std::endl;
-}
-
-void output_num_to_text::set_comment(const mstring& comment)
-{
-    m_comment = comment;
+    std::cout << text << " " << comment << std::endl;
 }
 
 // ------------------------------------------------------------------------- //
@@ -394,7 +376,7 @@ void converter_num_to_text::convert(number_type num, mstring& text, const conver
     if(sign_text.size())
         text += " ";
     
-    num = std::abs(num);
+    num = static_cast<number_type>(std::abs((double)num));
     
     degree_state_container degree_state(AVALIABLE_SIZE / 3, false);
     text_container text_list;
