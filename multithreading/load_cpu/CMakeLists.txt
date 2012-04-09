@@ -4,11 +4,10 @@
 # CMake for  LOAD  CPU  EXAMPLE
 #==============================================================================
 
-MESSAGE(STATUS "create  multithreading  load  cpu  multithreading")
+MESSAGE(STATUS "create  multithreading  load  cpu")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-# find Boost
 FIND_PACKAGE(Boost COMPONENTS thread REQUIRED)
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})

@@ -4,7 +4,7 @@
 # CMake for  PTHREAD  EXAMPLE
 #==============================================================================
 
-MESSAGE(STATUS "create  multithreading  pthread  multithreading")
+MESSAGE(STATUS "create  multithreading  pthread")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
