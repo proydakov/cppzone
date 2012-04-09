@@ -31,6 +31,8 @@ void* task(void* x)
     std::cout << "Create task with num:  " << *temp << std::endl;
     std::cout << "Thread id:  " << pthread_self() << std::endl;
     std::cout << "Thread is completed" << std::endl;
+    
+    return 0;
 }
 
 int main( int argc, char *argv[] )
