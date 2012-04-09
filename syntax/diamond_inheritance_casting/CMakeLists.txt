@@ -1,8 +1,6 @@
 #==============================================================================
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  DIAMOND  INHERITANCE  CASTING  EXAMPLE
-#==============================================================================
 
 MESSAGE(STATUS "create  diamond  inheritance  casting  syntax")
 

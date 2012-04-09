@@ -1,8 +1,6 @@
 #==============================================================================
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  INHERITANCE  CASTING  EXAMPLE
-#==============================================================================
 
 MESSAGE(STATUS "create  inheritance  casting  syntax")
 

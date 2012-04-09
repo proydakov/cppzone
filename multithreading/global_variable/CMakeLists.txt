@@ -1,8 +1,6 @@
 #==============================================================================
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  GLOBAL  VARIABLE  EXAMPLE
-#==============================================================================
 
 MESSAGE(STATUS "create  multithreading  global  variable")
 

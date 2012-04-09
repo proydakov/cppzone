@@ -1,8 +1,6 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  OUTPUT  NUMBER  IN  TEXT  FORM  TASK
-#==============================================================================
 
 MESSAGE(STATUS "create  output  number  in text form  task")
 

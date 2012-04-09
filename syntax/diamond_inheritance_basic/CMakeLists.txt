@@ -1,8 +1,6 @@
 #==============================================================================
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  DIAMOND  INHERITANCE  BASIC  EXAMPLE
-#==============================================================================
 
 MESSAGE(STATUS "create  diamond  inheritance  basic  syntax")
 
