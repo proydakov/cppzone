@@ -41,9 +41,9 @@ int main( int argc, char *argv[] )
     
     int thread_col = 30;
     
-    boost::thread my_thread[thread_col];
+    boost::thread_group group;
     for(int i = 0; i < thread_col; ++i) {
-        my_thread[0] = boost::thread(thread_fun);
+        group.add_thread(new boost::thread(thread_fun));
     }
     
     while(true) {
