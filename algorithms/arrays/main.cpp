@@ -72,7 +72,7 @@ int main( int argc, char *argv[] )
 
 void test_operations(const std::string& name, prt_operation operation, const std::vector<data_type>& a, const std::vector<data_type>& b, std::vector<data_type>& res)
 {
-    std::cout << "TEST  " << name << std::endl;
+    std::cout << "TEST  " << name.c_str() << std::endl;
     operation(a, b, res);
     std::cout << "INPUT DATA:  " << std::endl << a << std::endl << b << std::endl;
     std::cout << "RESULT: " << std::endl << res << std::endl;

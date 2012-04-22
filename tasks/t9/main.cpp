@@ -26,15 +26,14 @@
 #include <string>
 #include <fstream>
 #include <cstdlib>
+#include <cassert>
 #include <iostream>
-#include <stdint.h>
-#include <assert.h>
 
 //#define READ_FROM_FILE
 
-typedef uint64_t        index;
+typedef unsigned int    index;
 typedef std::string     hash;
-typedef long long       loop_index;
+typedef unsigned int    loop_index;
 typedef long double     priority;
 typedef char            symbol;
 typedef std::string     string;
@@ -42,11 +41,11 @@ typedef std::string     string;
 class dictionary
 {
 private:
-    static const index MAX_NUM_WORDS = 50000;
-    static const index MAX_WORD_SIZE = 25;    
+    static const index MAX_NUM_WORDS;
+    static const index MAX_WORD_SIZE;    
     
-    static const priority MAX_WORD_PRIORITY = 3000;
-    static const priority MIN_PRIORITY =  0.00001;
+    static const priority MAX_WORD_PRIORITY;
+    static const priority MIN_PRIORITY;
     
 public:
     dictionary() :
@@ -114,6 +113,13 @@ private:
     
     priority m_delta_priority;
 };
+
+
+const index dictionary::MAX_NUM_WORDS = 50000;
+const index dictionary::MAX_WORD_SIZE = 25;
+
+const priority dictionary::MAX_WORD_PRIORITY = 3000;
+const priority dictionary::MIN_PRIORITY      =  0.00001;
 
 class phone
 {

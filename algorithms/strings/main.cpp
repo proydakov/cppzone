@@ -50,8 +50,9 @@ void test_sub_string(const std::string& name, prt_fun fun, const std::string& st
         i = fun(string, sub_string);
     }
     fun_benchmark.stop();
-    std::cout << name << "  SEARCH  IN:  " << string << "  SUB_STRING  " << sub_string << std::endl;
+    std::cout << name.c_str() << "  SEARCH  IN:  " << string.c_str() 
+		      << "  SUB_STRING  " << sub_string.c_str() << std::endl;
     std::cout << "RESULT  POSITION:  " << i << std::endl;
-    std::cout << "BENCHMARK  " << name << "  SUB_STRING  SEARCH:  "
+    std::cout << "BENCHMARK  " << name.c_str() << "  SUB_STRING  SEARCH:  "
               << fun_benchmark.get_last_interval() << "\n" << std::endl;
 }

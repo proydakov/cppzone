@@ -25,7 +25,7 @@
 
 namespace benchmark {
 
-typedef long timeinterval;
+typedef unsigned long long timeinterval;
 
 class benchmark
 {

@@ -40,7 +40,7 @@ int main( int argc, char *argv[] )
     (void)argv;
 
     index_type array_size = 10000;
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
     std::vector<data_type> input_data;
     for(int i = 0; i < array_size; ++i) {
         input_data.push_back(rand() % 1000);
@@ -89,11 +89,11 @@ void test_sort(const std::string& name, prt_sort sort, std::vector<data_type> da
         sort(data);
     }
     sort_benchmark.stop();
-    std::cout << "BENCHMARK  " << name << "  SORT:  " << sort_benchmark.get_last_interval() << std::endl;
+    std::cout << "BENCHMARK  " << name.c_str() << "  SORT:  " << sort_benchmark.get_last_interval() << std::endl;
     if(data == sorted_data) {
-        std::cout << "SORT  " << name << "  WORKING  GOOD\n" << std::endl;
+        std::cout << "SORT  " << name.c_str() << "  WORKING  GOOD\n" << std::endl;
     }
     else {
-        std::cout << "SORT  " << name << "  ERROR\n" << std::endl;
+        std::cout << "SORT  " << name.c_str() << "  ERROR\n" << std::endl;
     }
 }

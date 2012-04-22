@@ -29,9 +29,8 @@ int main( int argc, char *argv[] )
     (void)argc;
     (void)argv;
 
-    while(1){
+    while(1) {
         int* leek = new int[1024];
-        usleep(100);
     }
 
     return 0;

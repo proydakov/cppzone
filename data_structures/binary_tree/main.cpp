@@ -20,6 +20,7 @@
  *  THE SOFTWARE.
  */
 
+#include <time.h>
 #include <cstdlib>
 #include <iostream>
 
@@ -68,7 +69,6 @@ void print_ascending(const ctree& tree)
         ctree::print_node(current);
         std::cout << std::endl;
         current = tree.successor(current);
-        usleep(1000);
     }
 }
 
@@ -81,6 +81,5 @@ void print_descending(const ctree& tree)
         ctree::print_node(current);
         std::cout << std::endl;
         current = tree.predecessor(current);
-        usleep(1000);  
     }
 }

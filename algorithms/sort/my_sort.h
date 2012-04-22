@@ -232,7 +232,8 @@ void merge_sort(std::vector<type>& data, index_type begin, index_type end)
         index_type middle = (begin + end) >> 1;
         merge_sort(data, begin, middle);
         merge_sort(data, middle + 1, end);
-        merge(data.data(), begin, middle, end);
+		type* pointer = &data[0];
+        merge(pointer, begin, middle, end);
     }
 }
 

@@ -91,15 +91,17 @@ int main(int argc, char *argv[])
     N null;
     std::cout << "sizeof null: "<< sizeof(null) << std::endl;
     (void)null;
-    
+   
+#ifndef _MSC_VER
     int size = 10;
     N* p = new N[size];
-    
+
     N* pi = p;
     for(int i = 0; i < size; ++i, ++pi)
         std::cout << "adress pi:   " << &pi << std::endl;
-    
+
     delete [] p;
+#endif // _MSC_VER
     
     std::cout << std::endl;
     
