@@ -15,3 +15,4 @@ actor.cbp
 *.vpp.bak
 file_reader_config.h
 identification_number_config.h
+config_lua.h
