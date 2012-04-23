@@ -25,7 +25,17 @@
 
 #include "lua.hpp"
 
-#define LIB_EXPORT extern "C" __attribute__((visibility("default")))
+#ifdef _MSC_VER
+
+#ifdef LUA_EXPORTS
+#   define LIB_EXPORT __declspec(dllexport)
+#else
+#   define LIB_EXPORT __declspec(dllimport)
+#endif
+
+#else
+#   define LIB_EXPORT extern "C" __attribute__((visibility("default")))
+#endif
 
 static int fun(lua_State* L)
 {
@@ -37,7 +47,7 @@ static int fun(lua_State* L)
 static int fun_fix(lua_State* L)
 {
     const char* text1 = lua_tostring(L, 1);
-    const int num     = lua_tonumber(L, 2);
+    const lua_Number num  = lua_tonumber(L, 2);
     const char* text2 = lua_tostring(L, 3);
     
     std::cout << "* fun_fix *" << std::endl;
@@ -112,8 +122,8 @@ static const luaL_Reg lua_possible[] =
     {0, 0}
 };
 
-LIB_EXPORT int luaopen_libcapabilities(lua_State* L)
+LIB_EXPORT int luaopen_liblua_capabilities(lua_State* L)
 {
-    luaL_register(L, "libcapabilities", lua_possible);
+    luaL_register(L, "liblua_capabilities", lua_possible);
     return 0;
 }

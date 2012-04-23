@@ -10,17 +10,21 @@ MESSAGE(STATUS "create  lua  example")
 FIND_PACKAGE(Lua51)
 INCLUDE_DIRECTORIES(${LUA_INCLUDE_DIR})
 
+
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-
 SET(LUA_POSSIBLE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+
+#==============================================================================
 
 SET(LIB_FILES
     ${LUA_POSSIBLE_DIRECTORY}/lib.cpp)
 
-ADD_LIBRARY(capabilities ${LIB_FILES})
-TARGET_LINK_LIBRARIES(capabilities ${LUA_LIBRARIES})
+ADD_LIBRARY(lua_capabilities ${LIB_FILES})
+SET_TARGET_PROPERTIES(lua_capabilities PROPERTIES DEFINE_SYMBOL LUA_EXPORTS)
+TARGET_LINK_LIBRARIES(lua_capabilities ${LUA_LIBRARIES})
 
+#==============================================================================
 
 SET(LUA_SCRIPT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts)
 

@@ -77,7 +77,9 @@ void get_config()
     L = luaL_newstate();
     luaL_openlibs(L);
     
-    load_lua_file(L, (PARENT_DIRECTORY_STRING + "config.lua").c_str());
+    string lia_file = PARENT_DIRECTORY_STRING;
+    lia_file += "config.lua";
+    load_lua_file(L, lia_file.c_str());
     check_execution(L);
     
     lua_getglobal(L, "my_arc");
@@ -97,7 +99,9 @@ void call_function_from_c()
     L = luaL_newstate();
     luaL_openlibs(L);
     
-    load_lua_file(L, (PARENT_DIRECTORY_STRING + "call_c.lua").c_str());
+    string lia_file = PARENT_DIRECTORY_STRING;
+    lia_file += "call_c.lua";
+    load_lua_file(L, lia_file.c_str());
     check_execution(L);
     
     lua_close(L);  
@@ -112,7 +116,9 @@ void reload()
     int command = 1;
     do {
         if(command) {
-            load_lua_file(L, (PARENT_DIRECTORY_STRING + "cycle.lua").c_str());
+            string lia_file = PARENT_DIRECTORY_STRING;
+            lia_file += "cycle.lua";
+            load_lua_file(L, lia_file.c_str());
             check_execution(L);
         }
         else {

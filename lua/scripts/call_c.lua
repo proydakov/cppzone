@@ -20,7 +20,7 @@
 *  THE SOFTWARE.
 ]]
 
-cap = require 'libcapabilities'
+cap = require 'lua_capabilities'
 
 cap.fun()                                       -- example of a function call with no parameters
 cap.fun_fix('I love Lua!', 100, "la-la-la")     -- example of a function call with no parameters
