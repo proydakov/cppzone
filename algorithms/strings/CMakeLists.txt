@@ -13,6 +13,6 @@ SET(HEADER_FILES
 SET(SOURCE_FILES
     main.cpp)
 
-ADD_EXECUTABLE(algorithms_strings ${HEADER_FILES} ${SOURCE_FILES})
+I_ADD_EXECUTABLE(algorithms_strings ${HEADER_FILES} ${SOURCE_FILES})
 ADD_DEPENDENCIES(algorithms_strings benchmark)
 TARGET_LINK_LIBRARIES(algorithms_strings benchmark)

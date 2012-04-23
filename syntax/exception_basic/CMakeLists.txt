@@ -9,4 +9,4 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 SET(SOURCE_FILES
     main.cpp)
 
-ADD_EXECUTABLE(syntax_exception_base ${SOURCE_FILES})
+I_ADD_EXECUTABLE(syntax_exception_base ${SOURCE_FILES})

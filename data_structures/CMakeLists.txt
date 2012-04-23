@@ -6,4 +6,6 @@
 
 MESSAGE(STATUS "BUILD  DATA_STRUCTURES\n")
 
+SET(PROJECT_FOLDER "data_structures")
+
 ADD_SUBDIRECTORY(binary_tree)

@@ -12,4 +12,4 @@ SET(TREE_FILES
 SET(MAIN_FILES 
     main.cpp)
 
-ADD_EXECUTABLE(data_structures_binary_tree ${TREE_FILES} ${MAIN_FILES})
+I_ADD_EXECUTABLE(data_structures_binary_tree ${TREE_FILES} ${MAIN_FILES})

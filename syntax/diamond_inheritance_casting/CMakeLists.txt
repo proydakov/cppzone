@@ -10,4 +10,4 @@ INCLUDE_DIRECTORIES(${DIAMOND_INHERITANCE_PATH})
 SET(SOURCE_FILES
     main.cpp)
 
-ADD_EXECUTABLE(syntax_diamond_inheritance_casting ${SOURCE_FILES})
+I_ADD_EXECUTABLE(syntax_diamond_inheritance_casting ${SOURCE_FILES})

@@ -6,6 +6,8 @@
 
 MESSAGE(STATUS "BUILD  MULTITHREADING\n")
 
+SET(PROJECT_FOLDER "multithreading")
+
 ADD_SUBDIRECTORY(global_variable)
 ADD_SUBDIRECTORY(load_cpu)
 IF(UNIX)

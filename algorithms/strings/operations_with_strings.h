@@ -48,6 +48,8 @@ index_type substring_search_bf(const std::string& string, const std::string& sub
 
 index_type substring_search_aut(const std::string& string, const std::string& substring)
 {
+    (void)string;
+    (void)substring;
     return -1;
 }
 

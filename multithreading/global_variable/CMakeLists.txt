@@ -13,5 +13,5 @@ INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 SET(SOURCE_FILES
     main.cpp)
 
-ADD_EXECUTABLE(multithreading_global_variable ${SOURCE_FILES})
+I_ADD_EXECUTABLE(multithreading_global_variable ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(multithreading_global_variable ${Boost_THREAD_LIBRARY})

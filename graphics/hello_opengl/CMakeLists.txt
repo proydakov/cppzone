@@ -12,7 +12,7 @@ INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
 SET(SOURCE_FILES
     main.cpp)
 
-ADD_EXECUTABLE(graphics_hello_opengl ${SOURCE_FILES})
+I_ADD_EXECUTABLE(graphics_hello_opengl ${SOURCE_FILES})
 
 IF(MSVC)
 	TARGET_LINK_LIBRARIES(graphics_hello_opengl opengl32.lib)

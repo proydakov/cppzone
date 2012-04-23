@@ -6,6 +6,8 @@
 
 MESSAGE(STATUS "BUILD  TASKS\n")
 
+SET(PROJECT_FOLDER "tasks")
+
 ADD_SUBDIRECTORY(distance_on_the_tree)
 ADD_SUBDIRECTORY(file_reader)
 ADD_SUBDIRECTORY(hanoi)
