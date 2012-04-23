@@ -25,7 +25,7 @@
 
 #include <vector>
 
-typedef long index_type;
+typedef unsigned long index_type;
 
 // ----------------------------- declaration ------------------------------- //
 

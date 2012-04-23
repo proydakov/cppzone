@@ -65,8 +65,9 @@ timeinterval benchmark::get_last_interval()
     case nanoseconds:
         return m_data->m_last_interval;
     default:
-        return -1;
+        return 0;
     }
+    return 0;
 }
 
 benchmark::unit_intervals benchmark::get_unit()

@@ -42,7 +42,7 @@ int main( int argc, char *argv[] )
     std::cout << "SIZE : " << sizeof(ctree) << std::endl;
     
     index size = 15;
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
     for(index i = 0; i < size; ++i) {
         if(!tree.insert(rand() % size + 1))
             return 1;
