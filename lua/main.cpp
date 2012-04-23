@@ -24,7 +24,9 @@
 #include <string.h>
 #include <iostream>
 
-#include "lua.hpp"
+#include <lua.hpp>
+
+#include "config_lua.h"
 
 #define TERMINATION_NORMAL  EXIT_SUCCESS
 #define TERMINATION_ERROR   1

@@ -49,9 +49,14 @@ public:
     
     void print();
     
-    int* data;
-    
+    int* get_data()
+    {
+        return m_data;
+    }
+
 private:
+    int* m_data;
+
     int m_height;
     int m_width;
 };
@@ -196,7 +201,7 @@ void converted_from_string_list_to_matrix(data_list& data, char void_symbol, mat
     data_list::const_iterator endIt = data.end();
     for(data_list::const_iterator it = data.begin(); it != endIt; ++it) {
         for(int i = 0; i < width; ++i) {
-            *(matrix_data.data + i + j * width) = (*it)[i] == void_symbol ? VOID_ELEMENT : FILLED_ELEMENT;
+            *(matrix_data.get_data() + i + j * width) = (*it)[i] == void_symbol ? VOID_ELEMENT : FILLED_ELEMENT;
         }
         ++j;
     }
@@ -216,7 +221,7 @@ bool delimitation(matrix& matrix_data, int& left, int& right, int& up, int& down
     
     for(int i = 0; i < height; ++i)
         for(int j = 0; j < width; ++j) {
-            if(*(matrix_data.data + j + i * width) == FILLED_ELEMENT) {
+            if(*(matrix_data.get_data() + j + i * width) == FILLED_ELEMENT) {
                 if(j < left)
                     left = j;
                 if(j > right)
@@ -246,7 +251,7 @@ int identify_the_number_of_quarters_occupancy(matrix& matrix_data, table_of_equi
     // first quarter
     for(int i = up_border; i < height_center; ++i)
         for(int j = left_border; j < width_center; ++j) {
-            if(*(matrix_data.data + j + i * width)) {
+            if(*(matrix_data.get_data() + j + i * width)) {
                 ++number_of_elements_in_the_first_quarter;
             }
         }
@@ -254,7 +259,7 @@ int identify_the_number_of_quarters_occupancy(matrix& matrix_data, table_of_equi
     // second quarter
     for(int i = up_border; i < height_center; ++i)
         for(int j = width_center; j < right_border; ++j) {
-            if(*(matrix_data.data + j + i * width)) {
+            if(*(matrix_data.get_data() + j + i * width)) {
                 ++number_of_elements_in_the_second_quarter;
             }
         }
@@ -262,7 +267,7 @@ int identify_the_number_of_quarters_occupancy(matrix& matrix_data, table_of_equi
     // third quarter
     for(int i = height_center; i < down_border; ++i)
         for(int j = left_border; j < width_center; ++j) {
-            if(*(matrix_data.data + j + i * width)) {
+            if(*(matrix_data.get_data() + j + i * width)) {
                 ++number_of_elements_in_the_third_quarter;
             }
         }
@@ -270,14 +275,14 @@ int identify_the_number_of_quarters_occupancy(matrix& matrix_data, table_of_equi
     // fourth quarter
     for(int i = height_center; i < down_border; ++i)
         for(int j = width_center; j < right_border; ++j) {
-            if(*(matrix_data.data + j + i * width)) {
+            if(*(matrix_data.get_data() + j + i * width)) {
                 ++number_of_elements_in_the_fourth_quarter;
             }
         }
     
-    int num = number_of_elements_in_the_first_quarter + 
-            number_of_elements_in_the_second_quarter + 
-            number_of_elements_in_the_third_quarter + 
+    int num = number_of_elements_in_the_first_quarter +
+            number_of_elements_in_the_second_quarter +
+            number_of_elements_in_the_third_quarter +
             number_of_elements_in_the_fourth_quarter;
     
     equivalents data;
@@ -309,20 +314,21 @@ int search_in_the_table_of_correspondences(table_of_equivalents& table, equivale
 }
 
 matrix::matrix() :
-    m_height(0),
+    m_data(0),
     m_width(0),
-    data(0) {
+    m_height(0)
+{
 }
 
 matrix::~matrix()
 {
-    delete [] data;
+    delete [] m_data;
 }
 
 void matrix::create() 
 {
-    delete [] data;
-    data = new int[m_height * m_width];
+    delete [] m_data;
+    m_data = new int[m_height * m_width];
 }
 
 void matrix::resize(int height, int width) 
@@ -345,7 +351,7 @@ void matrix::print()
 {
     for(int i = 0; i < m_height; ++i) {
         for(int j = 0; j < m_width; ++j) {
-            std::cout << *(data + j + i * m_width);
+            std::cout << *(m_data + j + i * m_width);
         }
         std::cout << std::endl;
     }

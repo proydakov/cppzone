@@ -20,19 +20,9 @@
  *  THE SOFTWARE.
  */
 
-#include <iostream>
+#ifndef I_CONFIG_LUA
+#define I_CONFIG_LUA
 
-const int CONST = 1000;
+#define PARENT_DIRECTORY "${LUA_SCRIPT_DIRECTORY}/"
 
-int main( int argc, char *argv[] )
-{
-    (void)argc;
-    (void)argv;
-
-    while(1) {
-        int* leek = new int[1024];
-        (void)leek;
-    }
-
-    return 0;
-}
+#endif // I_CONFIG_LUA
