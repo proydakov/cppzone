@@ -159,7 +159,6 @@ int main( int argc, char *argv[] )
             std::cout << "Could not find the image border";
             return 0;
         }
-        int i = 1;
     }
     else {
         std::cout << "Error download from file";
@@ -176,7 +175,7 @@ bool download_from_file(const std::string& file_name, data_list& data)
         return false;
     }
     std::string temp_string;
-    while(1) {
+    while(true) {
         std::getline(stream, temp_string);
         if (stream.fail())
             break;
@@ -296,8 +295,8 @@ int search_in_the_table_of_correspondences(table_of_equivalents& table, equivale
     double delta = 100;
     double iteration = 0;
     
-    for(int i = 0; i < table.size(); ++i) {
-        for(int j = 0; j < data.size(); ++j) {
+    for(unsigned i = 0; i < table.size(); ++i) {
+        for(unsigned j = 0; j < data.size(); ++j) {
             iteration += std::fabs(table[i][j] - data[j]);
         }
         if(iteration < delta) {
