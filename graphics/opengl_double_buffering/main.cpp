@@ -47,6 +47,7 @@ void init()
 {
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glShadeModel(GL_FLAT);
+    glColor3f(1.0, 1.0, 1.0);
 }
 
 void display()
@@ -54,7 +55,6 @@ void display()
     glClear(GL_COLOR_BUFFER_BIT);
     glPushMatrix();
     glRotatef(g_spin, 0.0, 0.0, 1.0);
-    glColor3f(1.0, 1.0, 1.0);
     glRectf(-25.0, -25.0, 25.0, 25.0);
     glPopMatrix();
     glutSwapBuffers();
@@ -82,20 +82,18 @@ void reshape(int w, int h)
 
 void mouse(int button, int state, int x, int y)
 {
-    switch(button) {
-        case GLUT_LEFT_BUTTON:
-        case GLUT_RIGHT_BUTTON:
-            if(state == GLUT_DOWN) {
-                if(g_rotate_stae)
-                    glutIdleFunc(NULL);
-                else
-                    glutIdleFunc(spinDisplay);
-                g_rotate_stae = !g_rotate_stae;
-            }
-            break;
+    (void)x;
+    (void)y;
 
-        default:
-            break;
+    if(state != GLUT_DOWN)
+        return;
+
+    if(button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON) {
+        if(g_rotate_stae)
+            glutIdleFunc(NULL);
+        else
+            glutIdleFunc(spinDisplay);
+        g_rotate_stae = !g_rotate_stae;
     }
 }
 
