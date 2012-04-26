@@ -42,12 +42,13 @@ int usleep(int usec)
 
 static GLfloat g_spin = 0.0;
 static bool g_rotate_stae = false;
+static bool g_fill_state = false;
 
 void init()
 {
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearColor((GLclampf) 0.1, (GLclampf) 0.0, (GLclampf) 0.7, (GLclampf) 0.0);
     glShadeModel(GL_FLAT);
-    glColor3f(1.0, 1.0, 1.0);
+    glColor3f(0.0, 1.0, 0.0);
 }
 
 void display()
@@ -55,7 +56,24 @@ void display()
     glClear(GL_COLOR_BUFFER_BIT);
     glPushMatrix();
     glRotatef(g_spin, 0.0, 0.0, 1.0);
-    glRectf(-25.0, -25.0, 25.0, 25.0);
+
+    glPolygonMode(GL_FRONT, GL_FILL);
+    if(g_fill_state) {
+        glPolygonMode(GL_BACK, GL_LINE);
+    }
+    else {
+        glPolygonMode(GL_BACK, GL_FILL);
+    }
+
+    glBegin(GL_POLYGON);
+    {
+        glVertex2f(0.0, 0.0);
+        glVertex2f(0.0, 30.0);
+        glVertex2f(40.0, 30.0);
+        glVertex2f(60.0, 15);
+        glVertex2f(40.0, 0.0);
+    }
+    glEnd();
     glPopMatrix();
     glutSwapBuffers();
 
@@ -64,7 +82,7 @@ void display()
 
 void spinDisplay()
 {
-    g_spin += 2.0;
+    g_spin += (GLfloat) 0.1;
     if(g_spin > 360.0)
         g_spin -= 360.0;
     glutPostRedisplay();
@@ -75,9 +93,7 @@ void reshape(int w, int h)
     glViewport(0, 0, (GLsizei) w, (GLsizei) h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-50.0, 50.0, -50.0, 50.0, -1.0, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    gluOrtho2D(-(GLsizei) w / 2, (GLsizei) w / 2, -(GLsizei) h / 2, (GLsizei) h / 2);
 }
 
 void mouse(int button, int state, int x, int y)
@@ -88,12 +104,15 @@ void mouse(int button, int state, int x, int y)
     if(state != GLUT_DOWN)
         return;
 
-    if(button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON) {
+    if(button == GLUT_LEFT_BUTTON) {
         if(g_rotate_stae)
             glutIdleFunc(NULL);
         else
             glutIdleFunc(spinDisplay);
         g_rotate_stae = !g_rotate_stae;
+    }
+    else if(button == GLUT_RIGHT_BUTTON) {
+        g_fill_state = !g_fill_state;
     }
 }
 
