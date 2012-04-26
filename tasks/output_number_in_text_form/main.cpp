@@ -32,7 +32,7 @@
 // common types
 namespace common {
 typedef long long   number_type;
-typedef int         index_type;
+typedef size_t      index_type;
 typedef std::string mstring;
 };
 
@@ -284,7 +284,7 @@ number_type convert_number_system::convert(number_type num, number_type num_base
     number_type result = 0;
     
     for(index_type i = 0; num != 0; ++i) {
-        result += num % num_base * static_cast<number_type>(pow(10.0, i));
+        result += num % num_base * static_cast<number_type>(pow(10.0, (int)i));
         num /= num_base;
     }
     return result;
