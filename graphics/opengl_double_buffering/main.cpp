@@ -20,9 +20,6 @@
  *  THE SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include <GL/glut.h>
 
 #include <GL/gl.h>
@@ -38,6 +35,8 @@ int usleep(int usec)
     return 0;
 }
 
+#else
+#   include <unistd.h>
 #endif // _MSC_VER
 
 static GLfloat g_spin = 0.0;

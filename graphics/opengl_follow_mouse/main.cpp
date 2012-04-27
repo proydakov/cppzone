@@ -53,7 +53,6 @@ void init()
 {
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glShadeModel(GL_FLAT);
-
     glEnable(GL_LINE_STIPPLE);
     glLineStipple(1, 0x1C47);
     glColor3f(1.0, 1.0, 1.0);
@@ -93,6 +92,8 @@ void mouse(int button, int state, int x, int y)
         g_pointList.clear();
 
     std::cout << "DATA SIZE : " << g_pointList.size() << std::endl;
+
+    display();
 }
 
 int main(int argc, char* argv[])
