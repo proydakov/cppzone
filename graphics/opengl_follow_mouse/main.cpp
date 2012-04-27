@@ -93,7 +93,9 @@ void mouse(int button, int state, int x, int y)
 
     std::cout << "DATA SIZE : " << g_pointList.size() << std::endl;
 
-    display();
+#ifdef __GNUC__
+     display();
+#endif // __GNUC__
 }
 
 int main(int argc, char* argv[])
