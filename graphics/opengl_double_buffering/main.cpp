@@ -20,24 +20,11 @@
  *  THE SOFTWARE.
  */
 
-#include <GL/glut.h>
+#include <boost/thread.hpp>
 
+#include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-
-#ifdef _MSC_VER
-
-#include <windows.h>
-
-int usleep(int usec)
-{
-    Sleep(usec);
-    return 0;
-}
-
-#else
-#   include <unistd.h>
-#endif // _MSC_VER
 
 static GLdouble g_spin = 0.0;
 static bool g_rotate_stae = false;
@@ -76,7 +63,7 @@ void display()
     glPopMatrix();
     glutSwapBuffers();
 
-    usleep(1);
+    boost::this_thread::sleep(boost::posix_time::milliseconds(10)); 
 }
 
 void spinDisplay()

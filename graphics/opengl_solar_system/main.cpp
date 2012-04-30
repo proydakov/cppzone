@@ -23,23 +23,11 @@
 #include <cmath>
 #include <iostream>
 
+#include <boost/thread.hpp>
+
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-
-#ifndef _MSC_VER
-#   include <unistd.h>
-#else
-
-#include <windows.h>
-
-int usleep(int usec)
-{
-    Sleep(usec);
-    return 0;
-}
-
-#endif // _MSC_VER
 
 #include "solar_system_info.h"
 
@@ -165,7 +153,7 @@ void cycleFunction()
         g_moonYear -= FULL_ANGLE;
 
     glutPostRedisplay();
-    usleep(30);
+    boost::this_thread::sleep(boost::posix_time::milliseconds(30)); 
 }
 
 void reshape(int w, int h)

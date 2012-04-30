@@ -24,23 +24,8 @@
 #include <iostream>
 
 #include <GL/glut.h>
-
 #include <GL/gl.h>
 #include <GL/glu.h>
-
-#ifndef _MSC_VER
-#   include <unistd.h>
-#else
-
-#include <windows.h>
-
-int usleep(int usec)
-{
-    Sleep(usec);
-    return 0;
-}
-
-#endif // _MSC_VER
 
 enum t_directions { direction_up, direction_right, direction_down, direction_left };
 
