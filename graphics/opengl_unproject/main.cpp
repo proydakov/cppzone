@@ -73,8 +73,8 @@ void mouse(int button, int state, int x, int y)
             gluUnProject((GLdouble) x, (GLdouble) realy, z, 
                 mvmatrix, projmatrix, viewport, &wx, &wy, &wz);
 
-            std::cout << "World coordinates at z =" << z 
-                << "| WX : " << wx << " | WY : " << wy << " | WZ " << wz << std::endl; 
+            std::cout << "World coordinates at z = " << z 
+                << " | WX : " << wx << " | WY : " << wy << " | WZ " << wz << std::endl; 
         }
         std::cout << std::endl;
     }
