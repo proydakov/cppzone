@@ -118,7 +118,6 @@ void init()
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    glPushMatrix();
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -138,9 +137,6 @@ void display()
     //glScalef(1.0, 2.0, 1.0);
 
     glutWireCube(1.0);
-
-    glPopMatrix();
-    glutSwapBuffers();
 
     glFlush();
 }
