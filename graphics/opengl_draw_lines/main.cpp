@@ -27,14 +27,14 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-typedef std::pair<GLfloat, GLfloat> point;
+typedef std::pair<GLdouble, GLdouble> point;
 
 void drawLine(point p1, point p2)
 {
     glBegin(GL_LINES);
     {
-        glVertex2f(p1.first, p1.second);
-        glVertex2f(p2.first, p2.second);
+        glVertex2d(p1.first, p1.second);
+        glVertex2d(p2.first, p2.second);
     }
     glEnd();
 }
@@ -48,7 +48,7 @@ void init()
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    glColor3f(1.0, 1.0, 1.0);
+    glColor3d(1.0, 1.0, 1.0);
     glEnable(GL_LINE_STIPPLE);
 
     // first row
@@ -73,7 +73,7 @@ void display()
     glLineStipple(1, 0x1C47);
     glBegin(GL_LINE_STRIP);
     for(int i = 0; i < 7; ++i) {
-        glVertex2f((GLfloat) 50.0 + ((GLfloat) i * (GLfloat) 50.0), (GLfloat) 75.0);
+        glVertex2d((GLfloat) 50.0 + ((GLfloat) i * (GLfloat) 50.0), (GLfloat) 75.0);
     }
     glEnd();
 

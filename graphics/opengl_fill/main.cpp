@@ -55,7 +55,7 @@ static bool g_clear = false;
 
 void setPenColor(GLfloat red, GLfloat green, GLfloat blue)
 {
-    glColor3f(red, green, blue);
+    glColor3d(red, green, blue);
 }
 
 void clearScreen()
@@ -70,9 +70,9 @@ void drawTriangle(point p1, point p2, point p3)
 {
     glBegin(GL_POLYGON);
     {
-        glVertex2f(p1.first, p1.second);
-        glVertex2f(p2.first, p2.second);
-        glVertex2f(p3.first, p3.second);
+        glVertex2d(p1.first, p1.second);
+        glVertex2d(p2.first, p2.second);
+        glVertex2d(p3.first, p3.second);
     }
     glEnd();
 }
@@ -81,10 +81,10 @@ void drawSquare(point center, GLfloat size)
 {
     glBegin(GL_POLYGON);
     {
-        glVertex2f(center.first - size / 2, center.second + size / 2);
-        glVertex2f(center.first + size / 2, center.second + size / 2);
-        glVertex2f(center.first + size / 2, center.second - size / 2);
-        glVertex2f(center.first - size / 2, center.second - size / 2);
+        glVertex2d(center.first - size / 2, center.second + size / 2);
+        glVertex2d(center.first + size / 2, center.second + size / 2);
+        glVertex2d(center.first + size / 2, center.second - size / 2);
+        glVertex2d(center.first - size / 2, center.second - size / 2);
     }
     glEnd();
 }
@@ -93,12 +93,12 @@ void drawHexagon(point center, GLfloat width, GLfloat height)
 {
     glBegin(GL_POLYGON);
     {
-        glVertex2f(center.first - width / 4, center.second + height / 2);
-        glVertex2f(center.first + width / 4, center.second + height / 2);
-        glVertex2f(center.first + width / 2, center.second);
-        glVertex2f(center.first + width / 4, center.second - height / 2);
-        glVertex2f(center.first - width / 4, center.second - height / 2);
-        glVertex2f(center.first - width / 2, center.second);
+        glVertex2d(center.first - width / 4, center.second + height / 2);
+        glVertex2d(center.first + width / 4, center.second + height / 2);
+        glVertex2d(center.first + width / 2, center.second);
+        glVertex2d(center.first + width / 4, center.second - height / 2);
+        glVertex2d(center.first - width / 4, center.second - height / 2);
+        glVertex2d(center.first - width / 2, center.second);
     }
     glEnd();
 }

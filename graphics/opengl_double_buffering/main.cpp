@@ -39,7 +39,7 @@ int usleep(int usec)
 #   include <unistd.h>
 #endif // _MSC_VER
 
-static GLfloat g_spin = 0.0;
+static GLdouble g_spin = 0.0;
 static bool g_rotate_stae = false;
 static bool g_fill_state = false;
 
@@ -47,14 +47,14 @@ void init()
 {
     glClearColor((GLclampf) 0.1, (GLclampf) 0.0, (GLclampf) 0.7, (GLclampf) 0.0);
     glShadeModel(GL_FLAT);
-    glColor3f(0.0, 1.0, 0.0);
+    glColor3d(0.0, 1.0, 0.0);
 }
 
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     glPushMatrix();
-    glRotatef(g_spin, 0.0, 0.0, 1.0);
+    glRotated(g_spin, 0.0, 0.0, 1.0);
 
     glPolygonMode(GL_FRONT, GL_FILL);
     if(g_fill_state) {
@@ -66,11 +66,11 @@ void display()
 
     glBegin(GL_POLYGON);
     {
-        glVertex2f(0.0, 0.0);
-        glVertex2f(0.0, 30.0);
-        glVertex2f(40.0, 30.0);
-        glVertex2f(60.0, 15);
-        glVertex2f(40.0, 0.0);
+        glVertex2d(0.0, 0.0);
+        glVertex2d(0.0, 30.0);
+        glVertex2d(40.0, 30.0);
+        glVertex2d(60.0, 15);
+        glVertex2d(40.0, 0.0);
     }
     glEnd();
     glPopMatrix();

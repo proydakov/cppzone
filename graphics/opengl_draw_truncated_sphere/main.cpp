@@ -29,7 +29,7 @@ void init()
 {
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glShadeModel(GL_FLAT);
-    glColor3f(1.0, 1.0, 1.0);
+    glColor3d(1.0, 1.0, 1.0);
 }
 
 void display()
@@ -64,7 +64,7 @@ void reshape(int w, int h)
     glViewport(0, 0, (GLsizei) w, (GLsizei) h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0, (GLfloat) w / (GLfloat) h, 1.0, 20.0);
+    gluPerspective(60.0, (GLdouble) w / (GLdouble) h, 1.0, 20.0);
 }
 
 int main(int argc, char** argv)

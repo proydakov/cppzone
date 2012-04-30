@@ -43,7 +43,7 @@ void drawPolyline(pointList list)
     {
         pointList::const_iterator endIt = list.end();
         for(pointList::const_iterator it = list.begin(); it != endIt; ++it) {
-            glVertex2f(it->first, it->second);
+            glVertex2d(it->first, it->second);
         }
     }
     glEnd();
@@ -55,7 +55,7 @@ void init()
     glShadeModel(GL_FLAT);
     glEnable(GL_LINE_STIPPLE);
     glLineStipple(1, 0x1C47);
-    glColor3f(1.0, 1.0, 1.0);
+    glColor3d(1.0, 1.0, 1.0);
 }
 
 void display()
