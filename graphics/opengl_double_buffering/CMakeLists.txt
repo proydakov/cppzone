@@ -6,7 +6,8 @@ MESSAGE(STATUS "create  opengl  double  buffering  graphics")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-FIND_PACKAGE(Boost)
+FIND_PACKAGE(Boost COMPONENTS thread REQUIRED)
+LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
 FIND_PACKAGE(GLUT)
@@ -21,4 +22,4 @@ SET(SOURCE_FILES
 I_ADD_EXECUTABLE(graphics_opengl_double_buffering ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(graphics_opengl_double_buffering ${OPENGL_LIBRARIES})
 TARGET_LINK_LIBRARIES(graphics_opengl_double_buffering ${GLUT_LIBRARIES})
-
+TARGET_LINK_LIBRARIES(graphics_opengl_double_buffering ${Boost_THREAD_LIBRARY})
