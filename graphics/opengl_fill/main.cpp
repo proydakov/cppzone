@@ -30,7 +30,7 @@
 #include <GL/glu.h>
 
 
-typedef std::pair<GLfloat, GLfloat> point;
+typedef std::pair<GLdouble, GLdouble> point;
 
 
 const int STATE_MIN  = 1;
@@ -76,7 +76,7 @@ void drawTriangle(point p1, point p2, point p3)
     glEnd();
 }
 
-void drawSquare(point center, GLfloat size)
+void drawSquare(point center, GLdouble size)
 {
     glBegin(GL_POLYGON);
     {
@@ -88,7 +88,7 @@ void drawSquare(point center, GLfloat size)
     glEnd();
 }
 
-void drawHexagon(point center, GLfloat width, GLfloat height)
+void drawHexagon(point center, GLdouble width, GLdouble height)
 {
     glBegin(GL_POLYGON);
     {
@@ -111,23 +111,23 @@ void drawAllTriangles()
 
     setPenColor(0, 0, 1);
 
-    GLfloat size = std::min(g_width, g_height) / OBJECT_COUNT;
-    GLfloat height = sqrt(size * size - size / 2 * size / 2);
+    GLdouble size = std::min(g_width, g_height) / OBJECT_COUNT;
+    GLdouble height = sqrt(size * size - size / 2 * size / 2);
 
-    GLfloat widthMax = g_width + size;
-    GLfloat heightMax = g_height + height;
+    GLdouble widthMax = g_width + size;
+    GLdouble heightMax = g_height + height;
 
     int rowCounter = 0;
 
-    for(GLfloat heightUpPosition = 0; heightUpPosition < heightMax; heightUpPosition += height) {
-        GLfloat heightDownPosition = heightUpPosition + height;
+    for(GLdouble heightUpPosition = 0; heightUpPosition < heightMax; heightUpPosition += height) {
+        GLdouble heightDownPosition = heightUpPosition + height;
 
-        GLfloat delta = rowCounter % 2 ? size / 2 : 0;
+        GLdouble delta = rowCounter % 2 ? size / 2 : 0;
 
-        for(GLfloat upPosition = delta; upPosition < widthMax; upPosition += size) {
+        for(GLdouble upPosition = delta; upPosition < widthMax; upPosition += size) {
 
-            GLfloat downLeftPosition = upPosition + -size / 2;
-            GLfloat downRightPosition = upPosition + size / 2;
+            GLdouble downLeftPosition = upPosition + -size / 2;
+            GLdouble downRightPosition = upPosition + size / 2;
 
             drawTriangle(point(upPosition, heightUpPosition), 
                          point(downLeftPosition, heightDownPosition),
@@ -146,16 +146,16 @@ void drawAllSquares()
 
     setPenColor(0, 0, 1);
 
-    GLfloat size = std::min(g_width, g_height) / OBJECT_COUNT;
-    GLfloat doubleSize = size * 2;
+    GLdouble size = std::min(g_width, g_height) / OBJECT_COUNT;
+    GLdouble doubleSize = size * 2;
 
-    GLfloat widthMax = g_width + size;
-    GLfloat heightMax = g_height + size;
+    GLdouble widthMax = g_width + size;
+    GLdouble heightMax = g_height + size;
 
-    GLfloat delta = 0;
+    GLdouble delta = 0;
 
-    for(GLfloat i = size / 2; i < widthMax; i += doubleSize) {
-        for(GLfloat j = size / 2; j < heightMax; j += size) {
+    for(GLdouble i = size / 2; i < widthMax; i += doubleSize) {
+        for(GLdouble j = size / 2; j < heightMax; j += size) {
             delta = 0;
             if(static_cast<int>((i + j) / size) % 2)
                 delta = size;
@@ -171,16 +171,16 @@ void drawAllHexagons()
     glClearColor(1.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    GLfloat size = std::min(g_width, g_height) / OBJECT_COUNT;
-    GLfloat stepSize = size * 1.5;
-    GLfloat height = sqrt(size * size - size / 2 * size / 2);
+    GLdouble size = std::min(g_width, g_height) / OBJECT_COUNT;
+    GLdouble stepSize = size * 1.5;
+    GLdouble height = sqrt(size * size - size / 2 * size / 2);
 
-    GLfloat widthMax = g_width + size;
-    GLfloat heightMax = g_height + height;
+    GLdouble widthMax = g_width + size;
+    GLdouble heightMax = g_height + height;
 
     int rowCounter = 0;
 
-    for(GLfloat horizontalPosition = 0; horizontalPosition < heightMax; horizontalPosition += height) {
+    for(GLdouble horizontalPosition = 0; horizontalPosition < heightMax; horizontalPosition += height) {
         
         int rowCounterOst = rowCounter % 3;
         if(rowCounterOst == 0) {
@@ -193,7 +193,7 @@ void drawAllHexagons()
             setPenColor(0, 0, 1);
         }
 
-        for(GLfloat verticalPosition = 0; verticalPosition < widthMax; verticalPosition += stepSize) {
+        for(GLdouble verticalPosition = 0; verticalPosition < widthMax; verticalPosition += stepSize) {
             drawHexagon(point(verticalPosition, horizontalPosition), size, height);
         }
         rowCounter++;
@@ -201,7 +201,7 @@ void drawAllHexagons()
 
     rowCounter = 0;
 
-    for(GLfloat horizontalPosition = height / 2; horizontalPosition < heightMax; horizontalPosition += height) {
+    for(GLdouble horizontalPosition = height / 2; horizontalPosition < heightMax; horizontalPosition += height) {
         
         int rowCounterOst = rowCounter % 3;
         if(rowCounterOst == 0) {
@@ -214,7 +214,7 @@ void drawAllHexagons()
             setPenColor(0, 1, 0);
         }
 
-        for(GLfloat verticalPosition = stepSize / 2; verticalPosition < widthMax; verticalPosition += stepSize) {
+        for(GLdouble verticalPosition = stepSize / 2; verticalPosition < widthMax; verticalPosition += stepSize) {
             drawHexagon(point(verticalPosition, horizontalPosition), size, height);
         }
         rowCounter++;
