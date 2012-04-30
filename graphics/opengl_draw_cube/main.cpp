@@ -23,6 +23,8 @@
 #include <cmath>
 #include <iostream>
 
+#include <boost/thread.hpp>
+
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -91,6 +93,7 @@ void threadFunctionUpdate()
         break;
     }
     glutPostRedisplay();
+    boost::this_thread::sleep(boost::posix_time::milliseconds(30)); 
 }
 
 void init()
