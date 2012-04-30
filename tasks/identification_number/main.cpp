@@ -315,8 +315,8 @@ int search_in_the_table_of_correspondences(table_of_equivalents& table, equivale
 
 matrix::matrix() :
     m_data(0),
-    m_width(0),
-    m_height(0)
+    m_height(0),
+    m_width(0)
 {
 }
 

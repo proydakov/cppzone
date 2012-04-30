@@ -122,7 +122,7 @@ void drawAllTriangles()
     for(GLfloat heightUpPosition = 0; heightUpPosition < heightMax; heightUpPosition += height) {
         GLfloat heightDownPosition = heightUpPosition + height;
 
-        GLfloat delta = rowCounter % 2 ? delta = size / 2 : 0;
+        GLfloat delta = rowCounter % 2 ? size / 2 : 0;
 
         for(GLfloat upPosition = delta; upPosition < widthMax; upPosition += size) {
 
@@ -174,7 +174,6 @@ void drawAllHexagons()
     GLfloat size = std::min(g_width, g_height) / OBJECT_COUNT;
     GLfloat stepSize = size * 1.5;
     GLfloat height = sqrt(size * size - size / 2 * size / 2);
-    GLfloat doubleHeight = height * 2;
 
     GLfloat widthMax = g_width + size;
     GLfloat heightMax = g_height + height;
