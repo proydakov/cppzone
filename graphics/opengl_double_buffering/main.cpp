@@ -61,9 +61,10 @@ void display()
     }
     glEnd();
     glPopMatrix();
+
     glutSwapBuffers();
 
-    boost::this_thread::sleep(boost::posix_time::milliseconds(10)); 
+    boost::this_thread::sleep(boost::posix_time::milliseconds(5));
 }
 
 void spinDisplay()
@@ -105,7 +106,7 @@ void mouse(int button, int state, int x, int y)
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowSize(250, 250);
     glutInitWindowPosition(100, 100);
     glutCreateWindow(argv[0]);

@@ -27,9 +27,6 @@
 const GLdouble WORLD_SIZE_KOEF = 1.5;
 const int SPHERE_PRECESSION = 50;
 
-const GLdouble OBJECT_ROTATION_DELTA = 3.0;
-static GLdouble g_objectRotationAngle = 30.0;
-
 void init()
 {
     glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -81,6 +78,7 @@ void display()
     //glutSolidCube(1.0);
     glPopMatrix();
 
+    glutSwapBuffers();
     glFlush();
 }
 
@@ -100,7 +98,7 @@ void reshape(int w, int h)
 int main(int argc, char* argv[])
 {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(100, 100);
     glutCreateWindow(argv[0]);
