@@ -42,7 +42,7 @@ public:
             return false;
         }
         std::string temp_string;
-        while(1) {
+        while(true) {
             std::getline(stream, temp_string);
             if (stream.fail())
                 break;

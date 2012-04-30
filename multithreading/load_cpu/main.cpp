@@ -24,7 +24,7 @@
 
 void load_stream()
 {
-    while(1);
+    while(true);
 }
 
 int main( int argc, char *argv[] )
