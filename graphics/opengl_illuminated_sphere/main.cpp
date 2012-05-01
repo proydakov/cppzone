@@ -24,6 +24,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+const GLdouble WORLD_SIZE_KOEF = 1.5;
 const int SPHERE_PRECESSION = 50;
 
 const GLdouble OBJECT_ROTATION_DELTA = 3.0;
@@ -88,12 +89,12 @@ void reshape(int w, int h)
     glViewport(0, 0, (GLsizei) w, (GLsizei) h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    if(w <= h)
-        glOrtho(-1.5, 1.5, -1.5 * (GLdouble) h / (GLdouble) w,
-        1.5 * (GLdouble) h / (GLdouble) w, -10.0, 10.0);
+    if(w <= h) 
+        glOrtho(-WORLD_SIZE_KOEF, WORLD_SIZE_KOEF, -WORLD_SIZE_KOEF * (GLdouble) h / (GLdouble) w, 
+        WORLD_SIZE_KOEF * (GLdouble) h / (GLdouble) w, -10.0, 10.0);
     else
-        glOrtho(-1.5 * (GLdouble) h / (GLdouble) w, 1.5 * (GLdouble) h / (GLdouble) w,
-        -1.5, 1.5, -10.0, 10.0);
+        glOrtho(-WORLD_SIZE_KOEF * (GLdouble) w / (GLdouble) h, WORLD_SIZE_KOEF * (GLdouble) w / (GLdouble) h,
+        -WORLD_SIZE_KOEF, WORLD_SIZE_KOEF, -10.0, 10.0);
 }
 
 int main(int argc, char* argv[])
