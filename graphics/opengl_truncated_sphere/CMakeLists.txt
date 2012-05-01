@@ -2,7 +2,7 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  opengl  draw  truncated  sphere  graphics")
+MESSAGE(STATUS "create  opengl  truncated  sphere  graphics")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -15,7 +15,7 @@ INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 SET(SOURCE_FILES
     main.cpp)
 
-I_ADD_EXECUTABLE(graphics_opengl_draw_truncated_sphere ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(graphics_opengl_draw_truncated_sphere ${OPENGL_LIBRARIES})
-TARGET_LINK_LIBRARIES(graphics_opengl_draw_truncated_sphere ${GLUT_LIBRARIES})
+I_ADD_EXECUTABLE(graphics_opengl_truncated_sphere ${SOURCE_FILES})
+TARGET_LINK_LIBRARIES(graphics_opengl_truncated_sphere ${OPENGL_LIBRARIES})
+TARGET_LINK_LIBRARIES(graphics_opengl_truncated_sphere ${GLUT_LIBRARIES})
 

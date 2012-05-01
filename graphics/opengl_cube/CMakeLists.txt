@@ -2,7 +2,7 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  opengl  draw  cube  graphics")
+MESSAGE(STATUS "create  opengl  cube  graphics")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -19,7 +19,7 @@ INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 SET(SOURCE_FILES
     main.cpp)
 
-I_ADD_EXECUTABLE(graphics_opengl_draw_cube ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(graphics_opengl_draw_cube ${OPENGL_LIBRARIES})
-TARGET_LINK_LIBRARIES(graphics_opengl_draw_cube ${GLUT_LIBRARIES})
-TARGET_LINK_LIBRARIES(graphics_opengl_draw_cube ${Boost_THREAD_LIBRARY})
+I_ADD_EXECUTABLE(graphics_opengl_cube ${SOURCE_FILES})
+TARGET_LINK_LIBRARIES(graphics_opengl_cube ${OPENGL_LIBRARIES})
+TARGET_LINK_LIBRARIES(graphics_opengl_cube ${GLUT_LIBRARIES})
+TARGET_LINK_LIBRARIES(graphics_opengl_cube ${Boost_THREAD_LIBRARY})
