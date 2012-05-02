@@ -4,7 +4,7 @@
 # CMake for  GRAPHICS  PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  GRAPHICS\n")
+MESSAGE(STATUS "\nBUILD  GRAPHICS\n")
 
 SET(PROJECT_FOLDER "graphics")
 
@@ -26,4 +26,5 @@ IF(GLUT_FOUND AND OPENGL_FOUND)
     ADD_SUBDIRECTORY(opengl_illuminated_sphere)
     ADD_SUBDIRECTORY(opengl_movelight)
     ADD_SUBDIRECTORY(opengl_color_material)
+    ADD_SUBDIRECTORY(glut_cursor_mode)
 ENDIF(GLUT_FOUND AND OPENGL_FOUND)
