@@ -20,14 +20,14 @@
  *  THE SOFTWARE.
  */
 
-#include <boost/thread.hpp>
-
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+const int CYCLE_TIME = 30;
+
 static GLdouble g_spin = 0.0;
-static bool g_rotate_stae = false;
+static bool g_rotate_state = false;
 static bool g_fill_state = false;
 
 void init()
@@ -63,16 +63,17 @@ void display()
     glPopMatrix();
 
     glutSwapBuffers();
-
-    boost::this_thread::sleep(boost::posix_time::milliseconds(5));
 }
 
-void spinDisplay()
+void spinDisplay(int value)
 {
-    g_spin += (GLfloat) 0.1;
-    if(g_spin > 360.0)
-        g_spin -= 360.0;
-    glutPostRedisplay();
+    if(g_rotate_state) {
+        g_spin += (GLfloat) 1;
+        if(g_spin > 360.0)
+            g_spin -= 360.0;
+        glutPostRedisplay();
+    }
+    glutTimerFunc(CYCLE_TIME, spinDisplay, value);
 }
 
 void reshape(int w, int h)
@@ -92,11 +93,7 @@ void mouse(int button, int state, int x, int y)
         return;
 
     if(button == GLUT_LEFT_BUTTON) {
-        if(g_rotate_stae)
-            glutIdleFunc(NULL);
-        else
-            glutIdleFunc(spinDisplay);
-        g_rotate_stae = !g_rotate_stae;
+        g_rotate_state = !g_rotate_state;
     }
     else if(button == GLUT_RIGHT_BUTTON) {
         g_fill_state = !g_fill_state;
@@ -115,6 +112,7 @@ int main(int argc, char** argv)
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutMouseFunc(mouse);
+    glutTimerFunc(CYCLE_TIME, spinDisplay, 0);
     glutMainLoop();
 
     return 0;

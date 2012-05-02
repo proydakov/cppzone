@@ -23,11 +23,11 @@
 #include <cmath>
 #include <iostream>
 
-#include <boost/thread.hpp>
-
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+
+const int CYCLE_TIME = 30;
 
 const int WORLD_SIZE_KOEF = 15;
 const GLdouble ROTATION_VERTICAL_DELTA   = 0.05;
@@ -109,10 +109,10 @@ void display()
     glFlush();
 }
 
-void cycleFunction()
+void cycle(int value)
 {
-    glutPostRedisplay();
-    boost::this_thread::sleep(boost::posix_time::milliseconds(30)); 
+    glutPostRedisplay(); 
+    glutTimerFunc(CYCLE_TIME, cycle, value);
 }
 
 void reshape(int w, int h)
@@ -213,7 +213,7 @@ int main(int argc, char** argv)
     glutCreateWindow(argv[0]);
 
     init();
-    glutIdleFunc(cycleFunction);
+    glutTimerFunc(CYCLE_TIME, cycle, 0);
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);

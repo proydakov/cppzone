@@ -22,11 +22,11 @@
 
 #include <cmath>
 
-#include <boost/thread.hpp>
-
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+
+const int CYCLE_TIME = 30;
 
 const GLdouble SPIN_DELTA = 3.0;
 
@@ -98,7 +98,7 @@ void reshape(int w, int h)
     glLoadIdentity();
 }
 
-void cycle()
+void cycle(int value)
 {
     g_spin0 += SPIN_DELTA;
     if(g_spin0 > 360)
@@ -109,7 +109,7 @@ void cycle()
         g_spin1 -= 360;
 
     glutPostRedisplay();
-    boost::this_thread::sleep(boost::posix_time::milliseconds(30)); 
+    glutTimerFunc(CYCLE_TIME, cycle, value);
 }
 
 int main(int argc, char** argv)
@@ -123,7 +123,7 @@ int main(int argc, char** argv)
     init();
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
-    glutIdleFunc(cycle);
+    glutTimerFunc(CYCLE_TIME, cycle, 0);
     glutMainLoop();
 
     return 0;

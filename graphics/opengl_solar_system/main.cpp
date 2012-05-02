@@ -23,13 +23,13 @@
 #include <cmath>
 #include <iostream>
 
-#include <boost/thread.hpp>
-
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 
 #include "solar_system_info.h"
+
+const int CYCLE_TIME = 30;
 
 const int SPHERE_PRECESSION = 20;
 
@@ -128,11 +128,10 @@ void display()
         glLoadIdentity();
         gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     }
-    glutSwapBuffers();
     glFlush();
 }
 
-void cycleFunction()
+void cycle(int value)
 {
     g_mercuryYear = g_mercuryYear + MERCURY_YEAR_DELTA;
     g_venusYear = g_venusYear + VENUS_YEAR_DELTA;
@@ -154,7 +153,7 @@ void cycleFunction()
         g_moonYear -= FULL_ANGLE;
 
     glutPostRedisplay();
-    boost::this_thread::sleep(boost::posix_time::milliseconds(30)); 
+    glutTimerFunc(CYCLE_TIME, cycle, value); 
 }
 
 void reshape(int w, int h)
@@ -207,10 +206,10 @@ int main(int argc, char** argv)
     glutCreateWindow(argv[0]);
 
     init();
-    glutIdleFunc(cycleFunction);
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);
+    glutTimerFunc(CYCLE_TIME, cycle, 0);
     glutMainLoop();
 
     return 0;

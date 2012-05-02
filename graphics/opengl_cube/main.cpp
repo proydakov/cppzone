@@ -23,78 +23,18 @@
 #include <cmath>
 #include <iostream>
 
-#include <boost/thread.hpp>
-
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-enum t_directions { direction_up, direction_right, direction_down, direction_left };
+const int CYCLE_TIME = 30;
 
-const double ROTATION_DELTA = 0.01;
+const int WORLD_SIZE_KOEF = 3;
+const GLdouble ROTATION_VERTICAL_DELTA   = 0.05;
+const GLdouble ROTATION_HORIZONTAL_DELTA = 0.05;
 
-static int g_width  = 500;
-static int g_height = 500;
-
-static int g_lastX = 0;
-static int g_lastY = 0;
-
-static double g_rotationVertical   = 1.0;
-static double g_rotationHorizontal = 0.0;
-
-t_directions getNextDirection()
-{
-    t_directions direction;
-
-    double localX = g_lastX - g_width / 2;
-    double localY = g_height / 2 - g_lastY;
-
-    if(localX > 0 && localY > localX) {
-        direction = direction_up;
-    }
-    else if(localX < 0 && localY > -localX) {
-        direction = direction_up;
-    }
-    else if(localX > 0 && localY < -localX) {
-        direction = direction_down;
-    }
-    else if(localX < 0 && localY < localX) {
-        direction = direction_down;
-    }
-    else if(localX < 0) {
-        direction = direction_left;
-    }
-    else
-        direction = direction_right;
-
-    return direction;
-}
-
-void threadFunctionUpdate()
-{           
-    t_directions direction = getNextDirection();
-
-    switch(direction)
-    {
-    case direction_up:
-        g_rotationHorizontal += ROTATION_DELTA;
-        break;
-
-    case direction_right:
-        g_rotationVertical += ROTATION_DELTA;
-        break;
-
-    case direction_down:
-        g_rotationHorizontal -= ROTATION_DELTA;
-        break;
-
-    case direction_left:
-        g_rotationVertical -= ROTATION_DELTA;
-        break;
-    }
-    glutPostRedisplay();
-    boost::this_thread::sleep(boost::posix_time::milliseconds(30)); 
-}
+static GLdouble g_rotationVertical = 0.01;
+static GLdouble g_rotationHorizontal = 0.75;
 
 void init()
 {
@@ -113,16 +53,15 @@ void display()
     //glLoadMatrixf();
     //glMultMatrixf();
     
-    double k = 3;
-    double x = sin(g_rotationVertical) * k;
-    double y = cos(g_rotationVertical) * k;
-    double z = cos(g_rotationHorizontal) * k;
+    // set look
+    {
+        GLdouble x = WORLD_SIZE_KOEF * sin(g_rotationHorizontal) * cos(g_rotationVertical);
+        GLdouble y = WORLD_SIZE_KOEF * sin(g_rotationHorizontal) * sin(g_rotationVertical);
+        GLdouble z = WORLD_SIZE_KOEF * cos(g_rotationHorizontal);
 
-    std::cout << "X : " << x << " Y : " << y << " Z : " << z << std::endl;
-
-    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    //glTranslated(0.0, 0.0, -5.0);
-    //glScalef(1.0, 2.0, 1.0);
+        glLoadIdentity();
+        gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    }
 
     glutWireCube(1.0);
 
@@ -131,9 +70,6 @@ void display()
 
 void reshape(int w, int h)
 {
-    g_width = w;
-    g_height = h;
-
     glViewport(0, 0, (GLsizei) w, (GLsizei) h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -142,36 +78,57 @@ void reshape(int w, int h)
     //gluPerspective(100.0, 1.0, 1.0, 20.0);
 }
 
-void mouse(int button, int state, int x, int y)
+void keyboard(unsigned char key, int x, int y)
 {
     (void)x;
     (void)y;
 
-    if(button == GLUT_LEFT_BUTTON) {
-        if(state == GLUT_DOWN) {
-            glutIdleFunc(threadFunctionUpdate);
-        }
-        else {
-            glutIdleFunc(NULL);
-        }
+    switch(key) {
+        case 'A':
+        case 'a':
+            g_rotationVertical += ROTATION_VERTICAL_DELTA; 
+            break;
 
-        g_lastX = x;
-        g_lastY = y;
+        case 'D':
+        case 'd':
+            g_rotationVertical -= ROTATION_VERTICAL_DELTA;
+            break;
+
+        case 'W':
+        case 'w':
+            g_rotationHorizontal -= ROTATION_HORIZONTAL_DELTA;
+            if(g_rotationHorizontal < 0)
+                g_rotationHorizontal = 0.01;
+            break;
+
+        case 'S':
+        case 's':
+            g_rotationHorizontal += ROTATION_HORIZONTAL_DELTA;
+            if(g_rotationHorizontal > 3.14)
+                g_rotationHorizontal = 3.13;
+            break;
     }
+}
+
+void cycle(int value)
+{
+    glutPostRedisplay();
+    glutTimerFunc(CYCLE_TIME, cycle, value);
 }
 
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(g_width, g_height);
+    glutInitWindowSize(500, 500);
     glutInitWindowPosition(100, 100);
     glutCreateWindow(argv[0]);
 
     init();
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
-    glutMouseFunc(mouse);
+    glutKeyboardFunc(keyboard);
+    glutTimerFunc(CYCLE_TIME, cycle, 0);
     glutMainLoop();
 
     return 0;

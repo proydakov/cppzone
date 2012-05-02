@@ -21,7 +21,6 @@
  */
 
 #include <vector>
-#include <boost/thread.hpp>
 
 #include <GL/glut.h>
 #include <GL/gl.h>
@@ -102,12 +101,12 @@ void reshape(int w, int h)
     glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
 }
 
-void cycle()
+void cycle(int value)
 {
     g_index = (g_index + 1) % g_cursors.size();
 
     glutPostRedisplay();
-    boost::this_thread::sleep(boost::posix_time::milliseconds(CYCLE_TIME)); 
+    glutTimerFunc(CYCLE_TIME, cycle, value);
 }
 
 int main(int argc, char** argv)
@@ -119,9 +118,9 @@ int main(int argc, char** argv)
     glutCreateWindow(argv[0]);
 
     init();
+    glutTimerFunc(CYCLE_TIME, cycle, 0);
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
-    glutIdleFunc(cycle);
     glutMainLoop();
 
     return 0;
