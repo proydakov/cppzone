@@ -4,7 +4,7 @@
 # CMake for  DATA_STRUCTURES  PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  DATA_STRUCTURES\n")
+MESSAGE(STATUS "\nBUILD  DATA_STRUCTURES\n")
 
 SET(PROJECT_FOLDER "data_structures")
 

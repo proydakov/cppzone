@@ -4,7 +4,7 @@
 # CMake for  SYSTEM  PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  SYSTEM\n")
+MESSAGE(STATUS "\nBUILD  SYSTEM\n")
 
 SET(PROJECT_FOLDER "system")
 

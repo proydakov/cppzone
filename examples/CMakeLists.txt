@@ -4,7 +4,7 @@
 # CMake for  EXAMPLE  PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  EXAMPLE\n")
+MESSAGE(STATUS "\nBUILD  EXAMPLE\n")
 
 SET(PROJECT_FOLDER "example")
 

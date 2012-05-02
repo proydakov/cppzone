@@ -4,7 +4,7 @@
 # CMake for  ALGORITHMS  PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  ALGORITHMS\n")
+MESSAGE(STATUS "\nBUILD  ALGORITHMS\n")
 
 SET(PROJECT_FOLDER "algorithms")
 

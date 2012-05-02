@@ -4,7 +4,7 @@
 # CMake for  MULTITHREADING  PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  MULTITHREADING\n")
+MESSAGE(STATUS "\nBUILD  MULTITHREADING\n")
 
 SET(PROJECT_FOLDER "multithreading")
 

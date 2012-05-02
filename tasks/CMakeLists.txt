@@ -4,7 +4,7 @@
 # CMake for  TASKS  PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  TASKS\n")
+MESSAGE(STATUS "\nBUILD  TASKS\n")
 
 SET(PROJECT_FOLDER "tasks")
 

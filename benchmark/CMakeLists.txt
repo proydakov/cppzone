@@ -4,7 +4,7 @@
 # CMake for  BENCHMARK  LIBRARY
 #==============================================================================
 
-MESSAGE(STATUS "CREATE  BENCHMARK  LIBRARY\n")
+MESSAGE(STATUS "\nCREATE  BENCHMARK  LIBRARY\n")
 
 SET(PROJECT_FOLDER "libs")
 

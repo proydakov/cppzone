@@ -4,7 +4,7 @@
 # CMake for  SYNTAX  PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  SYNTAX\n")
+MESSAGE(STATUS "\nBUILD  SYNTAX\n")
 
 SET(PROJECT_FOLDER "syntax")
 

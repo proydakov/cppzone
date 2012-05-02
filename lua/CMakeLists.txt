@@ -4,7 +4,7 @@
 # CMake for  LUA  EXAMPLE
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  LUA\n")
+MESSAGE(STATUS "\nBUILD  LUA\n")
 MESSAGE(STATUS "create  lua  example")
 
 SET(PROJECT_FOLDER "lua")
