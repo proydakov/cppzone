@@ -43,7 +43,7 @@ const int SCREEN_HEIGHT = 480;
 
 const int ESCAPE = 27;
 
-const int TEXTURE_NUM = 3;
+const unsigned TEXTURE_NUM = 3;
 
 GLdouble g_xrot = 0;
 GLdouble g_yrot = 0;
