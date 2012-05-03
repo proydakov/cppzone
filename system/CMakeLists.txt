@@ -4,7 +4,7 @@
 # CMake for  SYSTEM  PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "\nBUILD  SYSTEM\n")
+MESSAGE(STATUS "BUILD  SYSTEM\n")
 
 SET(PROJECT_FOLDER "system")
 
@@ -12,3 +12,5 @@ IF(UNIX)
 	ADD_SUBDIRECTORY(pest)
 ENDIF(UNIX)
 ADD_SUBDIRECTORY(memory_leak)
+
+MESSAGE(STATUS "")

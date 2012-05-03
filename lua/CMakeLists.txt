@@ -4,7 +4,7 @@
 # CMake for  LUA  EXAMPLE
 #==============================================================================
 
-MESSAGE(STATUS "\nBUILD  LUA\n")
+MESSAGE(STATUS "BUILD  LUA\n")
 MESSAGE(STATUS "create  lua  example")
 
 SET(PROJECT_FOLDER "lua")
@@ -45,3 +45,5 @@ SET(MAIN_FILES
 
 I_ADD_EXECUTABLE(lua_example ${MAIN_FILES} ${CONFIG_FILES} ${LUA_FILES})
 TARGET_LINK_LIBRARIES(lua_example ${LUA_LIBRARIES})
+
+MESSAGE(STATUS "")

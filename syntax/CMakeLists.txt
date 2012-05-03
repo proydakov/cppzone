@@ -4,7 +4,7 @@
 # CMake for  SYNTAX  PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "\nBUILD  SYNTAX\n")
+MESSAGE(STATUS "BUILD  SYNTAX\n")
 
 SET(PROJECT_FOLDER "syntax")
 
@@ -18,3 +18,5 @@ ADD_SUBDIRECTORY(inheritance_basic)
 ADD_SUBDIRECTORY(inheritance_casting)
 ADD_SUBDIRECTORY(std_for_each)
 ADD_SUBDIRECTORY(template_fun)
+
+MESSAGE(STATUS "")

@@ -4,7 +4,7 @@
 # CMake for  EXAMPLE  PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "\nBUILD  EXAMPLE\n")
+MESSAGE(STATUS "BUILD  EXAMPLE\n")
 
 SET(PROJECT_FOLDER "example")
 
@@ -13,3 +13,5 @@ ADD_SUBDIRECTORY(smart_pointers)
 ADD_SUBDIRECTORY(ublas)
 ADD_SUBDIRECTORY(uuid)
 ADD_SUBDIRECTORY(caller)
+
+MESSAGE(STATUS "")

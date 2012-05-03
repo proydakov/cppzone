@@ -4,7 +4,7 @@
 # CMake for  ALGORITHMS  PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "\nBUILD  ALGORITHMS\n")
+MESSAGE(STATUS "BUILD  ALGORITHMS\n")
 
 SET(PROJECT_FOLDER "algorithms")
 
@@ -13,3 +13,5 @@ ADD_SUBDIRECTORY(nums)
 ADD_SUBDIRECTORY(permutation)
 ADD_SUBDIRECTORY(sort)
 ADD_SUBDIRECTORY(strings)
+
+MESSAGE(STATUS "")

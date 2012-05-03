@@ -4,7 +4,7 @@
 # CMake for  GRAPHICS  PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "\nBUILD  GRAPHICS\n")
+MESSAGE(STATUS "BUILD  GRAPHICS\n")
 
 SET(PROJECT_FOLDER "graphics")
 
@@ -38,3 +38,5 @@ IF(GLUT_FOUND AND OPENGL_FOUND)
     ADD_SUBDIRECTORY(opengl_fogcoord)
     ADD_SUBDIRECTORY(opengl_display_list_torus)
 ENDIF(GLUT_FOUND AND OPENGL_FOUND)
+
+MESSAGE(STATUS "")

@@ -4,7 +4,7 @@
 # CMake for  TASKS  PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "\nBUILD  TASKS\n")
+MESSAGE(STATUS "BUILD  TASKS\n")
 
 SET(PROJECT_FOLDER "tasks")
 
@@ -15,3 +15,5 @@ ADD_SUBDIRECTORY(identification_number)
 ADD_SUBDIRECTORY(output_number)
 ADD_SUBDIRECTORY(output_number_in_text_form)
 ADD_SUBDIRECTORY(t9)
+
+MESSAGE(STATUS "")
