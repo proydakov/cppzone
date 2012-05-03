@@ -20,11 +20,19 @@
  *  THE SOFTWARE.
  */
 
+#include <string>
 #include <iostream>
 
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+
+const std::string COMMENT = "Press ESC for exit...";
+
+void info()
+{
+    std::cout << COMMENT << std::endl;
+}
 
 void init()
 {
@@ -54,7 +62,7 @@ void keyboard(unsigned char key, int x, int y)
     (void)x;
     (void)y;
 
-    if(key == 'q')
+    if(key == 'q' || key == 27)
         exit(0);
 
     std::cout << "KEY : " << key << std::endl;
@@ -62,6 +70,8 @@ void keyboard(unsigned char key, int x, int y)
 
 int main(int argc, char** argv)
 {
+    info();
+
     glutInit(&argc, argv);
     glutGameModeString("1366x768:32@60");
     glutEnterGameMode();

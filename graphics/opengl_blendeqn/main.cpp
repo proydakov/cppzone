@@ -42,13 +42,18 @@ PFNGLBLENDEQUATIONPROC glBlendEquation = NULL;
 
 #endif // _MSC_VER
 
-std::string COMMENT = "Keys are used to replace expressions mixing:\
-                      \n\
-                      'a' -> GL_FUNC_ADD,\n\
-                      's' -> GL_FUNC_SUBTRACT\n\
-                      'r' -> GL_FUNC_REVERS_SUBTRACT\n\
-                      'n' -> GL_MIN\n\
-                      'x' -> GL_MAX";
+const std::string COMMENT = "Keys are used to replace expressions mixing:\
+        \n\
+        'a' -> GL_FUNC_ADD,\n\
+        's' -> GL_FUNC_SUBTRACT\n\
+        'r' -> GL_FUNC_REVERS_SUBTRACT\n\
+        'n' -> GL_MIN\n\
+        'x' -> GL_MAX\n";
+
+void info()
+{
+    std::cout << COMMENT << std::endl;
+}
 
 void init()
 {
@@ -61,7 +66,6 @@ void init()
     }
 #endif // _MSC_VER
 
-    std::cout << COMMENT << std::endl;
     glClearColor(1.0, 1.0, 0.0, 0.0);
     glBlendFunc(GL_ONE, GL_ONE);
     glEnable(GL_BLEND);
@@ -85,44 +89,44 @@ void keyboard(unsigned char key, int x, int y)
     (void)y;
 
     switch(key) {
-        case 'A':
-        case 'a':
-            // Colors are added. resulting in a white square on a yellow background
-            glBlendEquation(GL_FUNC_ADD);
-            break;
+    case 'A':
+    case 'a':
+        // Colors are added. resulting in a white square on a yellow background
+        glBlendEquation(GL_FUNC_ADD);
+        break;
 
-        case 'S':
-        case 's':
-            // Colors are subtracted. Subtract the background from the object. 
-            // Resulting in a white square on a yellow background
-            glBlendEquation(GL_FUNC_SUBTRACT);
-            break;
+    case 'S':
+    case 's':
+        // Colors are subtracted. Subtract the background from the object.
+        // Resulting in a white square on a yellow background
+        glBlendEquation(GL_FUNC_SUBTRACT);
+        break;
 
-        case 'r':
-        case 'R':
-            // Colors are subtracted. 
-            // Subtract from the background object. resulting in a white square on a yellow background
-            glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
-            break;
+    case 'r':
+    case 'R':
+        // Colors are subtracted.
+        // Subtract from the background object. resulting in a white square on a yellow background
+        glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
+        break;
 
-        case 'n':
-        case 'N':
-            // Find the minimum over all components
-            glBlendEquation(GL_MIN);
-            break;
+    case 'n':
+    case 'N':
+        // Find the minimum over all components
+        glBlendEquation(GL_MIN);
+        break;
 
-        case 'x':
-        case 'X':
-            // Find the maximum over all components
-            glBlendEquation(GL_MAX);
-            break;
-    
-        case 27:
-            exit(0);
-            break;
+    case 'x':
+    case 'X':
+        // Find the maximum over all components
+        glBlendEquation(GL_MAX);
+        break;
 
-        default:
-            break;
+    case 27:
+        exit(0);
+        break;
+
+    default:
+        break;
     }
     glutPostRedisplay();
 }
@@ -143,6 +147,7 @@ int main(int argc, char** argv)
     glutInitWindowPosition(100, 100);
     glutCreateWindow(argv[0]);
 
+    info();
     init();
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
