@@ -38,7 +38,7 @@
 #define GL_FUNC_REVERSE_SUBTRACT          0x800B
 
 typedef void (APIENTRY * PFNGLBLENDEQUATIONPROC) (GLenum mode);
-PFNGLBLENDEQUATIONPROC glBlendEquation = (PFNGLBLENDEQUATIONPROC)wglGetProcAddress("glBlendEquation");
+PFNGLBLENDEQUATIONPROC glBlendEquation = NULL;
 
 #endif // _MSC_VER
 
@@ -52,6 +52,15 @@ const std::string COMMENT = "Keys are used to replace expressions mixing:\
 
 void init()
 {
+#ifdef _MSC_VER
+    glBlendEquation = (PFNGLBLENDEQUATIONPROC)wglGetProcAddress("glBlendEquation");
+    std::cout << "ADRESS : " << glBlendEquation << std::endl;
+    if(glBlendEquation == NULL) {
+        std::cout << "Function glBlendEquation not found.";
+        exit(1);
+    }
+#endif // _MSC_VER
+
     std::cout << COMMENT << std::endl;
     glClearColor(1.0, 1.0, 0.0, 0.0);
     glBlendFunc(GL_ONE, GL_ONE);
@@ -72,8 +81,6 @@ void keyboard(unsigned char key, int x, int y)
 {
     (void)x;
     (void)y;
-
-    std::cout << "ADRESS : " << &glBlendEquation << std::endl;
 
     switch(key) {
         case 'A':
