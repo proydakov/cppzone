@@ -42,13 +42,13 @@ PFNGLBLENDEQUATIONPROC glBlendEquation = NULL;
 
 #endif // _MSC_VER
 
-const std::string COMMENT = "Keys are used to replace expressions mixing:\
-                            \n\
-                            'a' -> GL_FUNC_ADD,\n\
-                            's' -> GL_FUNC_SUBTRACT\n\
-                            'r' -> GL_FUNC_REVERS_SUBTRACT\n\
-                            'n' -> GL_MIN\n\
-                            'x' -> GL_MAX";
+std::string COMMENT = "Keys are used to replace expressions mixing:\
+                      \n\
+                      'a' -> GL_FUNC_ADD,\n\
+                      's' -> GL_FUNC_SUBTRACT\n\
+                      'r' -> GL_FUNC_REVERS_SUBTRACT\n\
+                      'n' -> GL_MIN\n\
+                      'x' -> GL_MAX";
 
 void init()
 {
@@ -75,6 +75,8 @@ void display()
     glColor3d(0.0, 0.0, 1.0);
     glRectf(-0.5, -0.5, 0.5, 0.5);
     glFlush();
+
+    glutSwapBuffers();
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -85,26 +87,33 @@ void keyboard(unsigned char key, int x, int y)
     switch(key) {
         case 'A':
         case 'a':
+            // Colors are added. resulting in a white square on a yellow background
             glBlendEquation(GL_FUNC_ADD);
             break;
 
         case 'S':
         case 's':
+            // Colors are subtracted. Subtract the background from the object. 
+            // Resulting in a white square on a yellow background
             glBlendEquation(GL_FUNC_SUBTRACT);
             break;
 
         case 'r':
         case 'R':
+            // Colors are subtracted. 
+            // Subtract from the background object. resulting in a white square on a yellow background
             glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
             break;
 
         case 'n':
         case 'N':
+            // Find the minimum over all components
             glBlendEquation(GL_MIN);
             break;
 
         case 'x':
         case 'X':
+            // Find the maximum over all components
             glBlendEquation(GL_MAX);
             break;
     
@@ -129,7 +138,7 @@ void reshape(int w, int h)
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(100, 100);
     glutCreateWindow(argv[0]);
