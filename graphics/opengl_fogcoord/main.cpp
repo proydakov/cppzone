@@ -24,19 +24,16 @@
 #include <iostream>
 
 #include <GL/glut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
 
 #ifdef _MSC_VER
-
 #   define GL_FOG_COORDINATE_SOURCE          0x8450
 #   define GL_FOG_COORDINATE                 0x8451
 #   define GL_FRAGMENT_DEPTH                 0x8452
-
-typedef void (APIENTRY * fun_ptr) (GLdouble coord);
-fun_ptr glFogCoordd = NULL;
-
+#else
+#   include <GL/glx.h>
 #endif // _MSC_VER
+
+///////////////////////////////////////////////////////////////////////////////
 
 const std::string COMMENT = 
 "Press 'c' or 'd' for select GL_FOG_COORDINATE_SOURCE.\n\
@@ -44,9 +41,13 @@ Press 'b' or 'f' for select TRANSLATED.\n\
 Press '1' - '6' for control point and fog depth.\n\
 Press ESC for exit.";
 
-const GLdouble WORLD_SIZE_KOEF = 2.5;
+///////////////////////////////////////////////////////////////////////////////
 
-const GLdouble ITER_DELTA = 0.25;
+typedef void (APIENTRY * PFNGLFOGCOORDDPROC) (GLdouble coord);
+PFNGLFOGCOORDDPROC glFogCoordd = NULL;
+
+const GLdouble WORLD_SIZE_KOEF = 2.5;
+const GLdouble ITER_DELTA      = 0.25;
 
 GLdouble g_f1 = 0;
 GLdouble g_f2 = 0;
@@ -60,13 +61,16 @@ void info()
 void init()
 {
 #ifdef _MSC_VER
-    glFogCoordd = (fun_ptr)wglGetProcAddress("glFogCoordd");
+    glFogCoordd = (PFNGLFOGCOORDDPROC)wglGetProcAddress("glFogCoordd");
+#else
+     glFogCoordd = (PFNGLFOGCOORDDPROC)glXGetProcAddress((const GLubyte*)"glFogCoordd");
+#endif // _MSC_VER
+
     std::cout << "ADRESS : " << glFogCoordd << std::endl;
     if(glFogCoordd == NULL) {
         std::cout << "Function glFogCoordd not found.";
         exit(1);
     }
-#endif // _MSC_VER
 
     GLfloat fogColor[] = { 0.0f, 0.25f, 0.25f, 1.0f };
     g_f1 = 1;
