@@ -61,6 +61,8 @@ int main(int argc, char* argv[])
             << "GL_VERSION    : " << glVersion << "\n\n"
             << "GL_EXTENSIONS : " << counter << "\n\n"
             << glExtensions << std::endl;
+
+        std::cout << "Generated : " << fileName << std::endl;
     }
     else {
         std::cout << "Can not create : " << fileName << " error !!!" << std::endl;
