@@ -18,4 +18,3 @@ SET(SOURCE_FILES
 I_ADD_EXECUTABLE(graphics_glut_game_mode ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(graphics_glut_game_mode ${OPENGL_LIBRARIES})
 TARGET_LINK_LIBRARIES(graphics_glut_game_mode ${GLUT_LIBRARIES})
-

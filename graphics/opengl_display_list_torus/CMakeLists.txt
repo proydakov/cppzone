@@ -18,4 +18,3 @@ SET(SOURCE_FILES
 I_ADD_EXECUTABLE(graphics_opengl_display_list_torus ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(graphics_opengl_display_list_torus ${OPENGL_LIBRARIES})
 TARGET_LINK_LIBRARIES(graphics_opengl_display_list_torus ${GLUT_LIBRARIES})
-

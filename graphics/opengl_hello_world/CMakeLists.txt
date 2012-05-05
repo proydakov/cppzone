@@ -18,4 +18,3 @@ SET(SOURCE_FILES
 I_ADD_EXECUTABLE(graphics_opengl_hello_world ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(graphics_opengl_hello_world ${OPENGL_LIBRARIES})
 TARGET_LINK_LIBRARIES(graphics_opengl_hello_world ${GLUT_LIBRARIES})
-

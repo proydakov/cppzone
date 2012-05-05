@@ -18,4 +18,3 @@ SET(SOURCE_FILES
 I_ADD_EXECUTABLE(graphics_opengl_follow_mouse ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(graphics_opengl_follow_mouse ${OPENGL_LIBRARIES})
 TARGET_LINK_LIBRARIES(graphics_opengl_follow_mouse ${GLUT_LIBRARIES})
-

@@ -18,4 +18,3 @@ SET(SOURCE_FILES
 I_ADD_EXECUTABLE(graphics_opengl_lines ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(graphics_opengl_lines ${OPENGL_LIBRARIES})
 TARGET_LINK_LIBRARIES(graphics_opengl_lines ${GLUT_LIBRARIES})
-

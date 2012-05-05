@@ -18,4 +18,3 @@ SET(SOURCE_FILES
 I_ADD_EXECUTABLE(graphics_glut_cursor_mode ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(graphics_glut_cursor_mode ${OPENGL_LIBRARIES})
 TARGET_LINK_LIBRARIES(graphics_glut_cursor_mode ${GLUT_LIBRARIES})
-

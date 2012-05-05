@@ -18,4 +18,3 @@ SET(SOURCE_FILES
 I_ADD_EXECUTABLE(graphics_opengl_fogcoord ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(graphics_opengl_fogcoord ${OPENGL_LIBRARIES})
 TARGET_LINK_LIBRARIES(graphics_opengl_fogcoord ${GLUT_LIBRARIES})
-

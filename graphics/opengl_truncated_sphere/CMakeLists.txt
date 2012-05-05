@@ -18,4 +18,3 @@ SET(SOURCE_FILES
 I_ADD_EXECUTABLE(graphics_opengl_truncated_sphere ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(graphics_opengl_truncated_sphere ${OPENGL_LIBRARIES})
 TARGET_LINK_LIBRARIES(graphics_opengl_truncated_sphere ${GLUT_LIBRARIES})
-
