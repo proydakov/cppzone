@@ -38,6 +38,7 @@ SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 INCLUDE(FindOS)
 
 INCLUDE(imacro)
+INCLUDE(icompiler)
 
 # add the include folder to the include path
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR})
