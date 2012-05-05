@@ -50,6 +50,11 @@ void init()
 {
     glClearColor((GLclampf) 0.0, (GLclampf) 0.0, (GLclampf) 0.0, (GLclampf) 0.0);
     glShadeModel(GL_FLAT);
+
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_BLEND);
+    glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void display()
@@ -200,7 +205,7 @@ void keyboard(unsigned char key, int x, int y)
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowSize(400, 400);
     glutInitWindowPosition(100, 100);
     glutCreateWindow(argv[0]);
