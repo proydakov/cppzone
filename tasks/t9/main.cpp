@@ -233,7 +233,7 @@ void dictionary::hash_fun(const query& word_query, index query_size, hash& word_
 {
     word_hash = "";
     for(loop_index i = 0; i < query_size; ++i) {
-        word_hash += m_query[i];
+        word_hash += word_query[i];
     }  
 }
 
@@ -264,6 +264,7 @@ symbol dictionary::num_symbol_from_text_symbol(symbol s) const
         return '9';
     }
     assert(!"invalid input data");
+    return '0';
 }
 
 void dictionary::get_priority_word(string& word)

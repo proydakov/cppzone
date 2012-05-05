@@ -26,12 +26,8 @@
 #include <cassert>
 
 #include <GL/glut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-
 
 typedef std::pair<GLdouble, GLdouble> point;
-
 
 const int STATE_MIN  = 1;
 const int STATE_MAX  = 3;

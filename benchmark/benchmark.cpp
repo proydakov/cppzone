@@ -67,7 +67,6 @@ timeinterval benchmark::get_last_interval()
     default:
         return 0;
     }
-    return 0;
 }
 
 benchmark::unit_intervals benchmark::get_unit()

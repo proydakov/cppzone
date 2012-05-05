@@ -77,7 +77,6 @@ T pow_simple(T base, T factor)
 template<class T>
 T pow_advance(T base, T factor)
 {
-    T res = 1;
     if(factor == 1)
         return base;
     else {
@@ -88,7 +87,6 @@ T pow_advance(T base, T factor)
         else
             return ans;
     }
-    return res;
 }
 
 template<class T>

@@ -21,8 +21,6 @@
  */
 
 #include <GL/glut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
 
 const GLdouble WORLD_SIZE_KOEF = 1.5;
 const int SPHERE_PRECESSION = 50;
@@ -32,30 +30,30 @@ void init()
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glShadeModel(GL_SMOOTH);
 
-    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat mat_shininess[] = { 50.0 };
+    GLfloat mat_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    GLfloat mat_shininess[] = { 50.0f };
 
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
-    GLfloat lmodel_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+    GLfloat lmodel_ambient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
 
-    GLfloat light0_position[] = { 0.0, 1.0, 0.1, 0.0 };
-    GLfloat light0_color[] = { 0.0, 1.0, 0.0, 1.0 };
+    GLfloat light0_position[] = { 0.0f, 1.0f, 0.1f, 0.0f };
+    GLfloat light0_color[] = { 0.0f, 1.0f, 0.0f, 1.0f };
 
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_color);
     glLightfv(GL_LIGHT0, GL_SPECULAR, lmodel_ambient);
 
-    GLfloat light1_position[] = { 1.0, 0.0, 0.1, 0.0 };
-    GLfloat light1_color[] = { 1.0, 0.0, 0.0, 1.0 };
+    GLfloat light1_position[] = { 1.0f, 0.0f, 0.1f, 0.0f };
+    GLfloat light1_color[] = { 1.0f, 0.0f, 0.0f, 1.0f };
 
     glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_color);
     glLightfv(GL_LIGHT1, GL_SPECULAR, lmodel_ambient);
 
-    GLfloat light2_position[] = { -1.0, -1.0, 0.75, 0.0 };
-    GLfloat light2_color[] = { 0.0, 0.0, 1.0, 1.0 };
+    GLfloat light2_position[] = { -1.0f, -1.0f, 0.75f, 0.0f };
+    GLfloat light2_color[] = { 0.0f, 0.0f, 1.0f, 1.0f };
 
     glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
     glLightfv(GL_LIGHT2, GL_DIFFUSE, light2_color);

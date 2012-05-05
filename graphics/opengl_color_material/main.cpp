@@ -21,14 +21,12 @@
  */
 
 #include <GL/glut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
 
-const GLfloat WORLD_SIZE_KOEF = 1.5;
+const GLdouble WORLD_SIZE_KOEF = 1.5;
 const int SPHERE_PRECESSION = 50;
 
-const GLfloat COLOR_DELTA = 0.05;
-GLfloat g_diffuseMaterial[] = { 0.0, 0.0, 0.0, 1.0 };
+const GLfloat COLOR_DELTA = 0.05f;
+GLfloat g_diffuseMaterial[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 void init()
 {
@@ -36,8 +34,8 @@ void init()
     glShadeModel(GL_SMOOTH);
     glEnable(GL_DEPTH_TEST);
 
-    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
+    GLfloat mat_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    GLfloat light_position[] = { 1.0f, 1.0f, 1.0f, 0.0f };
     
     glMaterialfv(GL_FRONT, GL_DIFFUSE, g_diffuseMaterial);
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);

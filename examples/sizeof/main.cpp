@@ -28,9 +28,10 @@
 
 class N
 {
+#ifndef _MSC_VER
     int k[0];
+#endif
 };
-
 
 class O
 {
@@ -77,7 +78,7 @@ int main(int argc, char *argv[])
 {
     (void)argc;
     (void)argv;    
-    
+
     std::cout << "sizeof N:  " << sizeof(N) << std::endl;
     std::cout << "sizeof O:  " << sizeof(O) << std::endl;
     std::cout << "sizeof A:  " << sizeof(A) << std::endl;
@@ -87,12 +88,12 @@ int main(int argc, char *argv[])
     std::cout << "sizeof E:  " << sizeof(E) << std::endl;
     
     std::cout << std::endl;
-    
+   
     N null;
+    
     std::cout << "sizeof null: "<< sizeof(null) << std::endl;
     (void)null;
-   
-#ifndef _MSC_VER
+
     int size = 10;
     N* p = new N[size];
 
@@ -101,7 +102,6 @@ int main(int argc, char *argv[])
         std::cout << "adress pi:   " << &pi << std::endl;
 
     delete [] p;
-#endif // _MSC_VER
     
     std::cout << std::endl;
     

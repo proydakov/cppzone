@@ -88,7 +88,7 @@ void test_fun(const std::string& comment, F fun, T n)
     T current_n = 0;
     benchmark::benchmark current_benchmark;
     current_benchmark.start(); {
-        current_n = fun(n);
+        current_n = static_cast<T>(fun(n));
     }
     current_benchmark.stop();
     std::cout << "BENCHMARK  " << comment << "  n:  " << n <<  "  -  " << current_n
@@ -101,7 +101,7 @@ void test_fun(const std::string& comment, F fun, T p1, T p2)
     T current_n = 0;
     benchmark::benchmark current_benchmark;
     current_benchmark.start(); {
-        current_n = fun(p1, p2);
+        current_n = static_cast<T>(fun(p1, p2));
     }
     current_benchmark.stop();
     std::cout << "BENCHMARK  " << comment << "  p1:  " << p1 

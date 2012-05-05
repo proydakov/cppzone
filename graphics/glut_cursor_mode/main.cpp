@@ -23,8 +23,6 @@
 #include <vector>
 
 #include <GL/glut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
 
 const GLdouble CLEAR_COLOR[] = { 0.0, 0.0, 0.0 };
 const GLdouble DRAW_COLOR[]  = { 1.0, 1.0, 1.0 };

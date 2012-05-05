@@ -24,8 +24,6 @@
 #include <iostream>
 
 #include <GL/glut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
 
 const std::string COMMENT = "Press 'a' or 'r' key to change state.\nPress ESC for exit...";
 
@@ -50,9 +48,9 @@ void info()
 
 void init()
 {
-    GLfloat mat_specular[]  = { 1.0, 1.0, 1.0, 0.15 };
-    GLfloat mat_shininess[] = { 100.0 };
-    GLfloat position[] = { 0.5, 0.5, 1.0, 0.0 };
+    GLfloat mat_specular[]  = { 1.0f, 1.0f, 1.0f, 0.15f };
+    GLfloat mat_shininess[] = { 100.0f };
+    GLfloat position[] = { 0.5f, 0.5f, 1.0f, 0.0f };
 
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
@@ -78,10 +76,10 @@ void display()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    GLfloat mat_solid[] = { 0.75, 0.75, 0.0, 1.0 };
-    GLfloat mat_zero[]  = { 0.0,  0.0,  0.0, 1.0 };
-    GLfloat mat_transparent[] = { 0.0, 0.8, 0.8, 0.6 };
-    GLfloat mat_emission[] = { 0.0, 0.3, 0.3, 0.6 };
+    GLfloat mat_solid[] = { 0.75f, 0.75f, 0.0f, 1.0f };
+    GLfloat mat_zero[]  = { 0.0f,  0.0f,  0.0f, 1.0f };
+    GLfloat mat_transparent[] = { 0.0f, 0.8f, 0.8f, 0.6f };
+    GLfloat mat_emission[]    = { 0.0f, 0.3f, 0.3f, 0.6f };
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

@@ -23,8 +23,6 @@
 #include <cmath>
 
 #include <GL/glut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
 
 const int CYCLE_TIME = 30;
 

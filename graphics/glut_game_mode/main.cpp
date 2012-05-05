@@ -24,8 +24,6 @@
 #include <iostream>
 
 #include <GL/glut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
 
 const std::string COMMENT = "Press ESC for exit...";
 
