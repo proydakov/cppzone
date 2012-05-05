@@ -20,6 +20,7 @@
  *  THE SOFTWARE.
  */
 
+#include <string>
 #include <iostream>
 
 #include <GL/glut.h>
@@ -34,9 +35,16 @@
 
 #endif // _MSC_VER
 
+const std::string COMMENT = "Press 'b' for show / hide background image. Press ESC for exit.";
+
 const GLdouble WORLD_SIZE_KOEF = 2;
 
 int g_bgtoggle = 1;
+
+void info()
+{
+    std::cout << COMMENT << '\n' << std::endl;
+}
 
 void init()
 {
@@ -168,6 +176,7 @@ int main(int argc, char** argv)
     glutInitWindowPosition(100, 100);
     glutCreateWindow(argv[0]);
 
+    info();
     init();
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
