@@ -329,7 +329,7 @@ conversion_rules::conversion_rules(const translation_main& tr_main, const transl
 
 void conversion_rules::get_text_from_num(number_type num, index_type pos, mstring& text) const
 {
-    text = m_translation.m_text_data[pos][num];
+    text = m_translation.m_text_data[pos][(unsigned)num];
 }
 
 void conversion_rules::get_text_of_sign(number_type num, mstring& text) const
