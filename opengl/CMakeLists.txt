@@ -4,7 +4,7 @@
 
 MESSAGE(STATUS "BUILD  OPENGL\n")
 
-SET(PROJECT_FOLDER "graphics_opengl")
+SET(PROJECT_FOLDER "opengl")
 
 ADD_SUBDIRECTORY(opengl_get_system_info)
 ADD_SUBDIRECTORY(opengl_hello_world)

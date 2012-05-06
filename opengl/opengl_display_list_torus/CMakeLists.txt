@@ -2,7 +2,7 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  opengl  display  list  torus  graphics")
+MESSAGE(STATUS "create  display  list  torus  opengl")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -15,6 +15,6 @@ INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 SET(SOURCE_FILES
     main.cpp)
 
-I_ADD_EXECUTABLE(graphics_opengl_display_list_torus ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(graphics_opengl_display_list_torus ${OPENGL_LIBRARIES})
-TARGET_LINK_LIBRARIES(graphics_opengl_display_list_torus ${GLUT_LIBRARIES})
+I_ADD_EXECUTABLE(opengl_display_list_torus ${SOURCE_FILES})
+TARGET_LINK_LIBRARIES(opengl_display_list_torus ${OPENGL_LIBRARIES})
+TARGET_LINK_LIBRARIES(opengl_display_list_torus ${GLUT_LIBRARIES})

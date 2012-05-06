@@ -2,7 +2,7 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  opengl  follow  mouse  graphics")
+MESSAGE(STATUS "create  follow  mouse  opengl")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -15,6 +15,6 @@ INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 SET(SOURCE_FILES
     main.cpp)
 
-I_ADD_EXECUTABLE(graphics_opengl_follow_mouse ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(graphics_opengl_follow_mouse ${OPENGL_LIBRARIES})
-TARGET_LINK_LIBRARIES(graphics_opengl_follow_mouse ${GLUT_LIBRARIES})
+I_ADD_EXECUTABLE(opengl_follow_mouse ${SOURCE_FILES})
+TARGET_LINK_LIBRARIES(opengl_follow_mouse ${OPENGL_LIBRARIES})
+TARGET_LINK_LIBRARIES(opengl_follow_mouse ${GLUT_LIBRARIES})

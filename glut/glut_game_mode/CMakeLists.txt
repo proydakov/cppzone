@@ -2,7 +2,7 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  glut  game  mode  graphics")
+MESSAGE(STATUS "create  game  mode  glut")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -15,6 +15,6 @@ INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 SET(SOURCE_FILES
     main.cpp)
 
-I_ADD_EXECUTABLE(graphics_glut_game_mode ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(graphics_glut_game_mode ${OPENGL_LIBRARIES})
-TARGET_LINK_LIBRARIES(graphics_glut_game_mode ${GLUT_LIBRARIES})
+I_ADD_EXECUTABLE(glut_game_mode ${SOURCE_FILES})
+TARGET_LINK_LIBRARIES(glut_game_mode ${OPENGL_LIBRARIES})
+TARGET_LINK_LIBRARIES(glut_game_mode ${GLUT_LIBRARIES})

@@ -2,7 +2,7 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  opengl  get  system info  graphics")
+MESSAGE(STATUS "create  get  system info  opengl")
 
 IF(MSVC)
 	COMPILER_MSVC_SET_STATIC_RUNTIME()
@@ -19,6 +19,6 @@ INCLUDE_DIRECTORIES(${GLUT_INCLUDE_DIR})
 SET(SOURCE_FILES
     main.cpp)
 
-I_ADD_EXECUTABLE(graphics_opengl_get_system_info ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(graphics_opengl_get_system_info ${OPENGL_LIBRARIES})
-TARGET_LINK_LIBRARIES(graphics_opengl_get_system_info ${GLUT_LIBRARIES})
+I_ADD_EXECUTABLE(opengl_get_system_info ${SOURCE_FILES})
+TARGET_LINK_LIBRARIES(opengl_get_system_info ${OPENGL_LIBRARIES})
+TARGET_LINK_LIBRARIES(opengl_get_system_info ${GLUT_LIBRARIES})

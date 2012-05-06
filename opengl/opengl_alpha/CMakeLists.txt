@@ -2,7 +2,7 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  opengl  alpha  graphics")
+MESSAGE(STATUS "create  alpha  opengl")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -15,6 +15,6 @@ INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 SET(SOURCE_FILES
     main.cpp)
 
-I_ADD_EXECUTABLE(graphics_opengl_alpha ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(graphics_opengl_alpha ${OPENGL_LIBRARIES})
-TARGET_LINK_LIBRARIES(graphics_opengl_alpha ${GLUT_LIBRARIES})
+I_ADD_EXECUTABLE(opengl_alpha ${SOURCE_FILES})
+TARGET_LINK_LIBRARIES(opengl_alpha ${OPENGL_LIBRARIES})
+TARGET_LINK_LIBRARIES(opengl_alpha ${GLUT_LIBRARIES})
