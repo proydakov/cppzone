@@ -23,9 +23,9 @@
 #ifndef I_TEXT_FILE_READER
 #define I_TEXT_FILE_READER
 
-#include <fstream>
-#include <string>
 #include <list>
+#include <string>
+#include <fstream>
 
 typedef std::list<std::string> data_list;
 

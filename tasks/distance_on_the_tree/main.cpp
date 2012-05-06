@@ -23,8 +23,8 @@
 #include <map>
 #include <list>
 #include <vector>
+#include <cassert>
 #include <iostream>
-#include <assert.h>
 
 //#define COMMENT_OUTPUT
 //#define WAIT_EXIT
@@ -58,7 +58,7 @@ int main()
     uint data_size = 0;
 #ifdef COMMENT_OUTPUT
     std::cout << "Enter number of graph arc: ";
-#endif
+#endif // COMMENT_OUTPUT
     std::cin >> data_size;
     
     tree i_tree(data_size);
@@ -189,7 +189,7 @@ void read_input_task(task& data)
 {
 #ifdef COMMENT_OUTPUT
     std::cout << "Enter the number of pairs to find: ";
-#endif
+#endif // COMMENT_OUTPUT
     uint size = 0;
     std::cin >> size;
     
@@ -199,7 +199,7 @@ void read_input_task(task& data)
     for(uint i = 0; i < size; ++i) {
 #ifdef COMMENT_OUTPUT
         std::cout << "Enter to find a pair " << i + 1 << " (element a, element b):  ";
-#endif
+#endif // COMMENT_OUTPUT
         std::cin >> first;
         std::cin >> second;
         data.push_back(task_pair(first, second));
