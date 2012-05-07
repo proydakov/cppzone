@@ -41,7 +41,8 @@ const std::string COMMENT = "Press ESC for exit.";
 const int SCREEN_WIDTH  = 640;
 const int SCREEN_HEIGHT = 480;
 
-const int ESCAPE = 27;
+const int CYCLE_TIME = 25;
+const int ESCAPE     = 27;
 
 const unsigned TEXTURE_NUM = 3;
 
@@ -197,13 +198,18 @@ void reshape(int w, int h)
     gluPerspective(45.0, (GLdouble) w / (GLdouble) h, 0.1, 100.0);
 }
 
-void cycle()
+void renderCycle()
+{
+    glutPostRedisplay();
+}
+
+void updateDataCycle(int value)
 {
     g_xrot += 0.3;
     g_yrot += 0.2;
     g_zrot += 0.4;
-
-    glutPostRedisplay();
+    
+    glutTimerFunc(CYCLE_TIME, updateDataCycle, value);
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -252,7 +258,8 @@ int main( int argc, char **argv )
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);
-    glutIdleFunc(cycle);
+    glutIdleFunc(renderCycle);
+    glutTimerFunc(CYCLE_TIME, updateDataCycle, 0);
     glutMainLoop();
 
     return 0;

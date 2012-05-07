@@ -42,7 +42,7 @@ public:
               double seconds = (t - m_time) / 1000.0;
               double fps = m_frames / seconds;
               std::cout << m_frames << " frames in " << seconds << " seconds = "
-                  << fps << "FPS" << std::endl;
+                  << fps << " FPS" << std::endl;
               m_time = t;
               m_frames = 0;
           }
