@@ -30,4 +30,9 @@ ADD_SUBDIRECTORY(opengl_fog)
 ADD_SUBDIRECTORY(opengl_fogcoord)
 ADD_SUBDIRECTORY(opengl_display_list_torus)
 
+FIND_PACKAGE(SDL)
+IF(SDL_FOUND)
+    ADD_SUBDIRECTORY(opengl_texture_cube)
+ENDIF(SDL_FOUND)
+
 MESSAGE(STATUS "")
