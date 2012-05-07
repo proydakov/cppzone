@@ -26,7 +26,14 @@ SET(SOURCE_FILES
 SET(CONFIG_FILES
 	config_opengl_texture_cube.h)
 
-I_ADD_EXECUTABLE(opengl_texture_cube ${HEADER_FILES} ${SOURCE_FILES} ${CONFIG_FILES})
+SET(IMAGE_FILES
+    data/box.bmp
+    data/goblet.bmp
+    data/gamedev.bmp)
+
+I_ADD_EXECUTABLE(opengl_texture_cube ${HEADER_FILES} ${SOURCE_FILES} ${CONFIG_FILES} ${IMAGE_FILES})
 TARGET_LINK_LIBRARIES(opengl_texture_cube ${OPENGL_LIBRARIES})
 TARGET_LINK_LIBRARIES(opengl_texture_cube ${GLUT_LIBRARIES})
 TARGET_LINK_LIBRARIES(opengl_texture_cube ${SDL_LIBRARY})
+
+SOURCE_GROUP(images FILES ${IMAGE_FILES})

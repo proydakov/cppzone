@@ -53,4 +53,4 @@ private:
     unsigned m_frames;
 };
 
-#endif I_CALC_FPS_H
+#endif // I_CALC_FPS_H

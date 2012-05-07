@@ -20,7 +20,7 @@
  *  THE SOFTWARE.
  */
 
-#include <ctime>
+#include <vector>
 #include <string>
 #include <iostream>
 
@@ -43,13 +43,16 @@ const int SCREEN_HEIGHT = 480;
 
 const int ESCAPE = 27;
 
+const int TEXTURE_NUM = 3;
+
 GLdouble g_xrot = 0;
 GLdouble g_yrot = 0;
 GLdouble g_zrot = 0;
 
-GLuint g_texture[1];
+GLuint g_texture[TEXTURE_NUM];
+unsigned g_textureIndex = 0;
 
-bool loadGLTextures(const std::string& file)
+bool loadGLTexture(const std::string& file, int num)
 {
     bool status = false;
 
@@ -59,12 +62,17 @@ bool loadGLTextures(const std::string& file)
     if(pTextureImage[0]) {
 	    status = true;
 
-	    glGenTextures(1, &g_texture[0]);
-	    glBindTexture(GL_TEXTURE_2D, g_texture[0]);
+        glGenTextures(1, &g_texture[num]);
+	    glBindTexture(GL_TEXTURE_2D, g_texture[num]);
 
 	    glTexImage2D(GL_TEXTURE_2D, 0, 3, pTextureImage[0]->w,
 			  pTextureImage[0]->h, 0, GL_BGR,
 			  GL_UNSIGNED_BYTE, pTextureImage[0]->pixels);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
     if(pTextureImage[0]) {
 	    SDL_FreeSurface(pTextureImage[0]);
@@ -79,11 +87,22 @@ void info()
 
 void init()
 {
-    std::string textureName("gamedev.bmp");
-    std::string textureFile(PARENT_DIRECTORY);
-    textureFile += textureName;
-    if(!loadGLTextures(textureFile)) {
-        std::cout << "Error loading texture" << std::endl;
+    std::string textureGamedev("gamedev.bmp");
+    std::string textureBox("box.bmp");
+    std::string textureGobletBox("goblet.bmp");
+    
+    std::vector<std::string> textureNameContainer;
+    textureNameContainer.push_back(textureGamedev);
+    textureNameContainer.push_back(textureBox);
+    textureNameContainer.push_back(textureGobletBox);
+
+    std::string textureFile(PARENT_DIRECTORY + std::string("data/"));
+    
+    for(size_t i = 0; i < textureNameContainer.size(); ++i) {
+        if(!loadGLTexture(textureFile + textureNameContainer[i], i)) {
+            std::cerr << "Error loading texture" << std::endl;
+            exit(1);
+        }
     }
 
     glClearColor(0.0, 0.0, 0.0, 0.5);
@@ -93,10 +112,11 @@ void init()
 
     glEnable(GL_TEXTURE_2D);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 }
 
 void display()
@@ -111,7 +131,7 @@ void display()
     glRotated(g_yrot, 0.0, 1.0, 0.0);
     glRotated(g_zrot, 0.0, 0.0, 1.0);
 
-    glBindTexture(GL_TEXTURE_2D, g_texture[0]);
+    glBindTexture(GL_TEXTURE_2D, g_texture[g_textureIndex]);
 
     GLdouble verticesSquare[8][3] = { 
         { 1.0, -1.0, -1.0}, { 1.0, 1.0, -1.0}, { 1.0, -1.0, 1.0}, { 1.0, 1.0, 1.0}, 
@@ -189,6 +209,12 @@ void keyboard(unsigned char key, int x, int y)
     switch(key) {
         case ESCAPE:
             exit(0);
+            break;
+
+        case 't':
+            g_textureIndex++;
+            if(g_textureIndex == TEXTURE_NUM)
+                g_textureIndex = 0;
             break;
 
         default:
