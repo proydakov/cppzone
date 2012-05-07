@@ -52,7 +52,9 @@ GLdouble g_zrot = 0;
 GLuint g_texture[TEXTURE_NUM];
 unsigned g_textureIndex = 0;
 
-bool loadGLTexture(const std::string& file, int num)
+bool g_blending = false;
+
+bool loadGLTexture(const std::string& file, size_t num)
 {
     bool status = false;
 
@@ -115,6 +117,9 @@ void init()
 
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+
+    glColor4d(1.0, 1.0, 1.0, 0.5);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 }
@@ -215,6 +220,18 @@ void keyboard(unsigned char key, int x, int y)
             g_textureIndex++;
             if(g_textureIndex == TEXTURE_NUM)
                 g_textureIndex = 0;
+            break;
+
+        case 'b':
+            if(g_blending) {
+                glEnable(GL_DEPTH_TEST);
+                glDisable(GL_BLEND);
+            }
+            else {
+                glEnable(GL_BLEND);
+                glDisable(GL_DEPTH_TEST);
+            }
+            g_blending = !g_blending;
             break;
 
         default:
