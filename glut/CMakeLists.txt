@@ -6,7 +6,7 @@ MESSAGE(STATUS "BUILD  GLUT\n")
 
 SET(PROJECT_FOLDER "glut")
 
-ADD_SUBDIRECTORY(glut_game_mode)
-ADD_SUBDIRECTORY(glut_cursor_mode)
+ADD_SUBDIRECTORY(game_mode)
+ADD_SUBDIRECTORY(cursor_mode)
 
 MESSAGE(STATUS "")
