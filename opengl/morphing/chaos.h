@@ -40,8 +40,8 @@ void generate_chaos(object<P, C>& nobject, const C& color, GLfloat radius, unsig
         GLfloat y = cradius * sin(phi) * sin(omega);
         GLfloat z = cradius * cos(phi);
 
-        object<P, C>::point_type point(x, y, z);
-        nobject.points.push_back(object<P, C>::vertex(point, color));
+        typename object<P, C>::point_type point(x, y, z);
+        nobject.points.push_back(typename object<P, C>::vertex(point, color));
     }
 }
 

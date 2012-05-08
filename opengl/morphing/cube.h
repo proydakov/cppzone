@@ -71,13 +71,13 @@ void generate_cube(object<P, C>& nobject, const C& color, GLfloat size, unsigned
                     iy == 0 || iy == last ||
                     iz == 0 || iz == last) {
 
-                    object<P, C>::point_type point(x, y, z);
+                    typename object<P, C>::point_type point(x, y, z);
 
-                    nobject.points.push_back(object<P, C>::vertex(point, color));
+                    nobject.points.push_back(typename object<P, C>::vertex(point, color));
 
                     if(delta > 0) {
                         delta--;
-                        nobject.points.push_back(object<P, C>::vertex(point, color));
+                        nobject.points.push_back(typename object<P, C>::vertex(point, color));
                     }
                 }
             }

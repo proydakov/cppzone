@@ -46,9 +46,9 @@ void generate_lines(object<P, C>& nobject, const C& color, GLfloat radius, unsig
             GLfloat y = -radius * sin(phi);
             GLfloat z = base + height_delta * i;
 
-            object<P, C>::point_type point(x, y, z);
+            typename object<P, C>::point_type point(x, y, z);
 
-            nobject.points.push_back(object<P, C>::vertex(point, color));
+            nobject.points.push_back(typename object<P, C>::vertex(point, color));
         }
     }
 }

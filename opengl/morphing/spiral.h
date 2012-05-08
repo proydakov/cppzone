@@ -44,8 +44,8 @@ void generate_spiral(object<P, C>& nobject, const C& color, GLfloat radius, unsi
         GLfloat y = radius * sin(phi) * i * compression;
         GLfloat z = base + height_delta * i;
 
-        object<P, C>::point_type point(x, y, z);
-        nobject.points.push_back(object<P, C>::vertex(point, color));
+        typename object<P, C>::point_type point(x, y, z);
+        nobject.points.push_back(typename object<P, C>::vertex(point, color));
     }
 }
 

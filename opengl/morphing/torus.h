@@ -56,9 +56,9 @@ void generate_torus(object<P, C>& nobject, const C& color, GLfloat big_radius, G
             GLfloat yReal = yGlobal + yLocalRotated;
             GLfloat zReal = zLocal;
 
-            object<P, C>::point_type point(xReal, yReal, zReal);
+            typename object<P, C>::point_type point(xReal, yReal, zReal);
 
-            nobject.points.push_back(object<P, C>::vertex(point, color));
+            nobject.points.push_back(typename object<P, C>::vertex(point, color));
         }
     }
 
