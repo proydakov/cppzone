@@ -55,8 +55,8 @@ struct system::d
     
     ~d()
     {
-        //assert(!m_pDevice);
-        //assert(!m_pContext);
+        assert(!m_pDevice);
+        assert(!m_pContext);
         delete m_buffers;
     }
     
@@ -120,7 +120,6 @@ bool system::init()
     
     ALfloat ListenerPos[] = { 0.0, 0.0, 0.0 };
     ALfloat ListenerVel[] = { 0.0, 0.0, 0.0 };
-    // Ориентация слушателя. (Первые 3 элемента – направление «на», последние 3 – «вверх»)
     ALfloat ListenerOri[] = { 1.0, 1.0, 0.0,  0.0, 0.0, 1.0 };
     
     alListenerfv(AL_POSITION,    ListenerPos);
@@ -135,7 +134,6 @@ void system::destroy()
     if(!m_d->m_pDevice)
         return;
     
-    // Очищаем все буффера
     for(sound_buffers::iterator i = m_d->m_buffers->begin(); i != m_d->m_buffers->end(); ++i) {
         alDeleteBuffers(1, &i->second.m_id);
     }
@@ -143,6 +141,7 @@ void system::destroy()
     alcDestroyContext(m_d->m_pContext);
     alcCloseDevice(m_d->m_pDevice);
     m_d->m_pDevice = 0;
+    m_d->m_pContext = 0;
 }
 
 bool system::check_alc_error()
@@ -208,6 +207,7 @@ system::sound_id system::load_wav(const std::string& filename)
         if (!check_al_error()) {
             return bad_id;
         }
+        
         alutUnloadWAV(format, data, size, freq);
         if (!check_al_error()) {
             return bad_id;
@@ -244,7 +244,7 @@ sound::~sound()
     close();
 }
 
-bool sound::open(const std::string& filename)
+bool sound::open(const std::string& filename, bool looped)
 {
     std::ifstream a(filename.c_str());
     if(!a.is_open()) { 
@@ -252,10 +252,6 @@ bool sound::open(const std::string& filename)
     }
     a.close();
     
-    
-    int looped = false;
-    
-    // Создаем источник соответствующий нашему звуку
     ALuint source_id = m_source_id;
     alGenSources(1, &source_id);
     m_source_id = source_id;

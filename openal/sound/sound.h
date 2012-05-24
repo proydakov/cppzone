@@ -73,7 +73,7 @@ public:
     sound();
     ~sound();
     
-    bool open(const std::string& filename);
+    bool open(const std::string& filename, bool looped);
     void close();
     
     void play();

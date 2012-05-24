@@ -20,8 +20,12 @@
  *  THE SOFTWARE.
  */
 
-#include <sound.h>
 #include <iostream>
+#include <boost/thread.hpp>
+
+#include <sound.h>
+
+#include <config_simple.h>
 
 int main(int argc, char** argv)
 {
@@ -30,14 +34,14 @@ int main(int argc, char** argv)
     
     sound::sound isound;
     
-    bool open = isound.open("/home/evgeny/repository/i++/build/grid.wav");
+    bool open = isound.open(std::string(BASE_DIR) + "grid.wav", false);
     if(!open) {
         std::cerr << "Open sound error." << std::endl;
         return 1;
     }
     isound.play();
     
-    while(true);
+    boost::this_thread::sleep(boost::posix_time::seconds(97));
     
     return 0;
 }
