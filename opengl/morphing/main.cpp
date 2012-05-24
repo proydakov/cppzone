@@ -39,7 +39,7 @@
 const std::string COMMENT = 
 "Keys 'w', 's', 'd', 'a' to rotate the object.\n\
 Keys '1 ', '2', '3', '4', '5', '6', '7' are used to select the type of object.\n\
-Key 'k' is used to select the type of morphing.\
+Key 't' is used to select the type of morphing.\n\
 Press ESC for exit.";
 
 const int CYCLE_TIME = 10;
