@@ -26,47 +26,43 @@
 #include <d3d9.h>
 #include <d3dx9mesh.h>
 
-
 #ifndef SAFE_RELEASE
 #define SAFE_RELEASE(p)      { if (p) { (p)->Release(); (p) = NULL; } }
 #endif
 
-#define VK_1 0x31
-#define VK_2 0x32
-#define VK_3 0x33
-
-enum objects 
-{ 
-    sphere,
-    cube,
-    torus
-}; 
-
 static const FLOAT OBJECT_SIZE = 10;
 static const UINT OBJECT_PRECESSION = 100;
 
-static const FLOAT ROTATION_DELTA = 0.01f;
+static const FLOAT ROTATION_DELTA = 0.05f;
+static const FLOAT MAX_ANGLE = 360;
 
 //-----------------------------------------------------------------------------
 // Globals variables and definitions
 //-----------------------------------------------------------------------------
-LPDIRECT3D9       g_pD3D       = NULL;
+LPDIRECT3D9       g_pD3D = NULL;
 LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;
 
-LPD3DXMESH g_pSphereMesh = NULL;
-LPD3DXMESH g_pCubeMesh   = NULL;
-LPD3DXMESH g_pTorusMesh  = NULL;
+LPD3DXMESH g_pObjectMesh = NULL;
 
-static objects g_object = sphere;
+D3DLIGHT9* g_pLight0 = NULL;
+D3DLIGHT9* g_pLight1 = NULL;
+D3DLIGHT9* g_pLight2 = NULL;
+D3DLIGHT9* g_pLight3 = NULL;
+
 static FLOAT g_rotation = 0;
 
 //-----------------------------------------------------------------------------
 // Forward declarations 
 //-----------------------------------------------------------------------------
 bool init(HWND hWnd);
+void setupLights();
+void generateGeometry();
 void cleanup();
+
 void render();
 void camera();
+void setLightsPosition();
+
 void resize(UINT width, UINT height);
 void keyboard(HWND hWnd, WPARAM key);
 LRESULT WINAPI msgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -86,13 +82,12 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
     };
     RegisterClassEx(&wc);
 
-    HWND hWnd = CreateWindow(appClass, "D3D draw objects",
-                             WS_OVERLAPPEDWINDOW, 100, 100, 600, 600,
-                             NULL, NULL, wc.hInstance, NULL);
+    HWND hWnd = CreateWindow(appClass, "D3D light",
+        WS_OVERLAPPEDWINDOW, 100, 100, 600, 600,
+        NULL, NULL, wc.hInstance, NULL);
 
-    if(!init(hWnd)) {
-        return 0;
-    }
+    bool res = init(hWnd);
+    assert(res);
 
     ShowWindow(hWnd, SW_SHOWDEFAULT);
     UpdateWindow(hWnd);
@@ -110,84 +105,169 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 bool init(HWND hWnd)
 {
     g_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
+
     if(!g_pD3D) {
         return false;
     }
 
     D3DPRESENT_PARAMETERS d3dpp;
     ZeroMemory(&d3dpp, sizeof(d3dpp));
-    d3dpp.Windowed = true;
+    d3dpp.Windowed = TRUE;
     d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
     d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
+    d3dpp.EnableAutoDepthStencil = TRUE;
+    d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
 
     g_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
         D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &g_pd3dDevice);
 
-    if(!g_pD3D) {
+    if(!g_pd3dDevice) {
         return false;
     }
 
-    g_pd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+    g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 
-    D3DXCreateSphere(g_pd3dDevice, OBJECT_SIZE, OBJECT_PRECESSION, OBJECT_PRECESSION, &g_pSphereMesh, 0);
-    D3DXCreateBox(g_pd3dDevice, OBJECT_SIZE, OBJECT_SIZE, OBJECT_SIZE, &g_pCubeMesh, 0);
-    D3DXCreateTorus(g_pd3dDevice, OBJECT_SIZE / OBJECT_SIZE, OBJECT_SIZE, OBJECT_PRECESSION / (UINT) OBJECT_SIZE, OBJECT_PRECESSION, &g_pTorusMesh, 0);
+    // init light
+    setupLights();
+
+    // init geometry
+    generateGeometry();
 
     return true;
 }
 
+void setupLights()
+{
+    // config material
+    D3DMATERIAL9 material;
+    ZeroMemory(&material, sizeof(D3DMATERIAL9));
+    material.Diffuse.r = material.Specular.r = material.Ambient.r = 1.0f;
+    material.Diffuse.g = material.Specular.g = material.Ambient.g = 1.0f;
+    material.Diffuse.b = material.Specular.b = material.Ambient.b = 1.0f;
+    material.Diffuse.a = material.Specular.a = material.Ambient.a = 1.0f;
+    g_pd3dDevice->SetMaterial(&material);
+
+    // config light
+    D3DXCOLOR whiteColor = D3DCOLOR_XRGB(255, 255, 255);
+    D3DXCOLOR redColor = D3DCOLOR_XRGB(255, 0, 0);
+    D3DXCOLOR greenColor = D3DCOLOR_XRGB(0, 255, 0);
+    D3DXCOLOR blueColor = D3DCOLOR_XRGB(0, 0, 255);
+
+    FLOAT range = 10.0f;
+
+    g_pLight0 = new D3DLIGHT9;
+    ZeroMemory(g_pLight0, sizeof(D3DLIGHT9));
+    g_pLight0->Type = D3DLIGHT_DIRECTIONAL;
+    g_pLight0->Ambient = whiteColor * 0.25f;
+    D3DXVECTOR3 direction(1.0f, 1.0f, 1.0f);
+    D3DXVec3Normalize((D3DXVECTOR3*)&(g_pLight0->Direction), &direction);
+
+    g_pLight1 = new D3DLIGHT9;
+    ZeroMemory(g_pLight1, sizeof(D3DLIGHT9));
+    g_pLight1->Type = D3DLIGHT_POINT;
+    g_pLight1->Diffuse = greenColor;
+    g_pLight1->Specular = greenColor;
+    g_pLight1->Range = range;
+
+    g_pLight2 = new D3DLIGHT9;
+    ZeroMemory(g_pLight2, sizeof(D3DLIGHT9));
+    g_pLight2->Type = D3DLIGHT_POINT;
+    g_pLight2->Diffuse = blueColor;
+    g_pLight2->Specular = blueColor;
+    g_pLight2->Range = range;
+
+    g_pLight3 = new D3DLIGHT9;
+    ZeroMemory(g_pLight3, sizeof(D3DLIGHT9));
+    g_pLight3->Type = D3DLIGHT_POINT;
+    g_pLight3->Diffuse = redColor;
+    g_pLight3->Specular = redColor;
+    g_pLight3->Range = range;
+
+    g_pd3dDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+    g_pd3dDevice->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
+    g_pd3dDevice->LightEnable(0, TRUE);
+    g_pd3dDevice->LightEnable(1, TRUE);
+    g_pd3dDevice->LightEnable(2, TRUE);
+    g_pd3dDevice->LightEnable(3, TRUE);
+
+    g_pd3dDevice->SetLight(0, g_pLight0);
+}
+
+void generateGeometry()
+{
+    D3DXCreateSphere(g_pd3dDevice, OBJECT_SIZE, OBJECT_PRECESSION, OBJECT_PRECESSION, &g_pObjectMesh, 0);
+}
+
 void cleanup()
 {
-    SAFE_RELEASE(g_pSphereMesh);
-    SAFE_RELEASE(g_pCubeMesh);
-    SAFE_RELEASE(g_pTorusMesh);
+    delete g_pLight0;
+    delete g_pLight1;
+    delete g_pLight2;
+    delete g_pLight3;
+
+    SAFE_RELEASE(g_pObjectMesh);
     SAFE_RELEASE(g_pd3dDevice);
     SAFE_RELEASE(g_pD3D);
 }
 
-void render()
+VOID render()
 {
-    assert(g_pd3dDevice);
+    g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB( 0, 0, 0 ), 1.0f, 0);
 
-    camera();
-
-    g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(255, 0, 0), 1.0f, 0);
+    setLightsPosition();
 
     g_pd3dDevice->BeginScene();
     {
-        switch(g_object) {
-            case sphere:
-                g_pSphereMesh->DrawSubset(0);
-                break;
-
-            case cube:
-                g_pCubeMesh->DrawSubset(0);
-                break;
-
-            case torus:
-                g_pTorusMesh->DrawSubset(0);
-                break;
-
-            default:
-                assert(!"Invalid object");
-                break;
-        }
+        g_pObjectMesh->DrawSubset(0);
     }
     g_pd3dDevice->EndScene();
 
-    g_pd3dDevice->Present(NULL, NULL, NULL, NULL);
+    camera();
 
-    g_rotation += ROTATION_DELTA;
+    g_pd3dDevice->Present(NULL, NULL, NULL, NULL);
 }
 
 void camera()
 {
-    D3DXVECTOR3 position(sin(g_rotation) * OBJECT_SIZE, cos(g_rotation) * OBJECT_SIZE, OBJECT_SIZE);
+    FLOAT distance = OBJECT_SIZE * 1.5f;
+    D3DXVECTOR3 position(distance, distance, distance);
     D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
-    D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+    D3DXVECTOR3 up(0.0f, 0.0f, 1.0f);
     D3DXMATRIX V;
     D3DXMatrixLookAtLH(&V, &position, &target, &up);
     g_pd3dDevice->SetTransform(D3DTS_VIEW, &V);
+}
+
+void setLightsPosition()
+{
+    FLOAT distance = OBJECT_SIZE * 1.5f;
+    {
+        FLOAT y = sin(g_rotation + D3DX_PI / 2) * distance;
+        FLOAT z = cos(g_rotation + D3DX_PI / 2) * distance;
+        D3DXVECTOR3 position = D3DXVECTOR3(0, y, z);
+        g_pLight1->Position = position;
+        g_pd3dDevice->SetLight(1, g_pLight1);
+    }
+
+    {
+        FLOAT x = sin(g_rotation + D3DX_PI) * distance;
+        FLOAT z = cos(g_rotation + D3DX_PI) * distance;
+        D3DXVECTOR3 position = D3DXVECTOR3(x, 0, z);
+        g_pLight2->Position = position;
+        g_pd3dDevice->SetLight(2, g_pLight2);
+    }
+
+    {
+        FLOAT x = sin(g_rotation) * distance;
+        FLOAT y = cos(g_rotation) * distance;
+        D3DXVECTOR3 position = D3DXVECTOR3(x, y, 0);
+        g_pLight3->Position = position;
+        g_pd3dDevice->SetLight(3, g_pLight3);
+    }
+
+    g_rotation += ROTATION_DELTA;
+    if(g_rotation > MAX_ANGLE)
+        g_rotation -= MAX_ANGLE;
 }
 
 void resize(UINT width, UINT height)
@@ -205,18 +285,6 @@ void resize(UINT width, UINT height)
 void keyboard(HWND hWnd, WPARAM key)
 {
     switch(key) {
-    case VK_1:
-        g_object = sphere;
-        break;
-
-    case VK_2:
-        g_object = cube;
-        break;
-
-    case VK_3:
-        g_object = torus;
-        break;
-
     case VK_ESCAPE:
         DestroyWindow(hWnd);
         break;
