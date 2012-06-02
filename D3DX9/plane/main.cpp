@@ -20,8 +20,6 @@
  *  THE SOFTWARE.
  */
 
-#include <iostream>
-
 #include <d3dx9math.h>
 
 int main()
