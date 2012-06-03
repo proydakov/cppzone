@@ -39,7 +39,7 @@ static const FLOAT MAX_ANGLE = 360;
 //-----------------------------------------------------------------------------
 // Globals variables and definitions
 //-----------------------------------------------------------------------------
-LPDIRECT3D9       g_pD3D = NULL;
+LPDIRECT3D9       g_pD3D       = NULL;
 LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;
 
 LPD3DXMESH g_pObjectMesh = NULL;
@@ -72,7 +72,7 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 {
     UNREFERENCED_PARAMETER(hInst);
 
-    CHAR appClass[] = "D3D Examples";
+    CHAR appClass[] = "D3D9 Examples";
 
     WNDCLASSEX wc =
     {
@@ -82,7 +82,7 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
     };
     RegisterClassEx(&wc);
 
-    HWND hWnd = CreateWindow(appClass, "D3D light",
+    HWND hWnd = CreateWindow(appClass, "D3D9 light",
         WS_OVERLAPPEDWINDOW, 100, 100, 600, 600,
         NULL, NULL, wc.hInstance, NULL);
 

@@ -76,7 +76,7 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 {
     UNREFERENCED_PARAMETER(hInst);
 
-    CHAR appClass[] = "D3D Examples";
+    CHAR appClass[] = "D3D9 Examples";
 
     WNDCLASSEX wc =
     {
@@ -86,7 +86,7 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
     };
     RegisterClassEx(&wc);
 
-    HWND hWnd = CreateWindow(appClass, "D3D draw objects",
+    HWND hWnd = CreateWindow(appClass, "D3D9 draw objects",
                              WS_OVERLAPPEDWINDOW, 100, 100, 600, 600,
                              NULL, NULL, wc.hInstance, NULL);
 
