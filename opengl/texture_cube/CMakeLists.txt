@@ -28,6 +28,7 @@ SET(CONFIG_FILES
 
 SET(IMAGE_FILES
     data/box.bmp
+    data/opengl.bmp
     data/goblet.bmp
     data/gamedev.bmp)
 

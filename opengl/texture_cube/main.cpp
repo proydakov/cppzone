@@ -44,7 +44,7 @@ const int SCREEN_HEIGHT = 480;
 const int CYCLE_TIME = 25;
 const int ESCAPE     = 27;
 
-const unsigned TEXTURE_NUM = 3;
+const unsigned TEXTURE_NUM = 4;
 
 GLdouble g_xrot = 0;
 GLdouble g_yrot = 0;
@@ -90,11 +90,13 @@ void info()
 
 void init()
 {
+    std::string textureOpenGL("opengl.bmp");
     std::string textureGamedev("gamedev.bmp");
     std::string textureBox("box.bmp");
     std::string textureGobletBox("goblet.bmp");
     
     std::vector<std::string> textureNameContainer;
+    textureNameContainer.push_back(textureOpenGL);
     textureNameContainer.push_back(textureGamedev);
     textureNameContainer.push_back(textureBox);
     textureNameContainer.push_back(textureGobletBox);
@@ -232,6 +234,10 @@ void keyboard(unsigned char key, int x, int y)
 
         case '3':
             g_textureIndex = 2;
+            break;
+
+        case '4':
+            g_textureIndex = 3;
             break;
 
         case 'b':
