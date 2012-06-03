@@ -315,6 +315,8 @@ void render()
 
     W *= X * Y * Z;
 
+    g_pd3dDevice->SetTransform(D3DTS_WORLD, &W);
+
     g_pd3dDevice->BeginScene();
     {
         g_pd3dDevice->SetStreamSource(0, g_pCube, 0, sizeof(Vertex));
