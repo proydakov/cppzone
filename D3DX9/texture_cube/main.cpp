@@ -226,45 +226,45 @@ bool initGeometry()
     Vertex* v;
     g_pCube->Lock(0, 0, (void**)&v, 0);
 
-    // bottom
-    v[0] = Vertex(points[1], 0.0f, 0.0f);
-    v[1] = Vertex(points[0], 1.0f, 0.0f);
-    v[2] = Vertex(points[3], 1.0f, 1.0f);
-    v[3] = Vertex(points[1], 0.0f, 0.0f);
-    v[4] = Vertex(points[2], 0.0f, 1.0f);
-    v[5] = Vertex(points[3], 1.0f, 1.0f);
-
     // front
-    v[6]  = Vertex(points[1], 1.0f, 1.0f);
-    v[7]  = Vertex(points[0], 1.0f, 0.0f);
-    v[8]  = Vertex(points[4], 0.0f, 0.0f);
-    v[9]  = Vertex(points[1], 1.0f, 1.0f);
-    v[10] = Vertex(points[5], 0.0f, 1.0f);
-    v[11] = Vertex(points[4], 0.0f, 0.0f);
+    v[0] = Vertex(points[1], 1.0f, 1.0f);
+    v[1] = Vertex(points[0], 1.0f, 0.0f);
+    v[2] = Vertex(points[4], 0.0f, 0.0f);
+    v[3] = Vertex(points[1], 1.0f, 1.0f);
+    v[4] = Vertex(points[5], 0.0f, 1.0f);
+    v[5] = Vertex(points[4], 0.0f, 0.0f);
 
     // top
-    v[12] = Vertex(points[6], 0.0f, 0.0f);
-    v[13] = Vertex(points[7], 1.0f, 0.0f);
-    v[14] = Vertex(points[4], 1.0f, 1.0f);
-    v[15] = Vertex(points[6], 0.0f, 0.0f);
-    v[16] = Vertex(points[5], 0.0f, 1.0f);
-    v[17] = Vertex(points[4], 1.0f, 1.0f);
+    v[6]  = Vertex(points[6], 0.0f, 0.0f);
+    v[7]  = Vertex(points[7], 1.0f, 0.0f);
+    v[8]  = Vertex(points[4], 1.0f, 1.0f);
+    v[9]  = Vertex(points[6], 0.0f, 0.0f);
+    v[10] = Vertex(points[5], 0.0f, 1.0f);
+    v[11] = Vertex(points[4], 1.0f, 1.0f);
 
     // back
-    v[18] = Vertex(points[6], 0.0f, 0.0f);
-    v[19] = Vertex(points[2], 1.0f, 0.0f);
-    v[20] = Vertex(points[3], 1.0f, 1.0f);
-    v[21] = Vertex(points[6], 0.0f, 0.0f);
-    v[22] = Vertex(points[7], 0.0f, 1.0f);
-    v[23] = Vertex(points[3], 1.0f, 1.0f);
+    v[12] = Vertex(points[6], 0.0f, 0.0f);
+    v[13] = Vertex(points[2], 1.0f, 0.0f);
+    v[14] = Vertex(points[3], 1.0f, 1.0f);
+    v[15] = Vertex(points[6], 0.0f, 0.0f);
+    v[16] = Vertex(points[7], 0.0f, 1.0f);
+    v[17] = Vertex(points[3], 1.0f, 1.0f);
 
     // left
-    v[24] = Vertex(points[4], 1.0f, 1.0f);
-    v[25] = Vertex(points[7], 0.0f, 1.0f);
-    v[26] = Vertex(points[3], 0.0f, 0.0f);
-    v[27] = Vertex(points[4], 1.0f, 1.0f);
-    v[28] = Vertex(points[0], 1.0f, 0.0f);
-    v[29] = Vertex(points[3], 0.0f, 0.0f);
+    v[18] = Vertex(points[4], 1.0f, 1.0f);
+    v[19] = Vertex(points[7], 0.0f, 1.0f);
+    v[20] = Vertex(points[3], 0.0f, 0.0f);
+    v[21] = Vertex(points[4], 1.0f, 1.0f);
+    v[22] = Vertex(points[0], 1.0f, 0.0f);
+    v[23] = Vertex(points[3], 0.0f, 0.0f);
+
+    // bottom
+    v[24] = Vertex(points[1], 0.0f, 0.0f);
+    v[25] = Vertex(points[0], 1.0f, 0.0f);
+    v[26] = Vertex(points[3], 1.0f, 1.0f);
+    v[27] = Vertex(points[1], 0.0f, 0.0f);
+    v[28] = Vertex(points[2], 0.0f, 1.0f);
+    v[29] = Vertex(points[3], 1.0f, 1.0f);
 
     // right
     v[30] = Vertex(points[5], 0.0f, 0.0f);
