@@ -222,10 +222,16 @@ void keyboard(unsigned char key, int x, int y)
             exit(0);
             break;
 
-        case 't':
-            g_textureIndex++;
-            if(g_textureIndex == TEXTURE_NUM)
-                g_textureIndex = 0;
+        case '1':
+            g_textureIndex = 0;
+            break;
+
+        case '2':
+            g_textureIndex = 1;
+            break;
+
+        case '3':
+            g_textureIndex = 2;
             break;
 
         case 'b':
