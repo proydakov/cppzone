@@ -88,9 +88,11 @@ bool initTexture();
 void setTextureFilter();
 bool initGeometry();
 void cleanup();
+
 void render();
 void camera();
 void rotate();
+
 void resize(UINT width, UINT height);
 void keyboard(HWND hWnd, WPARAM key);
 LRESULT WINAPI msgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -149,11 +151,11 @@ bool init(HWND hWnd)
     g_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
         D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &g_pd3dDevice);
 
-    if(!g_pD3D) {
+    if(!g_pd3dDevice) {
         return false;
     }
 
-    g_pd3dDevice->SetRenderState(D3DRS_LIGHTING, false);
+    g_pd3dDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
     bool res = initTexture();
     res &= initGeometry();
@@ -296,9 +298,6 @@ void render()
 {
     assert(g_pd3dDevice);
 
-    camera();
-    rotate();
-
     g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
 
     g_pd3dDevice->SetTexture(0, g_pCurrentTexture);
@@ -324,6 +323,10 @@ void render()
         g_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 35);
     }
     g_pd3dDevice->EndScene();
+
+    camera();
+    rotate();
+
     g_pd3dDevice->Present(0, 0, 0, 0);
 }
 

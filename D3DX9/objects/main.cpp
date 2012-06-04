@@ -123,7 +123,7 @@ bool init(HWND hWnd)
     g_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
         D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &g_pd3dDevice);
 
-    if(!g_pD3D) {
+    if(!g_pd3dDevice) {
         return false;
     }
 
