@@ -149,7 +149,7 @@ bool init(HWND hWnd)
     d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
 
     g_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
-        D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &g_pd3dDevice);
+        D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &g_pd3dDevice);
 
     if(!g_pd3dDevice) {
         return false;
