@@ -225,7 +225,9 @@ system::sound_id system::load_wav(const std::string& filename)
 
 void listener::move(double x, double y, double z)
 {
-    
+    (void)x;
+    (void)y;
+    (void)z;
 }
 
 //-----------------------------------------------------------------------------
@@ -304,7 +306,7 @@ void sound::move(double x, double y, double z)
     m_y = y;
     m_z = z;
     
-    ALfloat pos[3] = { x, y, z };
+    ALfloat pos[3] = { (ALfloat) x, (ALfloat) y, (ALfloat) z };
     alSourcefv(m_source_id, AL_POSITION, pos);
 }
 
