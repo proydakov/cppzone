@@ -34,6 +34,9 @@
 #   define GL_BGR 0x80E0
 #endif // _MSC_VER
 
+#define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
+#define GL_TEXTURE_MAX_ANISOTROPY_EXT     0x84FE
+
 CalcFps g_fps;
 
 const std::string COMMENT = "Press ESC for exit.";
@@ -74,12 +77,20 @@ bool loadGLTexture(const std::string& file, size_t num)
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+        gluBuild2DMipmaps(GL_TEXTURE_2D, 3, pTextureImage[0]->w, pTextureImage[0]->h,
+            GL_BGR, GL_UNSIGNED_BYTE, pTextureImage[0]->pixels);
     }
     if(pTextureImage[0]) {
 	    SDL_FreeSurface(pTextureImage[0]);
     }
+
+    int g_nMaxAnisotropy;
+    glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &g_nMaxAnisotropy);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, g_nMaxAnisotropy);
+
     return status;
 }
 
