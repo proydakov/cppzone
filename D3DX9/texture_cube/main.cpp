@@ -320,7 +320,7 @@ void render()
     {
         g_pd3dDevice->SetStreamSource(0, g_pCube, 0, sizeof(Vertex));
         g_pd3dDevice->SetFVF(Vertex::FVF);
-        g_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 35);
+        g_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 36);
     }
     g_pd3dDevice->EndScene();
 
