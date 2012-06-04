@@ -55,28 +55,35 @@ void drawTriangle(GLdouble side, GLdouble red, GLdouble green, GLdouble blue, GL
     glEnd();
 }
 
+void drawLeftTriangle()
+{
+    glPushMatrix();
+    glTranslated(-OBJECT_SIDE / 4, 0, 0);
+    drawTriangle(OBJECT_SIDE, 1.0, 1.0, 0.0, 0.75);
+    glPopMatrix();
+}
+
+void drawRightTriangle()
+{
+    glPushMatrix();
+    glTranslated(OBJECT_SIDE / 4, 0, 0);
+    drawTriangle(OBJECT_SIDE, 0.0, 1.0, 1.0, 0.75);
+    glPopMatrix();
+}
+
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
-    
-    GLdouble moveDelta = OBJECT_SIDE / 4;
 
-    glPushMatrix();
-    glTranslated(-moveDelta, 0, 0);
-    if(g_leftFirst)
-        drawTriangle(OBJECT_SIDE, 1.0, 1.0, 0.0, 0.75);
-    else
-        drawTriangle(OBJECT_SIDE, 0.0, 1.0, 1.0, 0.75);
-    glPopMatrix();
-    
-    glPushMatrix();
-    glTranslated(moveDelta, 0, 0);
-    if(g_leftFirst)
-        drawTriangle(OBJECT_SIDE, 0.0, 1.0, 1.0, 0.75);
-    else
-        drawTriangle(OBJECT_SIDE, 1.0, 1.0, 0.0, 0.75);
-    glPopMatrix();
+    if(g_leftFirst) {
+        drawLeftTriangle();
+        drawRightTriangle();
+    }
+    else {
+        drawRightTriangle();
+        drawLeftTriangle();
+    }
 
     glFlush();
 
