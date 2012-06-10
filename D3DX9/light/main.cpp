@@ -55,8 +55,8 @@ static FLOAT g_rotation = 0;
 // Forward declarations 
 //-----------------------------------------------------------------------------
 bool init(HWND hWnd);
-void setupLights();
-void generateGeometry();
+void initLights();
+void initGeometry();
 void cleanup();
 
 void render();
@@ -128,15 +128,15 @@ bool init(HWND hWnd)
     g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 
     // init light
-    setupLights();
+    initLights();
 
     // init geometry
-    generateGeometry();
+    initGeometry();
 
     return true;
 }
 
-void setupLights()
+void initLights()
 {
     // config material
     D3DMATERIAL9 material;
@@ -193,7 +193,7 @@ void setupLights()
     g_pd3dDevice->SetLight(0, g_pLight0);
 }
 
-void generateGeometry()
+void initGeometry()
 {
     D3DXCreateSphere(g_pd3dDevice, OBJECT_SIZE, OBJECT_PRECESSION, OBJECT_PRECESSION, &g_pObjectMesh, 0);
 }
