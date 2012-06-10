@@ -67,7 +67,7 @@ const DWORD Vertex::FVF = D3DFVF_XYZ | D3DFVF_TEX1;
 LPDIRECT3D9       g_pD3D       = NULL;
 LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;
 
-LPDIRECT3DVERTEXBUFFER9 g_pCube  = NULL;
+LPDIRECT3DVERTEXBUFFER9 g_pCube = NULL;
 
 LPDIRECT3DTEXTURE9 g_pCurrentTexture = NULL;
 
@@ -327,7 +327,7 @@ void render()
     camera();
     rotate();
 
-    g_pd3dDevice->Present(0, 0, 0, 0);
+    g_pd3dDevice->Present(NULL, NULL, NULL, NULL);
 }
 
 void camera()
