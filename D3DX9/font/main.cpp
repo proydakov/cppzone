@@ -175,9 +175,10 @@ void render()
         RECT rect(*g_pRect);
         while(rect.top < rect.bottom) {
             delta = (rand() % max_delta) - max_delta / 2;
+            rect.top += delta;
             g_pFont->DrawText(NULL, "This text is created using ID3DXFont =)))", -1, &rect, DT_TOP | DT_LEFT, color[i]);
             i = ++i % 3;
-            rect.top += step + delta;
+            rect.top += step;
         }
     }
     g_pd3dDevice->EndScene();
