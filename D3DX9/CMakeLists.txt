@@ -2,7 +2,7 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================    
 
-MESSAGE(STATUS "BUILD  DIRECTX\n")
+MESSAGE(STATUS "BUILD  D3DX9\n")
 
 SET(PROJECT_FOLDER "directx")
 
