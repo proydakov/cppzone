@@ -38,17 +38,35 @@
 static const FLOAT ROTATE_DELTA = 0.01f;
 static const FLOAT ROTATE_MAX = D3DX_PI * 2;
 
+#define VK_KEY_M 0x4D
+#define VK_KEY_S 0x53
+
+static const DWORD MESH_DELTA = 25;
+static const UINT OBJECT_PRECESSION = 100;
+
 //-----------------------------------------------------------------------------
 // Globals variables and definitions
 //-----------------------------------------------------------------------------
 LPDIRECT3D9       g_pD3D       = NULL;
 LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;
 
+LPD3DXFONT g_pFont = NULL;
+
 LPD3DXMESH g_pMeshObject = NULL;
+LPD3DXPMESH g_pPMeshObject = NULL;
+LPD3DXMESH g_pMeshSphere = NULL;
+
 std::vector<D3DMATERIAL9> g_objectMaterials;
 std::vector<LPDIRECT3DTEXTURE9> g_objectTextures;
 
+D3DMATERIAL9* g_pMeshMaterial = NULL;
+D3DMATERIAL9* g_pSphereMaterial = NULL;
+
+D3DXVECTOR3 g_sphereCenter = D3DXVECTOR3(0, 0, 0);
 FLOAT g_rotate = 0;
+
+BOOL g_draw_mesh = TRUE;
+BOOL g_draw_sphere = TRUE;
 
 std::string g_app_name;
 
@@ -57,6 +75,9 @@ std::string g_app_name;
 //-----------------------------------------------------------------------------
 bool init(HWND hWnd);
 bool initModel();
+bool initObject();
+bool initMaterial();
+bool initFont();
 void setTextureFilter();
 void cleanup();
 
@@ -132,6 +153,9 @@ bool init(HWND hWnd)
     g_pd3dDevice->SetRenderState(D3DRS_AMBIENT, 0xffffffff);
 
     bool res = initModel();
+    res &= initObject();
+    res &= initMaterial();
+    res &= initFont();
 
     return res;
 }
@@ -142,13 +166,14 @@ bool initModel()
     std::string model(model_directory + "dwarf.x");
 
     LPD3DXBUFFER pD3DXMtrlBuffer;
+    LPD3DXBUFFER pD3DXAdjBuffer;
 
     DWORD numMtrls = 0;
     D3DXLoadMeshFromX(
         model.c_str(),
         D3DXMESH_MANAGED,
         g_pd3dDevice,
-        NULL,
+        &pD3DXAdjBuffer,
         &pD3DXMtrlBuffer,
         NULL,
         &numMtrls,
@@ -186,9 +211,86 @@ bool initModel()
             }
         }
     }
-    pD3DXMtrlBuffer->Release();
+
+    D3DXGeneratePMesh(
+        g_pMeshObject,
+        (DWORD*)pD3DXAdjBuffer->GetBufferPointer(),
+        NULL,
+        NULL,
+        1,
+        D3DXMESHSIMP_FACE,
+        &g_pPMeshObject);
+
+    if(!g_pPMeshObject) {
+        return false;
+    }
+
+    SAFE_RELEASE(pD3DXMtrlBuffer);
+    SAFE_RELEASE(pD3DXAdjBuffer);
 
     return true;
+}
+
+bool initObject()
+{
+    D3DXVECTOR3 center;
+    FLOAT       radius;
+
+    D3DXVECTOR3* v;
+    g_pPMeshObject->LockVertexBuffer(0, (void**)&v);
+
+    D3DXComputeBoundingSphere(
+        v,
+        g_pPMeshObject->GetNumVertices(),
+        D3DXGetFVFVertexSize(g_pPMeshObject->GetFVF()),
+        &center,
+        &radius);
+
+    g_pPMeshObject->UnlockVertexBuffer();
+
+    D3DXCreateSphere(g_pd3dDevice, radius, OBJECT_PRECESSION, OBJECT_PRECESSION, &g_pMeshSphere, NULL);
+
+    g_sphereCenter = center;
+
+    return g_pMeshSphere ? true : false;
+}
+
+bool initMaterial()
+{
+    D3DMATERIAL9 meshMaterial;
+    ZeroMemory(&meshMaterial, sizeof(D3DMATERIAL9));
+    meshMaterial.Diffuse.r = meshMaterial.Specular.r = meshMaterial.Ambient.r = 0.0f;
+    meshMaterial.Diffuse.g = meshMaterial.Specular.g = meshMaterial.Ambient.g = 1.0f;
+    meshMaterial.Diffuse.b = meshMaterial.Specular.b = meshMaterial.Ambient.b = 0.0f;
+    meshMaterial.Diffuse.a = meshMaterial.Specular.a = meshMaterial.Ambient.a = 1.0f;
+
+    D3DMATERIAL9 sphereMaterial;
+    ZeroMemory(&sphereMaterial, sizeof(D3DMATERIAL9));
+    sphereMaterial.Diffuse.r = sphereMaterial.Specular.r = sphereMaterial.Ambient.r = 0.0f;
+    sphereMaterial.Diffuse.g = sphereMaterial.Specular.g = sphereMaterial.Ambient.g = 0.0f;
+    sphereMaterial.Diffuse.b = sphereMaterial.Specular.b = sphereMaterial.Ambient.b = 1.0f;
+    sphereMaterial.Diffuse.a = sphereMaterial.Specular.a = sphereMaterial.Ambient.a = 1.0f;
+
+    g_pMeshMaterial = new D3DMATERIAL9(meshMaterial);
+    g_pSphereMaterial = new D3DMATERIAL9(sphereMaterial);
+
+    return g_pMeshMaterial && g_pSphereMaterial ? true : false;
+}
+
+bool initFont()
+{
+    D3DXFONT_DESCA lf;
+    ZeroMemory(&lf, sizeof(D3DXFONT_DESCA));
+    lf.Height = 24;
+    lf.Width = 9;
+    lf.Weight = 500;
+    lf.Italic = false;
+    lf.CharSet = DEFAULT_CHARSET;
+    strcpy(lf.FaceName, "Times New Roman");
+
+    D3DXCreateFontIndirect(g_pd3dDevice, &lf, &g_pFont);
+
+    return g_pFont ? true : false;
 }
 
 void setTextureFilter()
@@ -200,11 +302,18 @@ void setTextureFilter()
 
 void cleanup()
 {
+    delete g_pMeshMaterial;
+    delete g_pSphereMaterial;
+
     for(size_t i = 0; i < g_objectTextures.size(); ++i) {
         SAFE_RELEASE(g_objectTextures[i]);
     }
 
+    SAFE_RELEASE(g_pMeshSphere);
+    SAFE_RELEASE(g_pPMeshObject);
     SAFE_RELEASE(g_pMeshObject);
+
+    SAFE_RELEASE(g_pFont);
 
     SAFE_RELEASE(g_pd3dDevice);
     SAFE_RELEASE(g_pD3D);
@@ -218,18 +327,54 @@ void render()
 
     g_pd3dDevice->BeginScene();
     {
-        D3DXMATRIX MROTATE;
-        D3DXMatrixRotationY(&MROTATE, g_rotate);
-        g_pd3dDevice->SetTransform(D3DTS_WORLD, &MROTATE);
-
-        g_pd3dDevice->BeginScene();
-        for(size_t i = 0; i < g_objectMaterials.size(); i++)
+        D3DXMATRIX MWORLD;
         {
-            g_pd3dDevice->SetMaterial(&g_objectMaterials[i]);
-            g_pd3dDevice->SetTexture(0, g_objectTextures[i]);
-            g_pMeshObject->DrawSubset(i);
+            std::string text(" - Press S to enable/disable the bonding sphere.\n - Press M to enable/disable the lattice model.");
+            RECT rect = {0, 0, 500, 100};
+            g_pFont->DrawText(NULL, text.c_str(), -1, &rect, DT_TOP | DT_LEFT, D3DCOLOR_XRGB(255, 255, 125));
         }
-        g_pd3dDevice->EndScene();
+
+        {
+            g_pd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+
+            D3DXMATRIX MROTATE;
+            D3DXMatrixRotationY(&MROTATE, g_rotate);
+            MWORLD = MROTATE;
+            g_pd3dDevice->SetTransform(D3DTS_WORLD, &MWORLD);
+
+            for(size_t i = 0; i < g_objectMaterials.size(); i++)
+            {
+                g_pd3dDevice->SetMaterial(&g_objectMaterials[i]);
+                g_pd3dDevice->SetTexture(0, g_objectTextures[i]);
+                g_pPMeshObject->DrawSubset(i);
+            }
+        }
+
+        if(g_draw_mesh)
+        {
+            g_pd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+            g_pd3dDevice->SetMaterial(g_pMeshMaterial);
+
+            for(size_t i = 0; i < g_objectMaterials.size(); i++)
+            {
+                g_pMeshObject->DrawSubset(i);
+            }
+        }
+
+        if(g_draw_sphere)
+        {
+            g_pd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+            g_pd3dDevice->SetMaterial(g_pSphereMaterial);
+
+            D3DXMATRIX MTRANSLATE;
+            D3DXMatrixTranslation(&MTRANSLATE, g_sphereCenter.x, g_sphereCenter.y, g_sphereCenter.z);
+            D3DXMATRIX MROTATE;
+            D3DXMatrixRotationX(&MROTATE, D3DX_PI / 2);
+            MWORLD = MROTATE * MTRANSLATE;
+            g_pd3dDevice->SetTransform(D3DTS_WORLD, &MWORLD);
+
+            g_pMeshSphere->DrawSubset(0);
+        }
     }
     g_pd3dDevice->EndScene();
 
@@ -274,6 +419,14 @@ void keyboard(HWND hWnd, WPARAM key)
     switch(key) {
     case VK_ESCAPE:
         DestroyWindow(hWnd);
+        break;
+
+    case VK_KEY_M:
+        g_draw_mesh = !g_draw_mesh;
+        break;
+
+    case VK_KEY_S:
+        g_draw_sphere = !g_draw_sphere;
         break;
     }
 }
