@@ -279,8 +279,8 @@ bool initMaterial()
 
 bool initFont()
 {
-    D3DXFONT_DESCA lf;
-    ZeroMemory(&lf, sizeof(D3DXFONT_DESCA));
+    D3DXFONT_DESC lf;
+    ZeroMemory(&lf, sizeof(D3DXFONT_DESC));
     lf.Height = 24;
     lf.Width = 9;
     lf.Weight = 500;

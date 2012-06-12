@@ -123,8 +123,8 @@ bool init(HWND hWnd)
 
 bool initFont()
 {
-    D3DXFONT_DESCA lf;
-    ZeroMemory(&lf, sizeof(D3DXFONT_DESCA));
+    D3DXFONT_DESC lf;
+    ZeroMemory(&lf, sizeof(D3DXFONT_DESC));
     lf.Height = 30;
     lf.Width = 12;
     lf.Weight = 500;
