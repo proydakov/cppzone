@@ -110,7 +110,7 @@ bool init(HWND hWnd)
     d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
     d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
     d3dpp.EnableAutoDepthStencil = TRUE;
-    d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
+    d3dpp.AutoDepthStencilFormat = D3DFMT_D24X8;
 
     g_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
         D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &g_pd3dDevice);
