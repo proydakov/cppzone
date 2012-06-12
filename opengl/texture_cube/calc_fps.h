@@ -20,37 +20,48 @@
  *  THE SOFTWARE.
  */
 
-#include <SDL.h>
-
 #ifndef I_CALC_FPS_H
 #define I_CALC_FPS_H
 
-class CalcFps
+#include <time.h>
+
+class calc_fps
 {
 public:
-    CalcFps() :
-      m_time(0),
-          m_frames(0)
+    calc_fps(unsigned cycle_time = 2) :
+      m_base_time(0),
+      m_cycle_time(cycle_time),
+      m_frames(0),
+      m_fps(0)
       {
+          m_base_time = time(0);
       }
 
       void calc()
       {
-          m_frames++; 
-          unsigned t = SDL_GetTicks();;
-          if(t - m_time >= 3000) {
-              double seconds = (t - m_time) / 1000.0;
-              double fps = m_frames / seconds;
-              std::cout << m_frames << " frames in " << seconds << " seconds = "
-                  << fps << " FPS" << std::endl;
-              m_time = t;
-              m_frames = 0;
+          ++m_frames;
+          time_t t = time(0);
+          if(t - m_base_time <= m_cycle_time) {
+              return;
           }
+          double seconds = (t - m_base_time) / 1.0;
+          double fps = m_frames / seconds;
+
+          m_base_time = t;
+          m_frames = 0;
+          m_fps = static_cast<unsigned>(fps);
+      }
+
+      unsigned get_fps()
+      {
+          return m_fps;
       }
 
 private:
-    unsigned m_time;
+    time_t m_base_time;
+    unsigned m_cycle_time;
     unsigned m_frames;
+    unsigned m_fps;
 };
 
 #endif // I_CALC_FPS_H

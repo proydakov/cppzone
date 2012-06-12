@@ -37,7 +37,8 @@
 #define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
 #define GL_TEXTURE_MAX_ANISOTROPY_EXT     0x84FE
 
-CalcFps g_fps;
+calc_fps g_fps;
+unsigned g_last_fps = 0;
 
 const std::string COMMENT = "Press ESC for exit.";
 
@@ -97,6 +98,16 @@ bool loadGLTexture(const std::string& file, size_t num)
 void info()
 {
     std::cout << COMMENT << "\n" << std::endl;
+}
+
+void fps()
+{
+    g_fps.calc();
+    unsigned fps = g_fps.get_fps();
+    if(fps != g_last_fps) {
+        std::cout << "FPS : " << fps << std::endl;
+        g_last_fps = fps;
+    }
 }
 
 void init()
@@ -200,7 +211,7 @@ void display()
     glFlush();
     glutSwapBuffers();
 
-    g_fps.calc();
+    fps();
 }
 
 void reshape(int w, int h)
