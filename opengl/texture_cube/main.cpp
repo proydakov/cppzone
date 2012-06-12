@@ -24,8 +24,9 @@
 #include <string>
 #include <iostream>
 
-#include <SDL.h>
 #include <GL/glut.h>
+
+#include <texture/texture_loader.h>
 
 #include <calc_fps.h>
 #include <config_opengl_texture_cube.h>
@@ -63,29 +64,25 @@ bool loadGLTexture(const std::string& file, size_t num)
 {
     bool status = false;
 
-    SDL_Surface *pTextureImage[1];
-    pTextureImage[0] = SDL_LoadBMP(file.c_str());
+    texture::loader loader;
+    loader.load(file.c_str());
 
-    if(pTextureImage[0]) {
+    if(loader.isLoaded()) {
 	    status = true;
 
         glGenTextures(1, &g_texture[num]);
 	    glBindTexture(GL_TEXTURE_2D, g_texture[num]);
 
-	    glTexImage2D(GL_TEXTURE_2D, 0, 3, pTextureImage[0]->w,
-			  pTextureImage[0]->h, 0, GL_BGR,
-			  GL_UNSIGNED_BYTE, pTextureImage[0]->pixels);
+	    glTexImage2D(GL_TEXTURE_2D, 0, 3, loader.getWidth(), loader.getHeight(), 
+            0, GL_BGR, GL_UNSIGNED_BYTE, loader.getData());
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
-        gluBuild2DMipmaps(GL_TEXTURE_2D, 3, pTextureImage[0]->w, pTextureImage[0]->h,
-            GL_BGR, GL_UNSIGNED_BYTE, pTextureImage[0]->pixels);
-    }
-    if(pTextureImage[0]) {
-	    SDL_FreeSurface(pTextureImage[0]);
+        gluBuild2DMipmaps(GL_TEXTURE_2D, 3, loader.getWidth(), loader.getHeight(),
+            GL_BGR, GL_UNSIGNED_BYTE, loader.getData());
     }
 
     int g_nMaxAnisotropy;
