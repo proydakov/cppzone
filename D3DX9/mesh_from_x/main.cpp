@@ -329,7 +329,7 @@ void render()
     {
         D3DXMATRIX MWORLD;
         {
-            std::string text(" - Press S to enable/disable the bonding sphere.\n - Press M to enable/disable the lattice model.");
+            std::string text(" - Press S to enable/disable the bonding sphere.\n - Press M to enable/disable the grid.");
             RECT rect = {0, 0, 500, 100};
             g_pFont->DrawText(NULL, text.c_str(), -1, &rect, DT_TOP | DT_LEFT, D3DCOLOR_XRGB(255, 255, 125));
         }
