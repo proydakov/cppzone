@@ -83,11 +83,11 @@ bool loadGLTexture(const std::string& file, size_t num)
 
         gluBuild2DMipmaps(GL_TEXTURE_2D, 3, loader.getWidth(), loader.getHeight(),
             GL_BGR, GL_UNSIGNED_BYTE, loader.getData());
-    }
 
-    int g_nMaxAnisotropy;
-    glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &g_nMaxAnisotropy);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, g_nMaxAnisotropy);
+        int g_nMaxAnisotropy;
+        glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &g_nMaxAnisotropy);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, g_nMaxAnisotropy);
+    }
 
     return status;
 }
