@@ -38,7 +38,7 @@
 static const FLOAT ROTATE_DELTA = 0.01f;
 static const FLOAT ROTATE_MAX = D3DX_PI * 2;
 
-#define VK_KEY_M 0x4D
+#define VK_KEY_G 0x47
 #define VK_KEY_S 0x53
 
 static const DWORD MESH_DELTA = 25;
@@ -329,7 +329,7 @@ void render()
     {
         D3DXMATRIX MWORLD;
         {
-            std::string text(" - Press S to enable/disable the bonding sphere.\n - Press M to enable/disable the grid.");
+            std::string text(" - Press S to enable/disable the bonding sphere.\n - Press G to enable/disable the grid.");
             RECT rect = {0, 0, 500, 100};
             g_pFont->DrawText(NULL, text.c_str(), -1, &rect, DT_TOP | DT_LEFT, D3DCOLOR_XRGB(255, 255, 125));
         }
@@ -421,7 +421,7 @@ void keyboard(HWND hWnd, WPARAM key)
         DestroyWindow(hWnd);
         break;
 
-    case VK_KEY_M:
+    case VK_KEY_G:
         g_draw_mesh = !g_draw_mesh;
         break;
 
