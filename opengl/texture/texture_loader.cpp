@@ -26,17 +26,17 @@
 
 using namespace texture;
 
-bool get_ext(const std::string& file, std::string& ext)
+bool get_ext(const std::string& file_name, std::string& ext)
 {
-    int pos = file.rfind('.');
+    int pos = file_name.rfind('.');
     if(pos == -1) {
         return false;
     }
 
-    size_t size = file.size();
+    size_t size = file_name.size();
     ext.resize(size - pos);
     for(size_t i = pos, j = 0; i < size; ++i, ++j) {
-        ext[j] = file[i];
+        ext[j] = file_name[i];
     }
     return true;
 }
@@ -67,17 +67,17 @@ loader::~loader()
     delete m_d;
 }
 
-bool loader::load(const std::string& file)
+bool loader::load(const std::string& file_name)
 {
     std::string ext;
-    if(!get_ext(file, ext)) {
+    if(!get_ext(file_name, ext)) {
         return false;
     }
 
     m_d->safe_unloading();
 
     if(ext == ".bmp") {
-        m_d->m_surface = SDL_LoadBMP(file.c_str());
+        m_d->m_surface = SDL_LoadBMP(file_name.c_str());
     }
 
     return m_d->m_surface ? true : false;

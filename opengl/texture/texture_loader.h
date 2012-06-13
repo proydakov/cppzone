@@ -33,7 +33,7 @@ public:
     loader();
     ~loader();
 
-    bool load(const std::string& file);
+    bool load(const std::string& file_name);
     bool isLoaded() const;
 
     int getWidth() const;
