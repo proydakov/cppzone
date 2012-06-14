@@ -39,6 +39,7 @@ static const FLOAT ROTATE_DELTA = 0.01f;
 static const FLOAT ROTATE_MAX = D3DX_PI * 2;
 
 #define VK_KEY_G 0x47
+#define VK_KEY_O 0x4F
 #define VK_KEY_S 0x53
 
 static const DWORD MESH_DELTA = 25;
@@ -65,7 +66,8 @@ D3DMATERIAL9* g_pSphereMaterial = NULL;
 D3DXVECTOR3 g_sphereCenter = D3DXVECTOR3(0, 0, 0);
 FLOAT g_rotate = 0;
 
-BOOL g_draw_mesh = TRUE;
+BOOL g_draw_object = TRUE;
+BOOL g_draw_grid = TRUE;
 BOOL g_draw_sphere = TRUE;
 
 std::string g_app_name;
@@ -107,7 +109,7 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
     g_app_name = std::string("D3D9 mesh from X");
 
     HWND hWnd = CreateWindow(appClass, g_app_name.c_str(),
-        WS_OVERLAPPEDWINDOW, 100, 100, 600, 600,
+        WS_OVERLAPPEDWINDOW, 100, 100, 640, 640,
         NULL, NULL, wc.hInstance, NULL);
 
     bool res = init(hWnd);
@@ -283,8 +285,8 @@ bool initFont()
 {
     D3DXFONT_DESC lf;
     ZeroMemory(&lf, sizeof(D3DXFONT_DESC));
-    lf.Height = 24;
-    lf.Width = 9;
+    lf.Height = 22;
+    lf.Width = 8;
     lf.Weight = 500;
     lf.Italic = false;
     lf.CharSet = DEFAULT_CHARSET;
@@ -331,18 +333,23 @@ void render()
     {
         D3DXMATRIX MWORLD;
         {
-            std::string text(" - Press S to enable/disable the bonding sphere.\n - Press G to enable/disable the grid.");
+            std::string text("\
+                - Press O to enable/disable the object.\n\
+                - Press G to enable/disable the grid.\n\
+                - Press S to enable/disable the bonding sphere.");
+
             RECT rect = {0, 0, 500, 100};
             g_pFont->DrawText(NULL, text.c_str(), -1, &rect, DT_TOP | DT_LEFT, D3DCOLOR_XRGB(255, 255, 125));
         }
 
+        D3DXMATRIX MROTATE;
+        D3DXMatrixRotationY(&MROTATE, g_rotate);
+        MWORLD = MROTATE;
+        g_pd3dDevice->SetTransform(D3DTS_WORLD, &MWORLD);
+
+        if(g_draw_object)
         {
             g_pd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
-
-            D3DXMATRIX MROTATE;
-            D3DXMatrixRotationY(&MROTATE, g_rotate);
-            MWORLD = MROTATE;
-            g_pd3dDevice->SetTransform(D3DTS_WORLD, &MWORLD);
 
             for(size_t i = 0; i < g_objectMaterials.size(); i++)
             {
@@ -352,7 +359,7 @@ void render()
             }
         }
 
-        if(g_draw_mesh)
+        if(g_draw_grid)
         {
             g_pd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
             g_pd3dDevice->SetMaterial(g_pMeshMaterial);
@@ -396,7 +403,7 @@ void rotate()
 
 void camera()
 {
-    D3DXVECTOR3 position(0.0f, 2.0f, -3.0f);
+    D3DXVECTOR3 position(0.0f, 2.0f, -3.5f);
     D3DXVECTOR3 target(0.0f, 1.0f, 0.0f);
     D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
     D3DXMATRIX V;
@@ -423,12 +430,16 @@ void keyboard(HWND hWnd, WPARAM key)
         DestroyWindow(hWnd);
         break;
 
-    case VK_KEY_G:
-        g_draw_mesh = !g_draw_mesh;
-        break;
-
     case VK_KEY_S:
         g_draw_sphere = !g_draw_sphere;
+        break;
+
+    case VK_KEY_O:
+        g_draw_object = !g_draw_object;
+        break;
+
+    case VK_KEY_G:
+        g_draw_grid = !g_draw_grid;
         break;
     }
 }
