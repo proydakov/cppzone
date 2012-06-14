@@ -192,22 +192,24 @@ bool initModel()
 
         g_objectMaterials[i].Ambient = g_objectMaterials[i].Specular = g_objectMaterials[i].Diffuse;
 
-        std::string texture_name(d3dxMaterials[i].pTextureFilename);
-        std::string texture(model_directory + texture_name);
+        if(d3dxMaterials[i].pTextureFilename) {
+            std::string texture_name(d3dxMaterials[i].pTextureFilename);
+            std::string texture(model_directory + texture_name);
 
-        if(d3dxMaterials[i].pTextureFilename != NULL && texture.size()) {
-            D3DXCreateTextureFromFile(
-                g_pd3dDevice, 
-                texture.c_str(), 
-                &g_objectTextures[i]);
+            if(d3dxMaterials[i].pTextureFilename != NULL && texture.size()) {
+                D3DXCreateTextureFromFile(
+                    g_pd3dDevice, 
+                    texture.c_str(), 
+                    &g_objectTextures[i]);
 
-            if(!g_objectTextures[i]) {
-                std::string message("Could not find texture map ");
-                message += texture;
-                MessageBox(NULL, message.c_str(), g_app_name.c_str(), MB_OK);
-            }
-            else {
-                setTextureFilter();
+                if(!g_objectTextures[i]) {
+                    std::string message("Could not find texture map ");
+                    message += texture;
+                    MessageBox(NULL, message.c_str(), g_app_name.c_str(), MB_OK);
+                }
+                else {
+                    setTextureFilter();
+                }
             }
         }
     }
