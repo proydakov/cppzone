@@ -26,7 +26,7 @@
 #include <d3d9.h>
 #include <d3dx9mesh.h>
 
-#include <config_directx_vertex_shader.h>
+#include <config_directx_vertex_shader_light.h>
 
 #pragma warning (disable:4996)
 
@@ -238,7 +238,7 @@ bool init_light()
     ZeroMemory(g_pLight, sizeof(D3DLIGHT9));
     D3DXVECTOR3 direction(0.0f, 2.0f, -2.0f);
     D3DXVec3Normalize((D3DXVECTOR3*)&(g_pLight->Direction), &direction);
-    g_pLight->Ambient = lightColor * 0.10f;
+    g_pLight->Ambient = lightColor * 0.15f;
     g_pLight->Diffuse = lightColor * 0.35f;
     g_pLight->Specular = lightColor * 0.75f;
 

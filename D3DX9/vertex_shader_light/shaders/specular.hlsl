@@ -57,10 +57,10 @@ VS_OUTPUT main(VS_INPUT input)
     viewDir      = mul(viewDir, ViewWorldMatrix);
     input.normal = mul(input.normal, ViewWorldMatrix);
 
-    vector H = normalize(lightDir + viewDir);
+    vector h = normalize(lightDir + viewDir);
     float n = 16.0f;
-    float D = dot(input.normal, H);
-    output.color = SpecularMtrl * SpecularLightInt * D / (n - D * n + D);
+    float d = dot(input.normal, h);
+    output.color = SpecularMtrl * SpecularLightInt * d / (n - d * n + d);
 
     return output;
 }

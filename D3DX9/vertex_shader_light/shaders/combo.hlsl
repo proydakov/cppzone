@@ -66,13 +66,13 @@ VS_OUTPUT main(VS_INPUT input)
         s = 0.0f;
     }
 
-    vector H = normalize(lightDir + viewDir);
+    vector h = normalize(lightDir + viewDir);
     float n = 16.0f;
-    float D = dot(input.normal, H);
+    float d = dot(input.normal, h);
 
     vector ambient  = AmbientMtrl * AmbientLightInt;
     vector diffuse  = s * (DiffuseMtrl * DiffuseLightInt);
-    vector specular = SpecularMtrl * SpecularLightInt * D / (n - D * n + D);
+    vector specular = SpecularMtrl * SpecularLightInt * d / (n - d * n + d);
 
     output.color = ambient + diffuse + specular;
     return output;
