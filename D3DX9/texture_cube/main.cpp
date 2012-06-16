@@ -165,12 +165,12 @@ bool init(HWND hWnd)
 
 bool initTexture()
 {
-    std::string parentDirectory(PARENT_DIRECTORY + std::string("data/"));
+    std::string parentDirectory(TEXTURES_DIRECTORY);
 
-    std::string textureDirectX(parentDirectory + "directx.bmp");
-    std::string textureGamedev(parentDirectory + "gamedev.bmp");
-    std::string textureBox(parentDirectory + "box.bmp");
-    std::string textureGobletBox(parentDirectory + "goblet.bmp");
+    std::string textureDirectX(parentDirectory + "directx.tga");
+    std::string textureGamedev(parentDirectory + "gamedev.tga");
+    std::string textureBox(parentDirectory + "box.tga");
+    std::string textureGobletBox(parentDirectory + "goblet.tga");
 
     D3DXCreateTextureFromFile(g_pd3dDevice, textureDirectX.c_str(), &g_pDirectXTexture);
     D3DXCreateTextureFromFile(g_pd3dDevice, textureGamedev.c_str(), &g_pGamedevTexture);

@@ -17,13 +17,5 @@ SET(SOURCE_FILES
 SET(CONFIG_FILES
 	config_directx_texture_cube.h)
 
-SET(IMAGE_FILES
-    data/box.bmp
-    data/goblet.bmp
-    data/directx.bmp
-    data/gamedev.bmp)
-
 I_ADD_DIRECTX_EXECUTABLE(directx_texture_cube ${SOURCE_FILES} ${CONFIG_FILES} ${IMAGE_FILES})
 TARGET_LINK_LIBRARIES(directx_texture_cube ${DirectX_LIBRARIES})
-
-SOURCE_GROUP(images FILES ${IMAGE_FILES})
