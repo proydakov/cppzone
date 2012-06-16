@@ -18,5 +18,6 @@ ADD_SUBDIRECTORY(flat_shadow)
 ADD_SUBDIRECTORY(font)
 ADD_SUBDIRECTORY(mesh_text)
 ADD_SUBDIRECTORY(mesh_from_x)
+ADD_SUBDIRECTORY(vertex_shader_light)
 
 MESSAGE(STATUS "")
