@@ -60,7 +60,7 @@ bool g_leftObjectTop = true;
 // Forward declarations 
 //-----------------------------------------------------------------------------
 bool init(HWND hWnd);
-bool initGeometry();
+bool init_object();
 void cleanup();
 
 void render();
@@ -136,12 +136,12 @@ bool init(HWND hWnd)
     g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
-    bool res = initGeometry();
+    bool res = init_object();
 
     return res;
 }
 
-bool initGeometry()
+bool init_object()
 {
     DWORD alpha = 255 * 0.75f;
 

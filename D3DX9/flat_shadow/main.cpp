@@ -78,7 +78,7 @@ FLOAT g_lightRotate = 0;
 // Forward declarations 
 //-----------------------------------------------------------------------------
 bool init(HWND hWnd);
-bool initGeometry();
+bool init_object();
 bool initMaterial();
 bool initLight();
 void cleanup();
@@ -155,14 +155,14 @@ bool init(HWND hWnd)
     g_pd3dDevice->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
     g_pd3dDevice->LightEnable(0, TRUE);
 
-    bool res = initGeometry();
+    bool res = init_object();
     res &= initMaterial();
     res &= initLight();
 
     return res;
 }
 
-bool initGeometry()
+bool init_object()
 {
     // init floor
     g_pd3dDevice->CreateVertexBuffer(

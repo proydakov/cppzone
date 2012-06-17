@@ -80,7 +80,7 @@ bool initModel();
 bool initObject();
 bool initMaterial();
 bool initFont();
-void setTextureFilter();
+void set_texture_filter();
 void cleanup();
 
 void render();
@@ -210,7 +210,7 @@ bool initModel()
                     MessageBox(NULL, message.c_str(), g_app_name.c_str(), MB_OK);
                 }
                 else {
-                    setTextureFilter();
+                    set_texture_filter();
                 }
             }
         }
@@ -297,7 +297,7 @@ bool initFont()
     return g_pFont ? true : false;
 }
 
-void setTextureFilter()
+void set_texture_filter()
 {
     g_pd3dDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
     g_pd3dDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);

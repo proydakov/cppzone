@@ -56,7 +56,7 @@ static FLOAT g_rotation = 0;
 //-----------------------------------------------------------------------------
 bool init(HWND hWnd);
 void initLights();
-void initGeometry();
+void init_object();
 void cleanup();
 
 void render();
@@ -131,7 +131,7 @@ bool init(HWND hWnd)
     initLights();
 
     // init geometry
-    initGeometry();
+    init_object();
 
     return true;
 }
@@ -193,7 +193,7 @@ void initLights()
     g_pd3dDevice->SetLight(0, g_pLight0);
 }
 
-void initGeometry()
+void init_object()
 {
     D3DXCreateSphere(g_pd3dDevice, OBJECT_SIZE, OBJECT_PRECESSION, OBJECT_PRECESSION, &g_pObjectMesh, 0);
 }

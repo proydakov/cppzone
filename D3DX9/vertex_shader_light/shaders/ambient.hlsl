@@ -20,8 +20,6 @@
  *  THE SOFTWARE.
  */
 
-// input variable
-
 matrix ViewProjMatrix;
 vector AmbientMtrl;
 vector AmbientLightInt;

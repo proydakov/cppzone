@@ -78,9 +78,9 @@ FLOAT g_move = MOVE_DELTA;
 // Forward declarations 
 //-----------------------------------------------------------------------------
 bool init(HWND hWnd);
-bool initTexture();
-void setTextureFilter();
-bool initGeometry();
+bool init_texture();
+void set_texture_filter();
+bool init_object();
 void cleanup();
 
 void render();
@@ -152,13 +152,13 @@ bool init(HWND hWnd)
 
     g_pd3dDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-    bool res = initTexture();
-    res &= initGeometry();
+    bool res = init_texture();
+    res &= init_object();
 
     return res;
 }
 
-bool initTexture()
+bool init_texture()
 {
     std::string parentDirectory(TEXTURE_DIRECTORY);
     std::string textureMirror(parentDirectory + "mirror.tga");
@@ -172,22 +172,22 @@ bool initTexture()
     }
 
     g_pd3dDevice->SetTexture(0, g_pMirrotTexture);
-    setTextureFilter();
+    set_texture_filter();
 
     g_pd3dDevice->SetTexture(0, g_pTeapotTexture);
-    setTextureFilter();
+    set_texture_filter();
 
     return true;
 }
 
-void setTextureFilter()
+void set_texture_filter()
 {
     g_pd3dDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
     g_pd3dDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
     g_pd3dDevice->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, 16);
 }
 
-bool initGeometry()
+bool init_object()
 {
     // init mirror
     g_pd3dDevice->CreateVertexBuffer(
@@ -378,7 +378,6 @@ LRESULT WINAPI msgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
     case WM_PAINT:
         render();
-        //ValidateRect(hWnd, NULL);
         return 0;
 
     case WM_SIZE:
