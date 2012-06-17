@@ -20,6 +20,6 @@ ADD_SUBDIRECTORY(font)
 ADD_SUBDIRECTORY(mesh_text)
 ADD_SUBDIRECTORY(mesh_from_x)
 ADD_SUBDIRECTORY(vertex_shader_light)
-ADD_SUBDIRECTORY(pixel_shader_multitexturing)
+ADD_SUBDIRECTORY(pixel_shader_multitext)
 
 MESSAGE(STATUS "")
