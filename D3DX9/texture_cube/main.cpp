@@ -167,10 +167,10 @@ bool init_texture()
 {
     std::string parentDirectory(TEXTURES_DIRECTORY);
 
-    std::string textureDirectX(parentDirectory + "directx.tga");
-    std::string textureGamedev(parentDirectory + "gamedev.tga");
-    std::string textureBox(parentDirectory + "box.tga");
-    std::string textureGobletBox(parentDirectory + "goblet.tga");
+    std::string textureDirectX(parentDirectory + "directx.png");
+    std::string textureGamedev(parentDirectory + "gamedev.png");
+    std::string textureBox(parentDirectory + "box.png");
+    std::string textureGobletBox(parentDirectory + "goblet.png");
 
     D3DXCreateTextureFromFile(g_pd3dDevice, textureDirectX.c_str(), &g_pDirectXTexture);
     D3DXCreateTextureFromFile(g_pd3dDevice, textureGamedev.c_str(), &g_pGamedevTexture);

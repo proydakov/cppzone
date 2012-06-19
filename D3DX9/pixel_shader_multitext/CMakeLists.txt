@@ -18,10 +18,16 @@ SET(SHADER_FILES
     shaders/multitexturing.hlsl
     shaders/vertex_transform.hlsl)
 
+SET(TEXTURES_FILES
+	textures/box.png
+	textures/circle_light.png
+	textures/multitexturing_text.png)
+
 SET(CONFIG_FILES
 	config_pixel_shader_multitext.h)
 
-I_ADD_DIRECTX_EXECUTABLE(directx_pixel_shader_multitext ${SOURCE_FILES} ${SHADER_FILES} ${CONFIG_FILES})
+I_ADD_DIRECTX_EXECUTABLE(directx_pixel_shader_multitext ${SOURCE_FILES} ${TEXTURES_FILES} ${SHADER_FILES} ${CONFIG_FILES})
 TARGET_LINK_LIBRARIES(directx_pixel_shader_multitext ${DirectX_LIBRARIES})
 
 SOURCE_GROUP(shaders FILES ${SHADER_FILES})
+SOURCE_GROUP(textures FILES ${TEXTURES_FILES})

@@ -183,9 +183,9 @@ bool init(HWND hWnd)
 bool init_textures()
 {
     std::string baseDirectory(TEXTURES_DIRECTORY);
-    std::string baseTex(baseDirectory + "box.tga");
-    std::string lightTex(baseDirectory + "circle_light.tga");
-    std::string stringTex(baseDirectory + "multitexturing_text.tga");
+    std::string baseTex  (baseDirectory + "box.png");
+    std::string lightTex (baseDirectory + "circle_light.png");
+    std::string stringTex(baseDirectory + "multitexturing_text.png");
 
     D3DXCreateTextureFromFile(g_pd3dDevice, baseTex.c_str(), &g_pBaseTex);
     D3DXCreateTextureFromFile(g_pd3dDevice, lightTex.c_str(), &g_pLightTex);
