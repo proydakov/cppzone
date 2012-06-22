@@ -61,9 +61,9 @@ LPD3DXEFFECT g_pEffect = NULL;
 D3DXHANDLE g_hTech;
 D3DXHANDLE g_hViewProj;
 D3DXHANDLE g_hDirToSunW;
-D3DXHANDLE g_hTex0;
-D3DXHANDLE g_hTex1;
-D3DXHANDLE g_hTex2;
+D3DXHANDLE g_hGrassTex;
+D3DXHANDLE g_hDirtTex;
+D3DXHANDLE g_hStoneTex;
 D3DXHANDLE g_hBlendMap;
 
 //-----------------------------------------------------------------------------
@@ -228,16 +228,16 @@ bool init_effect()
     g_hTech      = g_pEffect->GetTechniqueByName("TerrainTech");
     g_hViewProj  = g_pEffect->GetParameterByName(0, "ViewProj");
     g_hDirToSunW = g_pEffect->GetParameterByName(0, "DirToSunW");
-    g_hTex0      = g_pEffect->GetParameterByName(0, "Tex0");
-    g_hTex1      = g_pEffect->GetParameterByName(0, "Tex1");
-    g_hTex2      = g_pEffect->GetParameterByName(0, "Tex2");
+    g_hGrassTex  = g_pEffect->GetParameterByName(0, "GrassTex");
+    g_hDirtTex   = g_pEffect->GetParameterByName(0, "DirtTex");
+    g_hStoneTex  = g_pEffect->GetParameterByName(0, "StoneTex");
     g_hBlendMap  = g_pEffect->GetParameterByName(0, "BlendMap");
 
     D3DXVECTOR4 dirToSun(0.0f, 1.0f, 0.0f, 0.0f);
 
-    g_pEffect->SetTexture(g_hTex0, g_pGrassTexture);
-    g_pEffect->SetTexture(g_hTex1, g_pDirtTexture);
-    g_pEffect->SetTexture(g_hTex2, g_pStoneTexture);
+    g_pEffect->SetTexture(g_hGrassTex, g_pGrassTexture);
+    g_pEffect->SetTexture(g_hDirtTex, g_pDirtTexture);
+    g_pEffect->SetTexture(g_hStoneTex, g_pStoneTexture);
     g_pEffect->SetTexture(g_hBlendMap, g_pBlendMapTexture);
     g_pEffect->SetVector(g_hDirToSunW, &dirToSun);
 

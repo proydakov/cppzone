@@ -22,9 +22,9 @@
 
 uniform extern matrix  ViewProj;
 uniform extern vector  DirToSunW;
-uniform extern texture Tex0;
-uniform extern texture Tex1;
-uniform extern texture Tex2;
+uniform extern texture GrassTex;
+uniform extern texture DirtTex;
+uniform extern texture StoneTex;
 uniform extern texture BlendMap;
 
 static float TexScale     = 24.0f;
@@ -34,7 +34,7 @@ static float AmbientLight = 0.3f;
 
 sampler Tex0S = sampler_state
 {
-    Texture   = <Tex0>;
+    Texture   = <GrassTex>;
     MinFilter = ANISOTROPIC;
     MagFilter = ANISOTROPIC;
     MipFilter = ANISOTROPIC;
@@ -44,7 +44,7 @@ sampler Tex0S = sampler_state
 
 sampler Tex1S = sampler_state
 {
-    Texture   = <Tex1>;
+    Texture   = <DirtTex>;
     MinFilter = ANISOTROPIC;
     MagFilter = ANISOTROPIC;
     MipFilter = ANISOTROPIC;
@@ -54,7 +54,7 @@ sampler Tex1S = sampler_state
 
 sampler Tex2S = sampler_state
 {
-    Texture   = <Tex2>;
+    Texture   = <StoneTex>;
     MinFilter = ANISOTROPIC;
     MagFilter = ANISOTROPIC;
     MipFilter = ANISOTROPIC;
