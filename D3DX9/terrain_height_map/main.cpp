@@ -37,6 +37,9 @@
 #define SAFE_RELEASE(p)      { if (p) { (p)->Release(); (p) = NULL; } }
 #endif
 
+#define VK_KEY_B 0x42
+#define VK_KEY_T 0x54
+
 //-----------------------------------------------------------------------------
 // Globals variables and definitions
 //-----------------------------------------------------------------------------
@@ -52,7 +55,7 @@ LPDIRECT3DTEXTURE9 g_pBlendMapTexture = NULL;
 
 //-----------------------------------------------------------------------------
 LPD3DXMESH g_pTerrianMesh = NULL;
-FLOAT g_side_size     = 1.0f;
+FLOAT g_side_size        = 1.0f;
 FLOAT g_horizontal_scale = 1.0f;
 FLOAT g_vertical_scale   = 1.0f;
 
@@ -65,6 +68,7 @@ D3DXHANDLE g_hGrassTex;
 D3DXHANDLE g_hDirtTex;
 D3DXHANDLE g_hStoneTex;
 D3DXHANDLE g_hBlendMap;
+D3DXHANDLE g_hDrawBlendMap;
 
 //-----------------------------------------------------------------------------
 terrain::geometry_loader* g_pTerrainGeometryLoader = NULL;
@@ -73,6 +77,10 @@ terrain::mesh_generator*  g_pTerrainMeshGenerator  = NULL;
 //-----------------------------------------------------------------------------
 D3DXMATRIX g_viewMatrix;
 D3DXMATRIX g_projMatrix;
+
+//-----------------------------------------------------------------------------
+BOOL g_drawBlendMap = false;
+BOOL g_drawSolidModel = true;
 
 //-----------------------------------------------------------------------------
 // Forward declarations
@@ -232,6 +240,7 @@ bool init_effect()
     g_hDirtTex   = g_pEffect->GetParameterByName(0, "DirtTex");
     g_hStoneTex  = g_pEffect->GetParameterByName(0, "StoneTex");
     g_hBlendMap  = g_pEffect->GetParameterByName(0, "BlendMap");
+    g_hDrawBlendMap = g_pEffect->GetParameterByName(0, "DrawBlendMap");
 
     D3DXVECTOR4 dirToSun(0.0f, 1.0f, 0.0f, 0.0f);
 
@@ -271,7 +280,13 @@ void render()
 
     g_pd3dDevice->BeginScene();
     {
-        //g_pd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+        DWORD state = D3DFILL_WIREFRAME;
+        if(g_drawSolidModel) {
+            state = D3DFILL_SOLID;
+        }
+        g_pd3dDevice->SetRenderState(D3DRS_FILLMODE, state);
+
+        g_pEffect->SetBool(g_hDrawBlendMap, g_drawBlendMap);
 
         D3DXMATRIX ViewProj = g_viewMatrix * g_projMatrix;
         g_pEffect->SetMatrix(g_hViewProj, &ViewProj);
@@ -331,6 +346,14 @@ void resize(UINT width, UINT height)
 void keyboard(HWND hWnd, WPARAM key)
 {
     switch(key) {
+    case VK_KEY_B:
+        g_drawBlendMap = !g_drawBlendMap;
+        break;
+
+    case VK_KEY_T:
+        g_drawSolidModel = !g_drawSolidModel;
+        break;
+
     case VK_ESCAPE:
         DestroyWindow(hWnd);
         break;

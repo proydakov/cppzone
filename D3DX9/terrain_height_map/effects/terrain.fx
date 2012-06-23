@@ -27,6 +27,8 @@ uniform extern texture DirtTex;
 uniform extern texture StoneTex;
 uniform extern texture BlendMap;
 
+uniform extern bool DrawBlendMap;
+
 static float TexScale     = 24.0f;
 static float AmbientLight = 0.3f;
 
@@ -126,19 +128,24 @@ PS_OUTPUT TerrainPS(PS_INPUT input)
     //vector c1 = tex2D(Tex1S, input.tiledTexC);
     //vector c2 = tex2D(Tex2S, input.tiledTexC);
 
-    vector c0 = tex2D(Tex0S, input.nonTiledTex);
-    vector c1 = tex2D(Tex1S, input.nonTiledTex);
-    vector c2 = tex2D(Tex2S, input.nonTiledTex);
+    if(!DrawBlendMap) {
+        vector c0 = tex2D(Tex0S, input.nonTiledTex);
+        vector c1 = tex2D(Tex1S, input.nonTiledTex);
+        vector c2 = tex2D(Tex2S, input.nonTiledTex);
 
-    vector B = tex2D(BlendMapS, input.nonTiledTex);
+        vector B = tex2D(BlendMapS, input.nonTiledTex);
 
-    float inverse = 1.0f / (B.r + B.g + B.b);
+        float inverse = 1.0f / (B.r + B.g + B.b);
 
-    c0 *= B.r * inverse;
-    c1 *= B.g * inverse;
-    c2 *= B.b * inverse;
+        c0 *= B.r * inverse;
+        c1 *= B.g * inverse;
+        c2 *= B.b * inverse;
 
-    output.color = (c0 + c1 + c2) * input.shade;
+        output.color = (c0 + c1 + c2) * input.shade;
+    }
+    else {
+        output.color = tex2D(BlendMapS, input.nonTiledTex);
+    }
     return output;
 }
 
