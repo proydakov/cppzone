@@ -21,9 +21,7 @@ SET(LUA_POSSIBLE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 SET(LIB_FILES
     ${LUA_POSSIBLE_DIRECTORY}/lib.cpp)
 
-I_ADD_LIBRARY(capabilities ${LIB_FILES})
-SET_TARGET_PROPERTIES(capabilities PROPERTIES DEFINE_SYMBOL LUA_EXPORT)
-SET_TARGET_PROPERTIES(capabilities PROPERTIES PREFIX "")
+I_ADD_LUA_LIBRARY(capabilities ${LIB_FILES})
 TARGET_LINK_LIBRARIES(capabilities ${LUA_LIBRARIES})
 
 #==============================================================================
