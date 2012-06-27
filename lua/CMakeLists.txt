@@ -23,6 +23,7 @@ SET(LIB_FILES
 
 I_ADD_LIBRARY(capabilities ${LIB_FILES})
 SET_TARGET_PROPERTIES(capabilities PROPERTIES DEFINE_SYMBOL LUA_EXPORT)
+SET_TARGET_PROPERTIES(capabilities PROPERTIES PREFIX "")
 TARGET_LINK_LIBRARIES(capabilities ${LUA_LIBRARIES})
 
 #==============================================================================
