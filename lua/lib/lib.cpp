@@ -20,22 +20,30 @@
  *  THE SOFTWARE.
  */
 
-#include <string.h>
+#include <string>
 #include <iostream>
 
 #include "lua.hpp"
 
-#ifdef _MSC_VER
 
-#ifdef LUA_EXPORTS
-#   define LIB_EXPORT __declspec(dllexport)
-#else
-#   define LIB_EXPORT __declspec(dllimport)
-#endif
+#if defined( _MSC_VER )
+
+#   define DLL_EXPORT extern "C" __declspec(dllexport)
+#   define DLL_IMPORT extern "C" __declspec(dllimport)
 
 #else
-#   define LIB_EXPORT extern "C" __attribute__((visibility("default")))
+
+#   define DLL_EXPORT extern "C" __attribute__((visibility("default")))
+#   define DLL_IMPORT
+
+#endif // defined( _MSC_VER )
+
+#ifdef LUA_EXPORT
+#   define LUA_LIB_EXPORT DLL_EXPORT
+#else
+#   define LUA_LIB_EXPORT DLL_IMPORT
 #endif
+
 
 static int fun(lua_State* L)
 {
@@ -70,16 +78,20 @@ static int fun_var(lua_State* L)
         std::cout.width(10);
         std::cout << lua_typename(L, type) << "  | value:  ";
         std::cout.width(10);
+
         switch(type) {
         case 1:
             std::cout << lua_toboolean(L, i);
             break;
+
         case 3:
             std::cout << lua_tonumber(L, i);
             break;
+
         case 4:
             std::cout << lua_tostring(L, i);
             break;
+
         default:
             std::cout << "invalid argument type";
             break;
@@ -122,8 +134,8 @@ static const luaL_Reg lua_possible[] =
     {0, 0}
 };
 
-LIB_EXPORT int luaopen_liblua_capabilities(lua_State* L)
+LUA_LIB_EXPORT int luaopen_capabilities(lua_State* L)
 {
-    luaL_register(L, "liblua_capabilities", lua_possible);
+    luaL_register(L, "capabilities", lua_possible);
     return 0;
 }
