@@ -29,29 +29,36 @@ int main(int argc, char *argv[])
     (void)argv;
     
     // create
-    std::cout << "CREATE a ";
-    A* a = new D;
-    std::cout << std::endl << "CREATE b ";
-    B* b = new D;
-    std::cout << std::endl << "CREATE c ";
-    C* c = new D;
+    std::cout << "create" << std::endl;
+
+    std::cout << std::endl << "CREATE a ";
+    A* a = new A;
+    std::cout << std::endl  << "CREATE b ";
+    B* b = new B;
+    std::cout << std::endl  << "CREATE c ";
+    C* c = new C;
+    std::cout << std::endl  << "CREATE c ";
+    D* d = new D;
     
     // call
-    std::cout << std::endl << std::endl;
+    std::cout << std::endl << "\ncall\n" << std::endl;
     
     a->fun();
     b->fun();
     c->fun();
+    d->fun();
     
     // destroy
-    std::cout << std::endl << "DELETE a ";
+    std::cout << std::endl << "destroy" << std::endl;
+
+    std::cout << std::endl  << "DELETE a ";
     delete a;
-    std::cout << std::endl << "DELETE b ";
+    std::cout << std::endl  << "DELETE b ";
     delete b;
-    std::cout << std::endl << "DELETE c ";
+    std::cout << std::endl  << "DELETE c ";
     delete c;
-    
-    std::cout << std::endl;
+    std::cout << std::endl  << "DELETE d ";
+    delete d;
     
     return 0;
 }
