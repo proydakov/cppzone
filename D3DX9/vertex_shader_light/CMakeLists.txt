@@ -21,7 +21,7 @@ SET(SHADER_FILES
     shaders/combo.hlsl)
 
 SET(CONFIG_FILES
-    config_directx_vertex_shader.h)
+    config_directx_vertex_shader_light.h)
 
 I_ADD_DIRECTX_EXECUTABLE(directx_vertex_shader_light ${SOURCE_FILES} ${SHADER_FILES} ${CONFIG_FILES})
 TARGET_LINK_LIBRARIES(directx_vertex_shader_light ${DirectX_LIBRARIES})
