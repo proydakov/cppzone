@@ -65,7 +65,7 @@ void print_ascending(const ctree& tree)
     const ctree::node* current = tree.min();
     
     std::cout << "!!!!!!successor!!!!!!" << std::endl;
-    while(current != NULL_PTR) {
+    while(current != nullptr) {
         ctree::print_node(current);
         std::cout << std::endl;
         current = tree.successor(current);
@@ -77,7 +77,7 @@ void print_descending(const ctree& tree)
     const ctree::node* current = tree.max();
     
     std::cout << "!!!!!!predecessor!!!!!!" << std::endl;
-    while(current != NULL_PTR) {
+    while(current != nullptr) {
         ctree::print_node(current);
         std::cout << std::endl;
         current = tree.predecessor(current);

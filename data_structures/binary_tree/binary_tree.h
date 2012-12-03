@@ -74,15 +74,13 @@ private:
     node*       m_max;
 };
 
-#define NULL_PTR 0
-
 template<class T>
 struct binary_tree<T>::node
 {   
     typedef T value_type;
     typedef unsigned int number;
     
-    node() : m_counter(0), m_parent(NULL_PTR), m_left(NULL_PTR), m_right(NULL_PTR) { }
+    node() : m_counter(0), m_parent(nullptr), m_left(nullptr), m_right(nullptr) { }
     node(const value_type& data, node* parent, node* left, node* right) : 
         m_data(data), m_counter(1), m_parent(parent), m_left(left), m_right(right) { }
     node(const value_type& data, number counter, node* parent, node* left, node* right) : 
@@ -98,9 +96,9 @@ struct binary_tree<T>::node
 template<class T>
 binary_tree<T>::binary_tree() :
     m_size(0),
-    m_root(NULL_PTR),
-    m_min(NULL_PTR),
-    m_max(NULL_PTR)
+    m_root(nullptr),
+    m_min(nullptr),
+    m_max(nullptr)
 {
 }
 
@@ -136,18 +134,18 @@ void binary_tree<T>::print() const
     typedef std::list<node*> print_list;
     print_list* to_print = new print_list;
     print_list* temp_print = new print_list;
-    if(m_root != NULL_PTR)
+    if(m_root != nullptr)
         to_print->push_back(m_root);
     while(!to_print->empty()) {
         typename print_list::const_iterator end_it = to_print->end();
         for(typename print_list::const_iterator it = to_print->begin(); it != end_it; ++it) {
             print_node(*it);
             
-            if((*it)->m_left != NULL_PTR) {
+            if((*it)->m_left != nullptr) {
                 temp_print->push_back((*it)->m_left);
             }
             
-            if((*it)->m_right != NULL_PTR) {
+            if((*it)->m_right != nullptr) {
                 temp_print->push_back((*it)->m_right);
             }
         }
@@ -163,10 +161,10 @@ template<class T>
 void binary_tree<T>::print_node(const node* elem)
 {
     std::cout << "[E(" << elem->m_data << ")  C(" << elem->m_counter << ")  P(";
-    if(elem->m_parent != NULL_PTR)
+    if(elem->m_parent != nullptr)
         std::cout << elem->m_parent->m_data;
     else
-        std::cout << "NULL_PTR";
+        std::cout << "nullptr";
     std::cout << ")]   ";
 }
 
@@ -174,14 +172,14 @@ template<class T>
 const typename binary_tree<T>::node* binary_tree<T>::successor(const node* elem) const
 {
     node* current = elem->m_right;
-    if(current != NULL_PTR) {
-        while(current->m_left != NULL_PTR)
+    if(current != nullptr) {
+        while(current->m_left != nullptr)
             current = current->m_left;
         return current;
     }
     current = const_cast<node*>(elem);
     node* parent = elem->m_parent;
-    while(parent != NULL_PTR && current == parent->m_right) {
+    while(parent != nullptr && current == parent->m_right) {
         current = parent;
         parent = parent->m_parent;
     }
@@ -191,14 +189,14 @@ template<class T>
 const typename binary_tree<T>::node* binary_tree<T>::predecessor(const node* elem) const
 {
     node* current = elem->m_left;
-    if(current != NULL_PTR) {
-        while(current->m_right != NULL_PTR) 
+    if(current != nullptr) {
+        while(current->m_right != nullptr)
             current = current->m_right;
         return current;
     }
     current = const_cast<node*>(elem);
     node* parent = elem->m_parent;
-    while(parent != NULL_PTR && current == parent->m_left) {
+    while(parent != nullptr && current == parent->m_left) {
         current = parent;
         parent = parent->m_parent;
     }
@@ -221,10 +219,10 @@ template<class T>
 bool binary_tree<T>::insert(const value_type& value)
 {
     node* current = m_root;
-    node* parent = NULL_PTR;
-    node* newnode = NULL_PTR;
+    node* parent = nullptr;
+    node* newnode = nullptr;
     
-    while(current != NULL_PTR) {
+    while(current != nullptr) {
         parent = current;
         
         if(value < current->m_data) {
@@ -240,9 +238,9 @@ bool binary_tree<T>::insert(const value_type& value)
         }
     }
     
-    newnode = new node(value, parent, NULL_PTR, NULL_PTR);
+    newnode = new node(value, parent, nullptr, nullptr);
     
-    if(parent == NULL_PTR) {
+    if(parent == nullptr) {
         m_root = newnode;
     }
     else if(value < parent->m_data) {
@@ -252,12 +250,12 @@ bool binary_tree<T>::insert(const value_type& value)
         parent->m_right = newnode;
     }
     
-    if(m_min == NULL_PTR)
+    if(m_min == nullptr)
         m_min = newnode;
     else if(value < m_min->m_data)
         m_min = newnode;
     
-    if(m_max == NULL_PTR)
+    if(m_max == nullptr)
         m_max = newnode;
     else if(value > m_max->m_data)
         m_max = newnode;
@@ -270,11 +268,11 @@ template<class T>
 bool binary_tree<T>::erase(const value_type& value)
 {  
     node* dnode = find_node(value);
-    if(dnode == NULL_PTR)
+    if(dnode == nullptr)
         return false;
     
     node* pnode = dnode->m_parent;
-    node* rnode = NULL_PTR;
+    node* rnode = nullptr;
     
     if(dnode->m_counter > 1) {
         --dnode->m_counter;
@@ -285,26 +283,26 @@ bool binary_tree<T>::erase(const value_type& value)
         if(dnode == m_max)
             m_max = const_cast<node*>(predecessor(dnode));
         
-        if((dnode->m_left == NULL_PTR) && (dnode->m_right == NULL_PTR)) {
-            rnode = NULL_PTR;
+        if((dnode->m_left == nullptr) && (dnode->m_right == nullptr)) {
+            rnode = nullptr;
         }
-        else if((dnode->m_left != NULL_PTR) && (dnode->m_right == NULL_PTR)) {
+        else if((dnode->m_left != nullptr) && (dnode->m_right == nullptr)) {
             rnode = dnode->m_left;
             rnode->m_parent = pnode;        
         }
-        else if((dnode->m_left == NULL_PTR) && (dnode->m_right != NULL_PTR)) {
+        else if((dnode->m_left == nullptr) && (dnode->m_right != nullptr)) {
             rnode = dnode->m_right;
             rnode->m_parent = pnode;
         }
         else {
             rnode = dnode->m_left;
-            while(rnode->m_right != NULL_PTR) {
+            while(rnode->m_right != nullptr) {
                 rnode = rnode->m_right;
             }
             
             if(dnode->m_left != rnode) {
                 rnode->m_parent->m_right = rnode->m_left;
-                if(rnode->m_left != NULL_PTR)
+                if(rnode->m_left != nullptr)
                     rnode->m_left->m_parent = rnode->m_parent;
             }
             
@@ -321,7 +319,7 @@ bool binary_tree<T>::erase(const value_type& value)
         if(dnode == m_root)
             m_root = rnode;
         
-        if(pnode != NULL_PTR) {
+        if(pnode != nullptr) {
             if(pnode->m_data > dnode->m_data) {
                 pnode->m_left = rnode;
             }
@@ -341,9 +339,9 @@ void binary_tree<T>::clear()
 {
     destroy_tree(m_root);
     m_size = 0;
-    m_root = NULL_PTR;
-    m_min = NULL_PTR;
-    m_max = NULL_PTR;
+    m_root = nullptr;
+    m_min = nullptr;
+    m_max = nullptr;
 }
 
 template<class T>
@@ -351,14 +349,14 @@ typename binary_tree<T>::size_type binary_tree<T>::depth() const
 {
     node* next = m_root;
     size_type depth_left = 0;
-    while(next != NULL_PTR) {
+    while(next != nullptr) {
         ++depth_left;
         next = next->m_left;
     }
     
     next = m_root;
     size_type depth_right = 0;
-    while(next != NULL_PTR) {
+    while(next != nullptr) {
         ++depth_right;
         next = next->m_left;  
     }
@@ -382,9 +380,9 @@ template<class T>
 typename binary_tree<T>::node* binary_tree<T>::find_node(const value_type& value) const
 {
     node* current = m_root;
-    node* parent = NULL_PTR;
+    node* parent = nullptr;
     
-    while(current != NULL_PTR) {
+    while(current != nullptr) {
         if(value == current->m_data) {
             break;
         }
@@ -404,7 +402,7 @@ template<class T>
 typename binary_tree<T>::size_type binary_tree<T>::count(const value_type& value) const
 {
     node* temp = find(value);
-    return temp != NULL_PTR ? temp->m_counter : 0;
+    return temp != nullptr ? temp->m_counter : 0;
 }
 
 template<class T>
@@ -421,16 +419,16 @@ typename binary_tree<T>::node* binary_tree<T>::copy_tree(node* src)
     node* newrnode;
     node* newnode;
     
-    if(src == NULL_PTR)
-        return NULL_PTR;
+    if(src == nullptr)
+        return nullptr;
     
-    newlnode = src->m_left != NULL_PTR ? copy_tree(src->m_left) : NULL_PTR;
-    newrnode = src->m_right != NULL_PTR ? copy_tree(src->m_right) : NULL_PTR;
+    newlnode = src->m_left != nullptr ? copy_tree(src->m_left) : nullptr;
+    newrnode = src->m_right != nullptr ? copy_tree(src->m_right) : nullptr;
     
-    newnode = new node(src->m_data, src->m_counter, NULL_PTR, newlnode, newrnode);
-    if(newnode->m_left != NULL_PTR)
+    newnode = new node(src->m_data, src->m_counter, nullptr, newlnode, newrnode);
+    if(newnode->m_left != nullptr)
         newnode->m_left->m_parent = newnode;
-    if(newnode->m_right != NULL_PTR)
+    if(newnode->m_right != nullptr)
         newnode->m_right->m_parent = newnode;
     return newnode;
 }
@@ -438,7 +436,7 @@ typename binary_tree<T>::node* binary_tree<T>::copy_tree(node* src)
 template<class T>
 void binary_tree<T>::destroy_tree(node* root)
 {
-    if(root == NULL_PTR)
+    if(root == nullptr)
         return;
     
     destroy_tree(root->m_left);
