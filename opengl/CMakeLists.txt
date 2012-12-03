@@ -35,6 +35,7 @@ ADD_SUBDIRECTORY(fogcoord)
 ADD_SUBDIRECTORY(display_list_torus)
 ADD_SUBDIRECTORY(morphing)
 ADD_SUBDIRECTORY(terrain_height_map)
+ADD_SUBDIRECTORY(astar2d)
 
 FIND_PACKAGE(SDL)
 IF(SDL_FOUND)
