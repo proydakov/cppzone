@@ -1,0 +1,64 @@
+#==============================================================================
+# Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
+#
+#  DIRECTX9_FOUND       - system has DIRECTX9
+#  DIRECTX9_INCLUDE_DIR - the DirextX include directory
+#  DIRECTX9_LIBRARIES   - Link these to use DIRECTX9
+#
+#==============================================================================
+
+IF(WIN32)
+
+    SET(DIRECTX9_BASE_PATHS
+        "$ENV{DXSDK_DIR}"
+        )
+
+    FIND_PATH(DIRECTX9_INCLUDE_DIR NAMES d3d9.h HINTS ${DIRECTX9_BASE_PATHS} PATH_SUFFIXES Include)
+
+    SET(DIRECTX9_LIB_PATH
+        ${DIRECTX9_BASE_PATHS}/Lib
+        )
+
+    SET(DIRECTX_PATH_SUFFIXES "x86")
+
+    FIND_LIBRARY(DIRECTX9_D9_RUNTIME_LIBRARY d3d9
+        HINTS ${DIRECTX9_LIB_PATH}
+        PATH_SUFFIXES ${DIRECTX9_PATH_SUFFIXES}
+        )
+
+    FIND_LIBRARY(DIRECTX9_D3D9_LIBRARY_DEBUG d3dx9d
+        HINTS ${DIRECTX9_LIB_PATH}
+        PATH_SUFFIXES ${DIRECTX9_PATH_SUFFIXES}
+        )
+
+    FIND_LIBRARY(DIRECTX9_D3D9_LIBRARY_RELEASE d3dx9 d3d9
+        HINTS ${DIRECTX9_LIB_PATH}
+        PATH_SUFFIXES ${DIRECTX9_PATH_SUFFIXES}
+        )
+
+    SET(DIRECTX9_LIBRARIES "optimized" ${DIRECTX9_D3D9_LIBRARY_RELEASE} "optimized" ${DIRECTX9_D9_RUNTIME_LIBRARY}
+                           "debug" ${DIRECTX9_D3D9_LIBRARY_DEBUG}       "debug" ${DIRECTX9_D9_RUNTIME_LIBRARY}
+        )
+
+    SET(DIRECTX9_FOUND TRUE)
+
+    IF(NOT DIRECTX9_INCLUDE_DIR)
+        SET(DIRECTX9_FOUND FALSE)
+    ENDIF(NOT DIRECTX9_INCLUDE_DIR)
+
+    IF(NOT DIRECTX9_LIBRARIES)
+        SET(DIRECTX9_FOUND FALSE)
+    ENDIF(NOT DIRECTX9_LIBRARIES)
+
+    MARK_AS_ADVANCED(DIRECTX9_INCLUDE_DIR
+        DIRECTX9_LIBRARIES
+        DIRECTX9_D9_RUNTIME_LIBRARY
+        DIRECTX9_D3D9_LIBRARY_DEBUG
+        DIRECTX9_D3D9_LIBRARY_RELEASE
+        )
+
+ELSE()
+
+    SET(DIRECTX9_FOUND FALSE)
+
+ENDIF(WIN32)

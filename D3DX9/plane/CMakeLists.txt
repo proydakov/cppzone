@@ -2,15 +2,16 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  plane  directx")
+MESSAGE(STATUS "create  plane  directx9")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-FIND_PACKAGE(DirectX)
-INCLUDE_DIRECTORIES(${DirectX_INCLUDE_DIR})
+FIND_PACKAGE(DIRECTX9)
+INCLUDE_DIRECTORIES(${DIRECTX9_INCLUDE_DIR})
 
 SET(SOURCE_FILES
-    main.cpp)
+    main.cpp
+    )
 
-I_ADD_EXECUTABLE(directx_plane ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(directx_plane ${DirectX_LIBRARIES})
+I_ADD_EXECUTABLE(directx9_plane ${SOURCE_FILES})
+TARGET_LINK_LIBRARIES(directx9_plane ${DIRECTX9_LIBRARIES})

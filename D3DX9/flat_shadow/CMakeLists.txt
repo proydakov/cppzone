@@ -2,15 +2,16 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  flat  shadow  directx")
+MESSAGE(STATUS "create  flat  shadow  directx9")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-FIND_PACKAGE(DirectX)
-INCLUDE_DIRECTORIES(${DirectX_INCLUDE_DIR})
+FIND_PACKAGE(DIRECTX9)
+INCLUDE_DIRECTORIES(${DIRECTX9_INCLUDE_DIR})
 
 SET(SOURCE_FILES
-    main.cpp)
+    main.cpp
+    )
 
-I_ADD_DIRECTX_EXECUTABLE(directx_flat_shadow ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(directx_flat_shadow ${DirectX_LIBRARIES})
+I_ADD_DIRECTX_EXECUTABLE(directx9_flat_shadow ${SOURCE_FILES})
+TARGET_LINK_LIBRARIES(directx9_flat_shadow ${DIRECTX9_LIBRARIES})

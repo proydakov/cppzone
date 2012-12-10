@@ -2,15 +2,16 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  light  directx")
+MESSAGE(STATUS "create  light  directx9")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-FIND_PACKAGE(DirectX)
-INCLUDE_DIRECTORIES(${DirectX_INCLUDE_DIR})
+FIND_PACKAGE(DIRECTX9)
+INCLUDE_DIRECTORIES(${DIRECTX9_INCLUDE_DIR})
 
 SET(SOURCE_FILES
-    main.cpp)
+    main.cpp
+    )
 
-I_ADD_DIRECTX_EXECUTABLE(directx_light ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(directx_light ${DirectX_LIBRARIES})
+I_ADD_DIRECTX_EXECUTABLE(directx9_light ${SOURCE_FILES})
+TARGET_LINK_LIBRARIES(directx9_light ${DIRECTX9_LIBRARIES})
