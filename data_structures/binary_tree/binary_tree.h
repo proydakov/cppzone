@@ -111,8 +111,9 @@ binary_tree<T>::binary_tree(const binary_tree<T>& src)
 template<class T>
 binary_tree<T>& binary_tree<T>::operator=(const binary_tree<T>& src)
 {
-    if(this == &src)
+    if(this == &src) {
         return *this;
+    }
     
     clear();
     copy(src);

@@ -90,11 +90,11 @@ int main()
 
 struct tree::node
 {
-    node() : m_node_id(1), m_parent(parent_node(0, 0)) ,m_exist(false) {}
-    node(uint node_id) : m_node_id(node_id), m_parent(parent_node(0, 0)) ,m_exist(true) {}
+    node() : m_node_id(1), m_parent(parent_node(0, nullptr)) ,m_exist(false) {}
+    node(uint node_id) : m_node_id(node_id), m_parent(parent_node(0, nullptr)) ,m_exist(true) {}
     
     bool is_head() const {
-        return m_parent.second == NULL;
+        return m_parent.second == nullptr;
     }
     
     bool is_exist() const {
@@ -118,8 +118,9 @@ struct tree::node
 tree::tree(uint size)
 {
     m_tree.resize(size);
-    if(size == 1)
+    if(size == 1) {
         m_tree[0].enable();
+    }
 }
 
 bool tree::insert_arc(uint child_id, uint parent_id, uint weight)
@@ -127,8 +128,8 @@ bool tree::insert_arc(uint child_id, uint parent_id, uint weight)
     bool exist_child = m_tree[child_id - 1].is_exist();
     bool exist_parent = m_tree[parent_id - 1].is_exist();
     
-    node* child_ptr = !exist_child ? NULL : &m_tree[child_id - 1];
-    node* parent_ptr = !exist_parent ? NULL : &m_tree[parent_id - 1];
+    node* child_ptr = !exist_child ? nullptr : &m_tree[child_id - 1];
+    node* parent_ptr = !exist_parent ? nullptr : &m_tree[parent_id - 1];
     
     if(!exist_child) {
         node child(child_id);
@@ -154,8 +155,9 @@ distance tree::calculate_distance(uint first_node_id, uint second_node_id)
     uint min_element = std::min(first_node_id, second_node_id);
     uint max_element = std::max(first_node_id, second_node_id);
     
-    if(min_element < 0 && max_element >= m_tree.size())
+    if(min_element < 0 && max_element >= m_tree.size()) {
         return -1;
+    }
     
     distance length = 0;
     
