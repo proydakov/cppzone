@@ -70,7 +70,6 @@ public:
     euclidean_heuristic(vertex_descriptor goal) : m_goal(goal) {};
 
     double operator() (vertex_descriptor v) {
-        //return 0;
         double x = (m_goal[0] - v[0]) * (m_goal[0] - v[0]);
         double y = (m_goal[1] - v[1]) * (m_goal[1] - v[1]);
         return sqrt(x + y);
@@ -89,12 +88,10 @@ struct astar_goal_visitor : public boost::default_astar_visitor
     astar_goal_visitor(vertex_descriptor goal, vertex_set& way) : m_way(way), m_goal(goal) { m_way.clear(); };
 
     void examine_vertex(vertex_descriptor u, const filtered_grid&) {
-
-        m_way.insert(u);
-
         if (u == m_goal) {
             throw found_goal();
         }
+        m_way.insert(u);
     }
 
 private:
@@ -361,17 +358,15 @@ maze fixed()
 {
     maze m(9, 9);
 
-    vertex_descriptor u1 = {{4, 1}};
-    vertex_descriptor u2 = {{4, 2}};
-    vertex_descriptor u3 = {{4, 3}};
-    vertex_descriptor u4 = {{4, 4}};
-    vertex_descriptor u5 = {{4, 5}};
+    vertex_descriptor u1 = {{4, 2}};
+    vertex_descriptor u2 = {{4, 3}};
+    vertex_descriptor u3 = {{4, 4}};
+    vertex_descriptor u4 = {{4, 5}};
 
     m.m_barriers.insert(u1);
     m.m_barriers.insert(u2);
     m.m_barriers.insert(u3);
     m.m_barriers.insert(u4);
-    m.m_barriers.insert(u5);
 
     vertex_descriptor source = {{2, 4}};
     m.m_soure = source;
