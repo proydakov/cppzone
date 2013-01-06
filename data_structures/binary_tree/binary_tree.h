@@ -81,9 +81,9 @@ struct binary_tree<T>::node
     typedef unsigned int number;
     
     node() : m_counter(0), m_parent(nullptr), m_left(nullptr), m_right(nullptr) { }
-    node(const value_type& data, node* parent, node* left, node* right) : 
+    node(const value_type& data, node* parent, node* left, node* right) :
         m_data(data), m_counter(1), m_parent(parent), m_left(left), m_right(right) { }
-    node(const value_type& data, number counter, node* parent, node* left, node* right) : 
+    node(const value_type& data, number counter, node* parent, node* left, node* right) :
         m_data(data), m_counter(counter), m_parent(parent), m_left(left), m_right(right) { }
     
     value_type  m_data;
@@ -162,10 +162,12 @@ template<class T>
 void binary_tree<T>::print_node(const node* elem)
 {
     std::cout << "[E(" << elem->m_data << ")  C(" << elem->m_counter << ")  P(";
-    if(elem->m_parent != nullptr)
+    if(elem->m_parent != nullptr) {
         std::cout << elem->m_parent->m_data;
-    else
+    }
+    else {
         std::cout << "nullptr";
+    }
     std::cout << ")]   ";
 }
 
@@ -251,15 +253,19 @@ bool binary_tree<T>::insert(const value_type& value)
         parent->m_right = newnode;
     }
     
-    if(m_min == nullptr)
+    if(m_min == nullptr) {
         m_min = newnode;
-    else if(value < m_min->m_data)
+    }
+    else if(value < m_min->m_data) {
         m_min = newnode;
+    }
     
-    if(m_max == nullptr)
+    if(m_max == nullptr) {
         m_max = newnode;
-    else if(value > m_max->m_data)
+    }
+    else if(value > m_max->m_data) {
         m_max = newnode;
+    }
     
     ++m_size;
     return true;
@@ -289,7 +295,7 @@ bool binary_tree<T>::erase(const value_type& value)
         }
         else if((dnode->m_left != nullptr) && (dnode->m_right == nullptr)) {
             rnode = dnode->m_left;
-            rnode->m_parent = pnode;        
+            rnode->m_parent = pnode;
         }
         else if((dnode->m_left == nullptr) && (dnode->m_right != nullptr)) {
             rnode = dnode->m_right;
@@ -317,8 +323,9 @@ bool binary_tree<T>::erase(const value_type& value)
             rnode->m_parent = pnode;
         }
         
-        if(dnode == m_root)
+        if(dnode == m_root) {
             m_root = rnode;
+        }
         
         if(pnode != nullptr) {
             if(pnode->m_data > dnode->m_data) {
@@ -359,7 +366,7 @@ typename binary_tree<T>::size_type binary_tree<T>::depth() const
     size_type depth_right = 0;
     while(next != nullptr) {
         ++depth_right;
-        next = next->m_left;  
+        next = next->m_left;
     }
     
     return std::max(depth_left, depth_right);
@@ -390,10 +397,12 @@ typename binary_tree<T>::node* binary_tree<T>::find_node(const value_type& value
         else {
             parent = current;
             
-            if(value < current->m_data)
+            if(value < current->m_data) {
                 current = current->m_left;
-            else
+            }
+            else {
                 current = current->m_right;
+            }
         }
     }
     return current;
@@ -420,25 +429,29 @@ typename binary_tree<T>::node* binary_tree<T>::copy_tree(node* src)
     node* newrnode;
     node* newnode;
     
-    if(src == nullptr)
+    if(src == nullptr) {
         return nullptr;
+    }
     
     newlnode = src->m_left != nullptr ? copy_tree(src->m_left) : nullptr;
     newrnode = src->m_right != nullptr ? copy_tree(src->m_right) : nullptr;
     
     newnode = new node(src->m_data, src->m_counter, nullptr, newlnode, newrnode);
-    if(newnode->m_left != nullptr)
+    if(newnode->m_left != nullptr) {
         newnode->m_left->m_parent = newnode;
-    if(newnode->m_right != nullptr)
+    }
+    if(newnode->m_right != nullptr) {
         newnode->m_right->m_parent = newnode;
+    }
     return newnode;
 }
 
 template<class T>
 void binary_tree<T>::destroy_tree(node* root)
 {
-    if(root == nullptr)
+    if(root == nullptr) {
         return;
+    }
     
     destroy_tree(root->m_left);
     destroy_tree(root->m_right);
