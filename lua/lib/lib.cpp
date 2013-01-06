@@ -48,7 +48,7 @@
 static int fun(lua_State* L)
 {
     (void)L;
-    std::cout << "* fun *" << std::endl;
+    std::cout << "[Lib] " << "* fun *" << std::endl;
     std::cout << std::endl;
     return 0;
 }
@@ -59,10 +59,10 @@ static int fun_fix(lua_State* L)
     const lua_Number num  = lua_tonumber(L, 2);
     const char* text2 = lua_tostring(L, 3);
     
-    std::cout << "* fun_fix *" << std::endl;
-    std::cout << "text1  -  " << text1 << std::endl;
-    std::cout << "num    -  " << num << std::endl;
-    std::cout << "text2  -  " << text2 << std::endl;
+    std::cout << "[Lib] " << "* fun_fix *" << std::endl;
+    std::cout << "[Lib] " << "text1  -  " << text1 << std::endl;
+    std::cout << "[Lib] " << "num    -  " << num << std::endl;
+    std::cout << "[Lib] " << "text2  -  " << text2 << std::endl;
     std::cout << std::endl;
     
     return 0;
@@ -71,15 +71,16 @@ static int fun_fix(lua_State* L)
 static int fun_var(lua_State* L)
 {
     const int count = lua_gettop(L);
-    std::cout << "* fun_var *" <<  std::endl << "arguments count: " << count << std::endl;
+    std::cout << "[Lib] " << "* fun_var *" <<  std::endl;
+    std::cout << "[Lib] " << "arguments count: " << count << std::endl;
     std::cout.setf(std::ios_base::left, std::ios_base::adjustfield);
     for(int i = 1; count >= i; ++i) {
-        std::cout << "fun_var argument is " << i << " | ";
+        std::cout << "[Lib] fun_var argument is  " << i << "  |  ";
         int type = lua_type(L, i);
         std::cout << "type : ";
-        std::cout.width(10);
+        std::cout.width(9);
         std::cout << lua_typename(L, type) << "  | value:  ";
-        std::cout.width(10);
+        std::cout.width();
 
         switch(type) {
         case 1:
@@ -112,7 +113,7 @@ static int fun_return_num(lua_State* L)
 
 static int fun_return_string(lua_State* L)
 {
-    lua_pushstring(L, "hello, my name \'C\'");
+    lua_pushstring(L, "Hello");
     return 1;
 }
 

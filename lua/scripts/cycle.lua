@@ -20,6 +20,6 @@
 *  THE SOFTWARE.
 ]]
 
-print("lua", 1)
-print("lua", 2)
-print("lua", 3)
+print("[Lua] line1:", 1)
+print("[Lua] line2:", 2)
+print("[Lua] line3:", 3)

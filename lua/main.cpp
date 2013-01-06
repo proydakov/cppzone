@@ -31,6 +31,10 @@
 #define TERMINATION_NORMAL  EXIT_SUCCESS
 #define TERMINATION_ERROR   1
 
+#define CONFIG_LUA_SCRIPT "config.lua"
+#define CALL_C_LUA_SCRIPT "call_c.lua"
+#define RELOAD_LUA_SCRIPT "cycle.lua"
+
 typedef std::string string;
 
 const string PARENT_DIRECTORY_STRING = PARENT_DIRECTORY;
@@ -44,43 +48,42 @@ void reload();
 
 int main(void)
 {
-    std::cout << "--config--" << std::endl;
     get_config();
-    std::cout << std::endl << "--call \'c\'--" << std::endl;
     call_function_from_c();
-    std::cout << std::endl << "--reload--" << std::endl;
     reload();
     return TERMINATION_NORMAL;
 }
 
-void load_lua_file(lua_State *L, const char* name)
+void load_lua_file(lua_State* L, const char* name)
 {
+    std::cout << "[C++] " << "Loading Lua script: " << name << std::endl;
     int result = luaL_loadfile(L, name);
     if (result) {
-        std::cout << "Returned result: " << result << std::endl;
-        std::cout << "Loading error: " << lua_tostring(L, -1) << std::endl;
-        exit(TERMINATION_ERROR); 
-    } 
+        std::cout << "[C++] Returned result: " << result << std::endl;
+        std::cout << "[C++] Loading error: " << lua_tostring(L, -1) << std::endl;
+        exit(TERMINATION_ERROR);
+    }
 }
 
-void check_execution(lua_State *L)
+void check_execution(lua_State* L)
 {
-    int result = lua_pcall(L, 0, LUA_MULTRET, 0); 
+    std::cout << "[C++] " << "Starting script" << "\n" << std::endl;
+    int result = lua_pcall(L, 0, LUA_MULTRET, 0);
     if (result) {
-        std::cout << "Returned result: " << result << std::endl;
-        std::cout << "Runtime error: " << lua_tostring(L, -1) << std::endl;
-        exit(TERMINATION_ERROR); 
+        std::cout << "[C++] Returned result: " << result << std::endl;
+        std::cout << "[C++] Runtime error: " << lua_tostring(L, -1) << std::endl;
+        exit(TERMINATION_ERROR);
     }
 }
 
 void get_config()
 {
-    lua_State * L;
+    lua_State* L;
     L = luaL_newstate();
     luaL_openlibs(L);
     
     string lia_file = PARENT_DIRECTORY_STRING;
-    lia_file += "config.lua";
+    lia_file += CONFIG_LUA_SCRIPT;
     load_lua_file(L, lia_file.c_str());
     check_execution(L);
     
@@ -88,11 +91,13 @@ void get_config()
     lua_getglobal(L, "my_os");
     lua_getglobal(L, "my_name");
     
-    std::cout << "my_name: " << lua_tostring(L, -1) << std::endl;
-    std::cout << "my_os  : " << lua_tostring(L, -2) << std::endl;
-    std::cout << "my_arc : " << lua_tostring(L, -3) << std::endl;
+    std::cout << "[C++] my_name: " << lua_tostring(L, -1) << std::endl;
+    std::cout << "[C++] my_os  : " << lua_tostring(L, -2) << std::endl;
+    std::cout << "[C++] my_arc : " << lua_tostring(L, -3) << std::endl;
     
-    lua_close(L);  
+    lua_close(L);
+
+    std::cout << std::endl;
 }
 
 void call_function_from_c()
@@ -102,11 +107,13 @@ void call_function_from_c()
     luaL_openlibs(L);
     
     string lia_file = PARENT_DIRECTORY_STRING;
-    lia_file += "call_c.lua";
+    lia_file += CALL_C_LUA_SCRIPT;
     load_lua_file(L, lia_file.c_str());
     check_execution(L);
     
-    lua_close(L);  
+    lua_close(L);
+
+    std::cout << std::endl;
 }
 
 void reload()
@@ -119,16 +126,21 @@ void reload()
     do {
         if(command) {
             string lia_file = PARENT_DIRECTORY_STRING;
-            lia_file += "cycle.lua";
+            lia_file += RELOAD_LUA_SCRIPT;
             load_lua_file(L, lia_file.c_str());
             check_execution(L);
         }
         else {
             break;
         }
-        std::cout << "Enter control key 1 (to reload cycle.lua), or 0 (to exit): ";
+        std::cout << "[C++] " << "Enter control key 1 (to reload cycle.lua), or 0 (to exit): ";
         std::cin >> command;
+        if(command) {
+            std::cout << std::endl;
+        }
     }
     while(command);
-    lua_close(L); 
+    lua_close(L);
+
+    std::cout << std::endl;
 }
