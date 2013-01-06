@@ -46,7 +46,7 @@ int main(void)
 {
     std::cout << "--config--" << std::endl;
     get_config();
-    std::cout << std::endl << "--call C--" << std::endl;
+    std::cout << std::endl << "--call \'c\'--" << std::endl;
     call_function_from_c();
     std::cout << std::endl << "--reload--" << std::endl;
     reload();

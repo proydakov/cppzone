@@ -20,8 +20,8 @@
 *  THE SOFTWARE.
 ]]
 
-cap = require('capabilities')
---cap = require 'libcapabilities'
+cap = require("capabilities")
+cap = capabilities
 
 cap.fun()                                       -- example of a function call with no parameters
 cap.fun_fix('I love Lua!', 100, "la-la-la")     -- example of a function call with no parameters
@@ -29,6 +29,6 @@ cap.fun_var(true, 300, "web", 'bob', "robot")   -- example of a function call wi
 
 print()
 
-print("call cap.fun_return_num(): ", cap.fun_return_num())          -- example of a function call returns the number
-print("call cap.fun_return_string(): ", cap.fun_return_string())    -- example of a function call returns the string
-print("call cap.fun_return_set(): ", cap.fun_return_set())          -- example of a function call returns a set of values
+print("call cap.fun_return_num(): ",    cap.fun_return_num()   )   -- example of a function call returns the number
+print("call cap.fun_return_string(): ", cap.fun_return_string())   -- example of a function call returns the string
+print("call cap.fun_return_set(): ",    cap.fun_return_set()   )   -- example of a function call returns a set of values

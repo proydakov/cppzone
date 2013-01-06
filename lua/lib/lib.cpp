@@ -49,6 +49,7 @@ static int fun(lua_State* L)
 {
     (void)L;
     std::cout << "* fun *" << std::endl;
+    std::cout << std::endl;
     return 0;
 }
 
@@ -62,6 +63,7 @@ static int fun_fix(lua_State* L)
     std::cout << "text1  -  " << text1 << std::endl;
     std::cout << "num    -  " << num << std::endl;
     std::cout << "text2  -  " << text2 << std::endl;
+    std::cout << std::endl;
     
     return 0;
 }
@@ -98,6 +100,7 @@ static int fun_var(lua_State* L)
         }
         std::cout << std::endl;
     }
+    std::cout << std::endl;
     return 0;
 }
 
@@ -109,7 +112,7 @@ static int fun_return_num(lua_State* L)
 
 static int fun_return_string(lua_State* L)
 {
-    lua_pushstring(L, "hello, my name C");
+    lua_pushstring(L, "hello, my name \'C\'");
     return 1;
 }
 
@@ -136,6 +139,15 @@ static const luaL_Reg lua_possible[] =
 
 LUA_LIB_EXPORT int luaopen_capabilities(lua_State* L)
 {
+#if ( LUA_VERSION_NUM == 502 )
+    lua_newtable(L);
+    luaL_setfuncs (L, lua_possible, 0);
+    lua_pushvalue(L,-1);
+    lua_setglobal(L,"capabilities");
+#elif ( LUA_VERSION_NUM == 501 )
     luaL_register(L, "capabilities", lua_possible);
+#else
+#   error Unsupported version Lua !!!
+#endif
     return 0;
 }
