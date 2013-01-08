@@ -86,7 +86,7 @@ template<class F, class T>
 void test_fun(const std::string& comment, F fun, T n)
 {
     T current_n = 0;
-    benchmark::benchmark current_benchmark;
+    benchmark::clock current_benchmark;
     current_benchmark.start(); {
         current_n = static_cast<T>(fun(n));
     }
@@ -99,7 +99,7 @@ template<class F, class T>
 void test_fun(const std::string& comment, F fun, T p1, T p2)
 {
     T current_n = 0;
-    benchmark::benchmark current_benchmark;
+    benchmark::clock current_benchmark;
     current_benchmark.start(); {
         current_n = static_cast<T>(fun(p1, p2));
     }

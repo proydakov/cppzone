@@ -84,7 +84,7 @@ int main( int argc, char *argv[] )
 
 void test_sort(const std::string& name, prt_sort sort, std::vector<data_type> data, const std::vector<data_type> sorted_data)
 {
-    benchmark::benchmark sort_benchmark;
+    benchmark::clock sort_benchmark;
     sort_benchmark.start(); {
         sort(data);
     }

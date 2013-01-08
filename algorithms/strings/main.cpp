@@ -45,7 +45,7 @@ int main( int argc, char *argv[] )
 void test_sub_string(const std::string& name, prt_fun fun, const std::string& string, const std::string& sub_string)
 {
     index_type i = 0;
-    benchmark::benchmark fun_benchmark;
+    benchmark::clock fun_benchmark;
     fun_benchmark.start(); {
         i = fun(string, sub_string);
     }

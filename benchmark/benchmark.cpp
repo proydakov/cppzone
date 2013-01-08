@@ -25,56 +25,80 @@
 
 namespace benchmark {
 
-struct benchmark::data
+struct clock::data
 {
     boost::posix_time::ptime ptime;
     timeinterval m_last_interval;
-    benchmark::unit_intervals m_unit;
+    clock::unit_intervals m_unit;
 };
 
-benchmark::benchmark(unit_intervals unit)
+clock::clock(unit_intervals unit)
 {
     m_data = new data;
     m_data->m_unit = unit;
 }
 
-benchmark::~benchmark()
+clock::~clock()
 {
     delete m_data;
 }
 
-void benchmark::start()
+void clock::start()
 {
     m_data->ptime = boost::posix_time::microsec_clock::universal_time();
 }
 
-void benchmark::stop()
+void clock::stop()
 {
     m_data->m_last_interval = (boost::posix_time::microsec_clock::universal_time() - m_data->ptime).total_nanoseconds();
 }
 
-timeinterval benchmark::get_last_interval()
+timeinterval clock::get_last_interval()
 {
     switch(m_data->m_unit) {
     case seconds:
         return m_data->m_last_interval / 1000000000;
+
     case milliseconds:
         return m_data->m_last_interval / 1000000;
+
     case microseconds:
         return m_data->m_last_interval / 1000;
+
     case nanoseconds:
         return m_data->m_last_interval;
+
     default:
         return 0;
     }
 }
 
-benchmark::unit_intervals benchmark::get_unit()
+clock::unit_intervals clock::get_unit()
 {
     return m_data->m_unit;
 }
 
-void benchmark::set_unit(unit_intervals unit)
+std::string clock::get_unit_as_string()
+{
+    switch(m_data->m_unit) {
+    case seconds:
+        return "seconds";
+
+    case milliseconds:
+        return "milliseconds";
+
+    case microseconds:
+        return "microseconds";
+
+    case nanoseconds:
+        return "nanoseconds";
+
+    default:
+        return "";
+    }
+}
+
+void clock::set_unit(unit_intervals unit)
 {
     m_data->m_unit = unit;
 }

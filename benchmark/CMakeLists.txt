@@ -14,10 +14,12 @@ FIND_PACKAGE(Boost COMPONENTS date_time REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
 SET(HEADER_FILES
-    benchmark.h)
+    benchmark.h
+    )
 
 SET(SOURCE_FILES
-    benchmark.cpp)
+    benchmark.cpp
+    )
 
 ADD_LIBRARY(benchmark STATIC ${FILES} ${HEADER_FILES} ${SOURCE_FILES})
 SET_PROPERTY(TARGET benchmark PROPERTY FOLDER ${PROJECT_FOLDER})

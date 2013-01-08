@@ -23,24 +23,27 @@
 #ifndef I_BENCHMARK_H
 #define I_BENCHMARK_H
 
+#include <string>
+
 namespace benchmark {
 
 typedef unsigned long long timeinterval;
 
-class benchmark
+class clock
 {
 public:
     enum unit_intervals { seconds, milliseconds, microseconds, nanoseconds };
     
 public:
-    benchmark(unit_intervals unit = nanoseconds);
-    ~benchmark();
+    clock(unit_intervals unit = nanoseconds);
+    ~clock();
     
     void start();
     void stop();
     
     timeinterval get_last_interval();
     unit_intervals get_unit();
+    std::string get_unit_as_string();
     
     void set_unit(unit_intervals unit);
     
