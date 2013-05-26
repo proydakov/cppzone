@@ -4,11 +4,10 @@
 # CMake for  EXAMPLE  PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  EXAMPLE\n")
+MESSAGE(STATUS "BUILD BOOST EXAMPLE\n")
 
-SET(PROJECT_FOLDER "example")
+SET(PROJECT_FOLDER "boost_example")
 
-ADD_SUBDIRECTORY(caller)
 ADD_SUBDIRECTORY(smart_pointers)
 ADD_SUBDIRECTORY(ublas)
 ADD_SUBDIRECTORY(uuid)

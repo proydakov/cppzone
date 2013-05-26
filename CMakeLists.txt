@@ -62,7 +62,7 @@ IF(Boost_FOUND)
 
     ADD_SUBDIRECTORY(${BENCHMARK_DIRECTORY})
     ADD_SUBDIRECTORY(algorithms)
-    ADD_SUBDIRECTORY(examples)
+    ADD_SUBDIRECTORY(boost_examples)
     ADD_SUBDIRECTORY(multithreading)
 ENDIF(Boost_FOUND)
 
