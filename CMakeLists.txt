@@ -66,6 +66,7 @@ IF(Boost_FOUND)
     ADD_SUBDIRECTORY(multithreading)
 ENDIF(Boost_FOUND)
 
+ADD_SUBDIRECTORY(olympic)
 ADD_SUBDIRECTORY(data_structures)
 ADD_SUBDIRECTORY(syntax)
 ADD_SUBDIRECTORY(system)
