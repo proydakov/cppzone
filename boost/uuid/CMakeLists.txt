@@ -2,7 +2,7 @@
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create smart pointers boost example")
+MESSAGE(STATUS "create uuid boost")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -13,4 +13,4 @@ SET(SOURCE_FILES
     main.cpp
     )
 
-I_ADD_EXECUTABLE(boost_example_smart_pointers ${SOURCE_FILES})
+I_ADD_EXECUTABLE(boost_uuid ${SOURCE_FILES})
