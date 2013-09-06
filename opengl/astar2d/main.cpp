@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
+ *  Copyright (c) 2012-2013 Evgeny Proydakov <lord.tiran@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -38,9 +38,10 @@ struct application_t
     int maze_width;
     int maze_height;
 
-    maze::maze_type type;
+    bool animate;
 
-    boost::shared_ptr<maze> p_maze;
+    boost::shared_ptr<maze> sp_maze;
+    maze::maze_type type;
 };
 
 application_t g_app;
@@ -54,17 +55,22 @@ void info()
 
 void new_maze()
 {
-    g_app.p_maze.reset();
+    g_app.sp_maze.reset();
     if(g_app.type == maze::fixed) {
-        g_app.p_maze = boost::shared_ptr<maze>(new maze(fixed()));
+        g_app.sp_maze = fixed();
     }
     else if(g_app.type == maze::empty) {
-        g_app.p_maze = boost::shared_ptr<maze>(new maze(empty_maze(g_app.maze_width, g_app.maze_height)));
+        g_app.sp_maze = empty_maze(g_app.maze_width, g_app.maze_height);
     }
     else if(g_app.type == maze::random) {
-        g_app.p_maze = boost::shared_ptr<maze>(new maze(random_maze(g_app.maze_width, g_app.maze_height)));
+        g_app.sp_maze = random_maze(g_app.maze_width, g_app.maze_height);
     }
-    g_app.p_maze->solve();
+    g_app.sp_maze->solve();
+}
+
+void animate()
+{
+    g_app.animate = ! g_app.animate;
 }
 
 void init()
@@ -77,8 +83,8 @@ void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    vertices_size_type nx = g_app.p_maze->length(0);
-    vertices_size_type ny = g_app.p_maze->length(1);
+    vertices_size_type nx = g_app.sp_maze->length(0);
+    vertices_size_type ny = g_app.sp_maze->length(1);
 
     const double size = std::min(g_app.window_width / nx, g_app.window_height / ny);
     double obj_half_size = 0;
@@ -93,22 +99,14 @@ void display()
             glTranslated(size * x + size / 2, size * y + size / 2, 0);
 
             vertex_descriptor u = {{x, y}};
-            if (g_app.p_maze->solution_contains(u)) {
-                glColor3d(0.7, 0, 0);
 
-                obj_half_size /= 2;
-            }
-            else if (g_app.p_maze->has_barrier(u)) {
+            if (g_app.sp_maze->has_barrier(u)) {
                 glColor3d(0.0, 0.5, 1);
-            }
-            else if (g_app.p_maze->way_contains(u)) {
-                glColor3d(0.4, 0.7, 0.5);
-
-                obj_half_size /= 2;
             }
             else {
                 glColor3d(0, 0, 0);
             }
+
             glBegin(GL_POLYGON);
             {
                 glVertex3d(-obj_half_size, -obj_half_size, 0.0);
@@ -120,9 +118,12 @@ void display()
         }
     }
 
+    if(!g_app.animate) {
+    }
+
     // start
     {
-        vertex_descriptor s = g_app.p_maze->source();
+        vertex_descriptor s = g_app.sp_maze->source();
 
         int x = s[0];
         int y = s[1];
@@ -144,7 +145,7 @@ void display()
 
     // end
     {
-        vertex_descriptor g = g_app.p_maze->goal();
+        vertex_descriptor g = g_app.sp_maze->goal();
 
         int x = g[0];
         int y = g[1];
@@ -228,6 +229,11 @@ void keyboard(unsigned char key, int x, int y)
         new_maze();
         break;
 
+    case 'A':
+    case 'a':
+        animate();
+        break;
+
     default:
         break;
     }
@@ -264,6 +270,7 @@ int main(int argc, char** argv)
     g_app.window_height = 0;
     g_app.maze_width = x;
     g_app.maze_height = y;
+    g_app.animate = false;
     g_app.type = maze::fixed;
 
     random_generator.seed(std::time(0));

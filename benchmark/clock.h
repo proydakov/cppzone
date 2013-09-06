@@ -36,7 +36,7 @@ public:
     
 public:
     clock(unit_intervals unit = nanoseconds);
-    ~clock();
+    virtual ~clock();
     
     void start();
     void stop();

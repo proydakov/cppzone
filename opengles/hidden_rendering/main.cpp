@@ -30,7 +30,7 @@
 #include <GLES2/gl2.h>
 #include <EGL/egl.h>
 
-#include <benchmark/benchmark.h>
+#include <benchmark/clock.h>
 
 struct UserData
 {

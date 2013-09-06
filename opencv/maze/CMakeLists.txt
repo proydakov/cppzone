@@ -1,32 +1,28 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  MAZE  PROJECT
-#==============================================================================
 
-MESSAGE(STATUS "CREATING  MAZE  GENERATOR\n")
+MESSAGE(STATUS "create maza opencv")
 
-# add the include folder to the include path
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${CV_VIEWER})
+INCLUDE_DIRECTORIES(${OpenCV_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 SET(HEADER_FILES
-    maze_generator.h)
+    maze_generator.h
+    )
 
 SET(SOURCE_FILES
-    maze_generator.cpp)
+    maze_generator.cpp
+    )
 
 SET(MAIN_FILES
-    main.cpp)
+    main.cpp
+    )
 
-# find OpenCV
-FIND_PACKAGE(OpenCV)
+ADD_EXECUTABLE(opencv_maze ${HEADER_FILES} ${SOURCE_FILES} ${MAIN_FILES})
+ADD_DEPENDENCIES(opencv_maze opencv_viewer)
 
-INCLUDE_DIRECTORIES(${OpenCV_INCLUDE_DIRS})
-LINK_DIRECTORIES(${OpenCV_LIB_DIR})
-ADD_EXECUTABLE(maze_viewer ${HEADER_FILES} ${SOURCE_FILES} ${MAIN_FILES})
-ADD_DEPENDENCIES(maze_viewer cv_viewer)
-
-TARGET_LINK_LIBRARIES(maze_viewer ${OpenCV_LIBS})
-TARGET_LINK_LIBRARIES(maze_viewer cv_viewer)
+TARGET_LINK_LIBRARIES(opencv_maze ${OpenCV_LIBS})
+TARGET_LINK_LIBRARIES(opencv_maze opencv_viewer)

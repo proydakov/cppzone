@@ -128,15 +128,14 @@ public:
 public:
     friend std::ostream& operator<<(std::ostream&, const maze&);
 
-    friend maze random_maze(std::size_t x, std::size_t y);
-    friend maze empty_maze (std::size_t x, std::size_t y);
-    friend maze fixed();
+    friend boost::shared_ptr<maze> random_maze(std::size_t x, std::size_t y);
+    friend boost::shared_ptr<maze> empty_maze (std::size_t x, std::size_t y);
+    friend boost::shared_ptr<maze> fixed();
 
     maze() : m_grid(create_grid(0, 0)), m_barrier_grid(create_barrier_grid()) {};
     maze(std::size_t x, std::size_t y) : m_grid(create_grid(x, y)),
         m_barrier_grid(create_barrier_grid()) {};
 
-    // The length of the maze along the specified dimension.
     vertices_size_type length(std::size_t d) const {
         return m_grid.length(d);
     }
@@ -145,8 +144,6 @@ public:
         return m_barriers.find(u) != m_barriers.end();
     }
 
-    // Try to find a path from the lower-left-hand corner source (0,0) to the
-    // upper-right-hand corner goal (x-1, y-1).
     vertex_descriptor source() const {
         return m_soure;
     }
@@ -166,32 +163,22 @@ public:
     }
 
 private:
-    // Create the underlying rank-2 grid with the specified dimensions.
     grid create_grid(std::size_t x, std::size_t y) {
         boost::array<std::size_t, GRID_RANK> lengths = { {x, y} };
         return grid(lengths);
     }
 
-    // Filter the barrier vertices out of the underlying grid.
     filtered_grid create_barrier_grid() {
         return boost::make_vertex_subset_complement_filter(m_grid, m_barriers);
     }
 
-    // The grid underlying the maze
     grid m_grid;
-    // The underlying maze grid with barrier vertices filtered out
     filtered_grid m_barrier_grid;
-    // The barriers in the maze
     vertex_set m_barriers;
-    // The vertices on a solution path through the maze
     vertex_set m_solution;
-    // The length of the solution path
     distance m_solution_length;
-    // The way
     vertex_set m_way;
-    // Source
     vertex_descriptor m_soure;
-    // Goal
     vertex_descriptor m_goal;
 };
 
@@ -282,10 +269,12 @@ std::ostream& operator<<(std::ostream& output, const maze& m) {
         output << std::endl;
     }
     // Footer
-    for (vertices_size_type i = 0; i < m.length(0)+2; i++)
+    for (vertices_size_type i = 0; i < m.length(0)+2; i++) {
         output << BARRIER;
-    if (m.solved())
+    }
+    if (m.solved()) {
         output << std::endl << "Solution length " << m.m_solution_length;
+    }
     return output;
 }
 
@@ -302,16 +291,16 @@ std::size_t random_int(std::size_t a, std::size_t b)
 }
 
 // Generate a maze with a random assignment of barriers.
-maze random_maze(std::size_t x, std::size_t y)
+boost::shared_ptr<maze> random_maze(std::size_t x, std::size_t y)
 {
-    maze m(x, y);
+    boost::shared_ptr<maze> m = boost::shared_ptr<maze>(new maze(x, y));
 
     vertex_descriptor s = {{ 0, 0 }};
     vertex_descriptor g = {{ x - 1, y -1 }};
-    m.m_soure = s;
-    m.m_goal  = g;
+    m->m_soure = s;
+    m->m_goal  = g;
 
-    vertices_size_type n = num_vertices(m.m_grid);
+    vertices_size_type n = num_vertices(m->m_grid);
 
     // One quarter of the cells in the maze should be barriers.
     int barriers = pow(n, 0.75);
@@ -319,19 +308,19 @@ maze random_maze(std::size_t x, std::size_t y)
         // Choose horizontal or vertical direction.
         std::size_t direction = random_int(0, 1);
         // Walls range up to one quarter the dimension length in this direction.
-        vertices_size_type wall = random_int(1, m.length(direction) / 4);
+        vertices_size_type wall = random_int(1, m->length(direction) / 4);
         // Create the wall while decrementing the total barrier count.
-        vertex_descriptor u = vertex(random_int(0, n - 1), m.m_grid);
+        vertex_descriptor u = vertex(random_int(0, n - 1), m->m_grid);
         while (wall) {
             // Start and goal spaces should never be barriers.
             if (u != s && u != g) {
                 wall--;
-                if (!m.has_barrier(u)) {
-                    m.m_barriers.insert(u);
+                if (!m->has_barrier(u)) {
+                    m->m_barriers.insert(u);
                     barriers--;
                 }
             }
-            vertex_descriptor v = m.m_grid.next(u, direction);
+            vertex_descriptor v = m->m_grid.next(u, direction);
             // Stop creating this wall if we reached the maze's edge.
             if (u == v) {
                 break;
@@ -342,37 +331,37 @@ maze random_maze(std::size_t x, std::size_t y)
     return m;
 }
 
-maze empty_maze(std::size_t x, std::size_t y)
+boost::shared_ptr<maze> empty_maze(std::size_t x, std::size_t y)
 {
-    maze m(x, y);
+    boost::shared_ptr<maze> m = boost::shared_ptr<maze>(new maze(x, y));
 
     vertex_descriptor s = {{ 0, 0 }};
     vertex_descriptor g = {{ x - 1, y -1 }};
-    m.m_soure = s;
-    m.m_goal  = g;
+    m->m_soure = s;
+    m->m_goal  = g;
 
     return m;
 }
 
-maze fixed()
+boost::shared_ptr<maze> fixed()
 {
-    maze m(9, 9);
+    boost::shared_ptr<maze> m = boost::shared_ptr<maze>(new maze(9, 9));
 
     vertex_descriptor u1 = {{4, 2}};
     vertex_descriptor u2 = {{4, 3}};
     vertex_descriptor u3 = {{4, 4}};
     vertex_descriptor u4 = {{4, 5}};
 
-    m.m_barriers.insert(u1);
-    m.m_barriers.insert(u2);
-    m.m_barriers.insert(u3);
-    m.m_barriers.insert(u4);
+    m->m_barriers.insert(u1);
+    m->m_barriers.insert(u2);
+    m->m_barriers.insert(u3);
+    m->m_barriers.insert(u4);
 
     vertex_descriptor source = {{2, 4}};
-    m.m_soure = source;
+    m->m_soure = source;
 
     vertex_descriptor goal = {{6, 4}};
-    m.m_goal = goal;
+    m->m_goal = goal;
 
     return m;
 }

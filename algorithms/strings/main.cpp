@@ -22,7 +22,7 @@
 
 #include <iostream>
 
-#include <benchmark.h>
+#include <clock.h>
 
 #include "operations_with_strings.h"
 
