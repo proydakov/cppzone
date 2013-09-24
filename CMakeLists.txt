@@ -116,3 +116,18 @@ IF(BUILD_OpenCV)
         ADD_SUBDIRECTORY(opencv)
     ENDIF()
 ENDIF()
+
+#==============================================================================
+#---------------------------------- info --------------------------------------
+#==============================================================================
+
+# build info
+SET(BUILD_INFO_BAR "====================================================================================")
+SET(NOOP_STRING "")
+
+MESSAGE(STATUS ${BUILD_INFO_BAR})
+MESSAGE(STATUS "Summary of the build:")
+MESSAGE(STATUS ${BUILD_INFO_BAR})
+MESSAGE(STATUS "Build type : ${CMAKE_BUILD_TYPE}")
+MESSAGE(STATUS ${BUILD_INFO_BAR})
+MESSAGE(STATUS ${NOOP_STRING})
