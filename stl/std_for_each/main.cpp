@@ -32,12 +32,12 @@ int main(int argc, char *argv[])
 {
     (void)argc;
     (void)argv;
-    
+
     int a[10] = { 4, 2, 3, 1, 6, 5, 9, 8, 7, 0 };
 
     std::sort(a, a + 9);
     std::for_each(a, a + 9, print);
-    
+
     std::cout << std::endl;
     return 0;
 }

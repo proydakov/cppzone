@@ -17,7 +17,6 @@ ADD_SUBDIRECTORY(diamond_inheritance_casting)
 ADD_SUBDIRECTORY(exception_basic)
 ADD_SUBDIRECTORY(inheritance_basic)
 ADD_SUBDIRECTORY(inheritance_casting)
-ADD_SUBDIRECTORY(std_for_each)
 ADD_SUBDIRECTORY(sizeof)
 ADD_SUBDIRECTORY(template_fun)
 
