@@ -2,14 +2,10 @@
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  OPENCV\n")
+MESSAGE(STATUS "create  address modification system")
 
-SET(PROJECT_FOLDER "opencv")
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-SET(CV_VIEWER ${CMAKE_CURRENT_SOURCE_DIR}/cv_viewer)
+SET(SOURCE_FILES main.cpp)
 
-ADD_SUBDIRECTORY(cv_viewer)
-ADD_SUBDIRECTORY(landscape)
-ADD_SUBDIRECTORY(maze)
-
-MESSAGE(STATUS "")
+I_ADD_EXECUTABLE(system_address_modification ${SOURCE_FILES})

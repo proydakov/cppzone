@@ -6,7 +6,7 @@ MESSAGE(STATUS "create  global  variable  multithreading")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-FIND_PACKAGE(Boost COMPONENTS thread REQUIRED)
+FIND_PACKAGE(Boost COMPONENTS system thread REQUIRED)
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
@@ -15,3 +15,4 @@ SET(SOURCE_FILES
 
 I_ADD_EXECUTABLE(multithreading_global_variable ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(multithreading_global_variable ${Boost_THREAD_LIBRARY})
+TARGET_LINK_LIBRARIES(multithreading_global_variable ${Boost_SYSTEM_LIBRARY})

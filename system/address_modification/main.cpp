@@ -20,29 +20,33 @@
  *  THE SOFTWARE.
  */
 
+#include <string.h>
 #include <iostream>
-#include <algorithm>
 
-template<class T>
-void print(T value)
+void plus(int& data)
 {
-    std::cout << value;
+    data++;
 }
 
-int main(int argc, char *argv[])
+void minus(int& data)
+{
+    data--;
+}
+
+typedef void (*fun)(int&);
+
+int main( int argc, char *argv[] )
 {
     (void)argc;
     (void)argv;
 
-    int a[10] = { 4, 2, 3, 1, 6, 5, 9, 8, 7, 0 };
+    fun fplus  = (&plus);
+    fun fminus = (&minus);
 
-    std::for_each(a, a + 10, print<int>);
-    std::cout << std::endl;
-
-    std::sort(a, a + 9);
-
-    std::for_each(a, a + 10, print<int>);
-    std::cout << std::endl;
+    int d = 1;
+    std::cout << "d: " << d << std::endl;
+    plus(d);
+    std::cout << "d: " << d << std::endl;
 
     return 0;
 }
