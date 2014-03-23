@@ -34,7 +34,7 @@ int main( int argc, char *argv[] )
     (void)argv;
     
     type num = 100;
-    type base = 7;
+    type base = 10;
     
     recursive_output_number(num, base);
     std::cout << std::endl;
@@ -46,10 +46,10 @@ int main( int argc, char *argv[] )
 
 void recursive_output_number(type num, type base)
 {
-    if(num < 1)
+    if(num < 1) {
         return;
+    }
     recursive_output_number(num / base, base);
-    std::cout << num % base;
 }
 
 void output_number(type num, type base)
