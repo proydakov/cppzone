@@ -30,8 +30,9 @@ int counter = 0;
 
 void thread_fun()
 {
-    while(true)
-        ++counter; 
+    while(true) {
+        ++counter;
+    }
 }
 
 int main( int argc, char *argv[] )
