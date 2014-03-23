@@ -20,8 +20,8 @@
  *  THE SOFTWARE.
  */
 
-#include <benchmark.h>
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <clock.h>
+#include <boost/date_time.hpp>
 
 namespace benchmark {
 

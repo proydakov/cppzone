@@ -2,14 +2,11 @@
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  smart  pointers  example")
+MESSAGE(STATUS "create output number as text task")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-
-FIND_PACKAGE(Boost)
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
 SET(SOURCE_FILES
     main.cpp)
 
-I_ADD_EXECUTABLE(example_smart_pointers ${SOURCE_FILES})
+I_ADD_EXECUTABLE(task_output_number_as_text ${SOURCE_FILES})

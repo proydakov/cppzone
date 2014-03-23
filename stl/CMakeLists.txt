@@ -1,14 +1,11 @@
 #==============================================================================
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  UNIX  PROJECT
-#==============================================================================
 
-MESSAGE(STATUS "BUILD  UNIX\n")
+MESSAGE(STATUS "BUILD  STL\n")
 
-SET(PROJECT_FOLDER "unix")
+SET(PROJECT_FOLDER "stl")
 
-ADD_SUBDIRECTORY(pest)
-ADD_SUBDIRECTORY(dynamic_loading)
+ADD_SUBDIRECTORY(std_for_each)
 
 MESSAGE(STATUS "")

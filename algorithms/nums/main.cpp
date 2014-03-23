@@ -23,7 +23,7 @@
 #include <iostream>
 #include <cstring>
 
-#include <benchmark.h>
+#include <clock.h>
 
 #include "operations_with_numbers.h"
 

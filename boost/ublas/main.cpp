@@ -20,50 +20,33 @@
  *  THE SOFTWARE.
  */
 
-#include <list>
-#include <iostream>
-
-typedef int type;
-
-void recursive_output_number(type num, type base);
-void output_number(type num, type base);
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/io.hpp>
 
 int main( int argc, char *argv[] )
 {
     (void)argc;
     (void)argv;
-    
-    type num = 100;
-    type base = 7;
-    
-    recursive_output_number(num, base);
-    std::cout << std::endl;
-    output_number(num, base);
-    std::cout << std::endl;
-    
+
+    boost::numeric::ublas::matrix<int> matrix(2, 2);
+    matrix(0, 0) = 1;
+    matrix(0, 1) = 1;
+    matrix(1, 0) = 1;
+    matrix(1, 1) = 0;
+    std::cout << matrix << std::endl;
+
+    boost::numeric::ublas::vector<int> vector(2);
+    vector[0] = 0;
+    vector[1] = 1;
+    std::cout << vector << std::endl;
+
+    std::cout << prod(matrix, vector) << std::endl;
+
+    boost::numeric::ublas::scalar_matrix<int> scalar_matrix(3, 3);
+    std::cout << scalar_matrix << std::endl;
+
+    boost::numeric::ublas::identity_matrix<int> identity_matrix(3);
+    std::cout << identity_matrix << std::endl;
+
     return 0;
-}
-
-void recursive_output_number(type num, type base)
-{
-    if(num < 1)
-        return;
-    recursive_output_number(num / base, base);
-    std::cout << num % base;
-}
-
-void output_number(type num, type base)
-{
-    typedef std::list<type> container;
-    container list;
-    
-    while(num != 0) {
-        list.push_front(num % base);
-        num /= base;
-    }
-    
-    container::const_iterator endIt = list.end();
-    for(container::const_iterator it = list.begin(); it != endIt; ++it) {
-        std::cout << *it;   
-    }
 }

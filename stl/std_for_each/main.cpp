@@ -23,7 +23,8 @@
 #include <iostream>
 #include <algorithm>
 
-void print(int value)
+template<class T>
+void print(T value)
 {
     std::cout << value;
 }
@@ -32,12 +33,16 @@ int main(int argc, char *argv[])
 {
     (void)argc;
     (void)argv;
-    
+
     int a[10] = { 4, 2, 3, 1, 6, 5, 9, 8, 7, 0 };
 
-    std::sort(a, a + 9);
-    std::for_each(a, a + 9, print);
-    
+    std::for_each(a, a + 10, print<int>);
     std::cout << std::endl;
+
+    std::sort(a, a + 9);
+
+    std::for_each(a, a + 10, print<int>);
+    std::cout << std::endl;
+
     return 0;
 }

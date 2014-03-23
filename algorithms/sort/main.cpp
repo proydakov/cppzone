@@ -25,7 +25,7 @@
 #include <cstdlib>
 #include <iostream>
 
-#include <benchmark.h>
+#include <clock.h>
 
 #include <my_sort.h>
 

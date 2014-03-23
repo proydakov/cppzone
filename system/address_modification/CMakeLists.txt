@@ -2,11 +2,10 @@
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  output  number  in text form  task")
+MESSAGE(STATUS "create  address modification system")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-SET(SOURCE_FILES
-    main.cpp)
+SET(SOURCE_FILES main.cpp)
 
-I_ADD_EXECUTABLE(task_output_number_in_text_form ${SOURCE_FILES})
+I_ADD_EXECUTABLE(system_address_modification ${SOURCE_FILES})

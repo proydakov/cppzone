@@ -20,38 +20,50 @@
  *  THE SOFTWARE.
  */
 
-#ifndef I_BENCHMARK_H
-#define I_BENCHMARK_H
+#include <list>
+#include <iostream>
 
-#include <string>
+typedef int type;
 
-namespace benchmark {
+void recursive_output_number(type num, type base);
+void output_number(type num, type base);
 
-typedef unsigned long long timeinterval;
-
-class clock
+int main( int argc, char *argv[] )
 {
-public:
-    enum unit_intervals { seconds, milliseconds, microseconds, nanoseconds };
+    (void)argc;
+    (void)argv;
     
-public:
-    clock(unit_intervals unit = nanoseconds);
-    ~clock();
+    type num = 100;
+    type base = 10;
     
-    void start();
-    void stop();
+    recursive_output_number(num, base);
+    std::cout << std::endl;
+    output_number(num, base);
+    std::cout << std::endl;
     
-    timeinterval get_last_interval();
-    unit_intervals get_unit();
-    std::string get_unit_as_string();
-    
-    void set_unit(unit_intervals unit);
-    
-private:
-    struct data;
-    data* m_data;
-};
+    return 0;
+}
 
-} // benchmark
+void recursive_output_number(type num, type base)
+{
+    if(num < 1) {
+        return;
+    }
+    recursive_output_number(num / base, base);
+}
 
-#endif // I_BENCHMARK_H
+void output_number(type num, type base)
+{
+    typedef std::list<type> container;
+    container list;
+    
+    while(num != 0) {
+        list.push_front(num % base);
+        num /= base;
+    }
+    
+    container::const_iterator endIt = list.end();
+    for(container::const_iterator it = list.begin(); it != endIt; ++it) {
+        std::cout << *it;   
+    }
+}

@@ -20,33 +20,38 @@
  *  THE SOFTWARE.
  */
 
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/io.hpp>
+#ifndef I_BENCHMARK_H
+#define I_BENCHMARK_H
 
-int main( int argc, char *argv[] )
+#include <string>
+
+namespace benchmark {
+
+typedef unsigned long long timeinterval;
+
+class clock
 {
-    (void)argc;
-    (void)argv;
+public:
+    enum unit_intervals { seconds, milliseconds, microseconds, nanoseconds };
     
-    boost::numeric::ublas::matrix<int> matrix(2, 2);
-    matrix(0, 0) = 1;
-    matrix(0, 1) = 1;
-    matrix(1, 0) = 1;
-    matrix(1, 1) = 0;
-    std::cout << matrix << std::endl;
+public:
+    clock(unit_intervals unit = nanoseconds);
+    virtual ~clock();
     
-    boost::numeric::ublas::vector<int> vector(2);
-    vector[0] = 0;
-    vector[1] = 1;
-    std::cout << vector << std::endl;
+    void start();
+    void stop();
     
-    std::cout << prod(matrix, vector) << std::endl;
+    timeinterval get_last_interval();
+    unit_intervals get_unit();
+    std::string get_unit_as_string();
     
-    boost::numeric::ublas::scalar_matrix<int> scalar_matrix(3, 3);
-    std::cout << scalar_matrix << std::endl;
+    void set_unit(unit_intervals unit);
     
-    boost::numeric::ublas::identity_matrix<int> identity_matrix(3);
-    std::cout << identity_matrix << std::endl;
-    
-    return 0;
-}
+private:
+    struct data;
+    data* m_data;
+};
+
+} // benchmark
+
+#endif // I_BENCHMARK_H

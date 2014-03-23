@@ -1,12 +1,13 @@
 #==============================================================================
-# Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
+# Copyright (c) 2013 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  output  number  task")
+MESSAGE(STATUS "create lcd_display olympic")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 SET(SOURCE_FILES
-    main.cpp)
+    main.cpp
+    )
 
-I_ADD_EXECUTABLE(task_output_number ${SOURCE_FILES})
+I_ADD_EXECUTABLE(olympic_lcd_display ${SOURCE_FILES})

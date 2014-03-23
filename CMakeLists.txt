@@ -1,5 +1,5 @@
 #==============================================================================
-# Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
+# Copyright (c) 2011-2014 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
@@ -17,7 +17,7 @@ IF(NOT BUILD_SHARED_LIBS)
 ENDIF(NOT BUILD_SHARED_LIBS)
 
 IF(NOT MSVC)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 ENDIF(NOT MSVC)
 
 IF(MSVC)
@@ -43,7 +43,7 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR})
 IF(MSVC)
     SET(Boost_USE_STATIC_LIBS    ON)
     SET(Boost_USE_MULTITHREADED  ON)
-ENDIF(MSVC)
+ENDIF()
 
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -62,18 +62,21 @@ IF(Boost_FOUND)
 
     ADD_SUBDIRECTORY(${BENCHMARK_DIRECTORY})
     ADD_SUBDIRECTORY(algorithms)
-    ADD_SUBDIRECTORY(examples)
+    ADD_SUBDIRECTORY(boost)
     ADD_SUBDIRECTORY(multithreading)
-ENDIF(Boost_FOUND)
+ENDIF()
 
+ADD_SUBDIRECTORY(olympic)
+ADD_SUBDIRECTORY(performance)
 ADD_SUBDIRECTORY(data_structures)
+ADD_SUBDIRECTORY(stl)
 ADD_SUBDIRECTORY(syntax)
 ADD_SUBDIRECTORY(system)
 ADD_SUBDIRECTORY(tasks)
 
 IF(UNIX)
     ADD_SUBDIRECTORY(unix)
-ENDIF(UNIX)
+ENDIF()
 
 IF(WIN32)
     ADD_SUBDIRECTORY(nt)
@@ -82,33 +85,53 @@ ENDIF()
 FIND_PACKAGE(DIRECTX9)
 IF(DIRECTX9_FOUND AND MSVC)
     ADD_SUBDIRECTORY(D3DX9)
-ENDIF(DIRECTX9_FOUND AND MSVC)
+ENDIF()
 
 FIND_PACKAGE(ALUT)
 FIND_PACKAGE(OpenAL)
 IF(ALUT_FOUND AND OPENAL_FOUND)
     ADD_SUBDIRECTORY(openal)
-ENDIF(ALUT_FOUND AND OPENAL_FOUND)
+ENDIF()
 
 IF(WIN32)
     SET(GLUT_ROOT_PATH $ENV{GLUT_ROOT_PATH})
-ENDIF(WIN32)
+ENDIF()
 
 FIND_PACKAGE(GLUT)
 FIND_PACKAGE(OpenGL)
 IF(GLUT_FOUND AND OPENGL_FOUND)
     ADD_SUBDIRECTORY(glut)
     ADD_SUBDIRECTORY(opengl)
-ENDIF(GLUT_FOUND AND OPENGL_FOUND)
+    IF(PROJECT_OS_LINUX)
+        ADD_SUBDIRECTORY(opengles)
+    ENDIF(PROJECT_OS_LINUX)
+ENDIF()
 
 FIND_PACKAGE(Lua51)
 IF(LUA51_FOUND)
     ADD_SUBDIRECTORY(lua)
-ENDIF(LUA51_FOUND)
+ENDIF()
+
+SET(BUILD_OpenCV TRUE)
 
 IF(BUILD_OpenCV)
     FIND_PACKAGE(OpenCV)
     IF(OpenCV_FOUND)
         ADD_SUBDIRECTORY(opencv)
-    ENDIF(OpenCV_FOUND)
-ENDIF(BUILD_OpenCV)
+    ENDIF()
+ENDIF()
+
+#==============================================================================
+#---------------------------------- info --------------------------------------
+#==============================================================================
+
+# build info
+SET(BUILD_INFO_BAR "====================================================================================")
+SET(NOOP_STRING "")
+
+MESSAGE(STATUS ${BUILD_INFO_BAR})
+MESSAGE(STATUS "Summary of the build:")
+MESSAGE(STATUS ${BUILD_INFO_BAR})
+MESSAGE(STATUS "Build type : ${CMAKE_BUILD_TYPE}")
+MESSAGE(STATUS ${BUILD_INFO_BAR})
+MESSAGE(STATUS ${NOOP_STRING})

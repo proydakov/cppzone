@@ -20,39 +20,33 @@
  *  THE SOFTWARE.
  */
 
+#include <string.h>
 #include <iostream>
 
-#include <clock.h>
+void plus(int& data)
+{
+    data++;
+}
 
-#include "operations_with_strings.h"
+void minus(int& data)
+{
+    data--;
+}
 
-typedef index_type (*prt_fun)(const std::string&, const std::string&);
-void test_sub_string(const std::string& name, prt_fun fun, const std::string& string, const std::string& sub_string);
+typedef void (*fun)(int&);
 
 int main( int argc, char *argv[] )
 {
     (void)argc;
     (void)argv;
-    
-    std::string string("asdfffe45435353eewgw3543534443543ekkegweg543543wefwecweg5443f34r");
-    std::string sub_string("kke");
-    
-    test_sub_string("BF", substring_search_bf, string, sub_string);
-    
-    return 0;
-}
 
-void test_sub_string(const std::string& name, prt_fun fun, const std::string& string, const std::string& sub_string)
-{
-    index_type i = 0;
-    benchmark::clock fun_benchmark;
-    fun_benchmark.start(); {
-        i = fun(string, sub_string);
-    }
-    fun_benchmark.stop();
-    std::cout << name.c_str() << "  SEARCH  IN:  " << string.c_str() 
-		      << "  SUB_STRING  " << sub_string.c_str() << std::endl;
-    std::cout << "RESULT  POSITION:  " << i << std::endl;
-    std::cout << "BENCHMARK  " << name.c_str() << "  SUB_STRING  SEARCH:  "
-              << fun_benchmark.get_last_interval() << "\n" << std::endl;
+    fun fplus  = (&plus);
+    fun fminus = (&minus);
+
+    int d = 1;
+    std::cout << "d: " << d << std::endl;
+    plus(d);
+    std::cout << "d: " << d << std::endl;
+
+    return 0;
 }

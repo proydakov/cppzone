@@ -25,8 +25,10 @@
 #include <stdlib.h>
 #include <iostream>
 
-#include <opencv2/core/core.hpp>
 #include <opencv/cv.h>
+#include <opencv2/core/core.hpp>
+
+#define SIZE 3
 
 int get_line_size(const cv::Point a, const cv::Point b)
 {
@@ -165,8 +167,8 @@ void generator_triangle_world(cv::Mat& matrix, int lowland_type, int hill_type, 
     
     for(int i = 0, ki = 0; i < width; i += side / 2, ++ki) {
         for(int j = 0, kj = 0; j < height; j += side * sqrt(3) / 2, ++kj) {      
-            int n = 3;
-            cv::Point points[n];
+            int n = SIZE;
+            cv::Point points[SIZE];
             int color;
             if((ki + kj) % 2) {
                 color = lowland_type;

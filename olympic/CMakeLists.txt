@@ -1,14 +1,13 @@
 #==============================================================================
-# Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
+# Copyright (c) 2013 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  UNIX  PROJECT
+# CMake for OLYMPIC PROJECT
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  UNIX\n")
+MESSAGE(STATUS "BUILD OLYMPIC\n")
 
-SET(PROJECT_FOLDER "unix")
+SET(PROJECT_FOLDER "olympic")
 
-ADD_SUBDIRECTORY(pest)
-ADD_SUBDIRECTORY(dynamic_loading)
+ADD_SUBDIRECTORY(lcd_display)
 
 MESSAGE(STATUS "")

@@ -2,11 +2,8 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  std  for  each  syntax")
+MESSAGE(STATUS "BUILD  OPENGLES\n")
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+SET(PROJECT_FOLDER "opengles")
 
-SET(SOURCE_FILES
-    main.cpp)
-
-I_ADD_EXECUTABLE(syntax_std_for_each ${SOURCE_FILES})
+MESSAGE(STATUS "")
