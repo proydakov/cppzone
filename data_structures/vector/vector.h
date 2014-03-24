@@ -31,7 +31,7 @@ template<class T>
 class vector
 {
 public:
-    typedef unsigned long size_type;
+    typedef size_t size_type;
     
 public:
     vector();
@@ -76,15 +76,11 @@ private:
     T* m_reserv;
 };
 
-#ifndef NULL_PTR
-#   define NULL_PTR 0
-#endif // NULL_PTR
-
 template<class T>
 vector<T>::vector() :
-    m_begin(NULL_PTR),
-    m_end(NULL_PTR),
-    m_reserv(NULL_PTR)
+    m_begin(nullptr),
+    m_end(nullptr),
+    m_reserv(nullptr)
 {
 }
 
@@ -275,8 +271,9 @@ void vector<T>::clear()
 template<class T>
 void vector<T>::check_limits(size_type n)
 {
-    if(n > VECTOR_MAX_SIZE || n < 0)
+    if(n > VECTOR_MAX_SIZE || n < 0) {
         throw std::exception();
+    }
 }
 
 template<class T>

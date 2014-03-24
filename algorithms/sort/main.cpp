@@ -22,10 +22,9 @@
 
 #include <ctime>
 #include <vector>
+#include <chrono>
 #include <cstdlib>
 #include <iostream>
-
-#include <clock.h>
 
 #include <my_sort.h>
 
@@ -84,12 +83,14 @@ int main( int argc, char *argv[] )
 
 void test_sort(const std::string& name, prt_sort sort, std::vector<data_type> data, const std::vector<data_type> sorted_data)
 {
-    benchmark::clock sort_benchmark;
-    sort_benchmark.start(); {
+	std::chrono::high_resolution_clock clock;
+	auto start = clock.now();
+	{
         sort(data);
     }
-    sort_benchmark.stop();
-    std::cout << "BENCHMARK  " << name.c_str() << "  SORT:  " << sort_benchmark.get_last_interval() << std::endl;
+	auto end = clock.now();
+
+	std::cout << "BENCHMARK  " << name.c_str() << "  SORT:  " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " us" << std::endl;
     if(data == sorted_data) {
         std::cout << "SORT  " << name.c_str() << "  WORKING  GOOD\n" << std::endl;
     }

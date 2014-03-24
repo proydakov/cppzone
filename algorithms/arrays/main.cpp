@@ -24,6 +24,7 @@
 #include <vector>
 #include <cstdlib>
 #include <iostream>
+#include <algorithm>
 
 #include "operations_with_arrays.h"
 

@@ -20,6 +20,7 @@ SET(MAIN_FILES
     )
 
 ADD_EXECUTABLE(opencv_maze_landscape ${HEADER_FILES} ${SOURCE_FILES} ${MAIN_FILES})
+SET_PROPERTY(TARGET opencv_maze_landscape PROPERTY FOLDER ${PROJECT_FOLDER})
 ADD_DEPENDENCIES(opencv_maze_landscape opencv_viewer)
 
 TARGET_LINK_LIBRARIES(opencv_maze_landscape ${OpenCV_LIBS})

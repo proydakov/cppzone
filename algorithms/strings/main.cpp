@@ -20,9 +20,8 @@
  *  THE SOFTWARE.
  */
 
+#include <chrono>
 #include <iostream>
-
-#include <clock.h>
 
 #include "operations_with_strings.h"
 
@@ -45,14 +44,16 @@ int main( int argc, char *argv[] )
 void test_sub_string(const std::string& name, prt_fun fun, const std::string& string, const std::string& sub_string)
 {
     index_type i = 0;
-    benchmark::clock fun_benchmark;
-    fun_benchmark.start(); {
+	std::chrono::high_resolution_clock clock;
+	auto start = clock.now();
+	{
         i = fun(string, sub_string);
     }
-    fun_benchmark.stop();
+	auto end = clock.now();
+
     std::cout << name.c_str() << "  SEARCH  IN:  " << string.c_str() 
 		      << "  SUB_STRING  " << sub_string.c_str() << std::endl;
     std::cout << "RESULT  POSITION:  " << i << std::endl;
     std::cout << "BENCHMARK  " << name.c_str() << "  SUB_STRING  SEARCH:  "
-              << fun_benchmark.get_last_interval() << "\n" << std::endl;
+		      << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " us" << "\n" << std::endl;
 }

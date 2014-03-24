@@ -20,10 +20,9 @@
  *  THE SOFTWARE.
  */
 
-#include <iostream>
+#include <chrono>
 #include <cstring>
-
-#include <clock.h>
+#include <iostream>
 
 #include "operations_with_numbers.h"
 
@@ -86,27 +85,29 @@ template<class F, class T>
 void test_fun(const std::string& comment, F fun, T n)
 {
     T current_n = 0;
-    benchmark::clock current_benchmark;
-    current_benchmark.start(); {
+	std::chrono::high_resolution_clock clock;
+	auto start = clock.now();
+	{
         current_n = static_cast<T>(fun(n));
     }
-    current_benchmark.stop();
+	auto end = clock.now();
     std::cout << "BENCHMARK  " << comment << "  n:  " << n <<  "  -  " << current_n
-              << "  TIME:  " << current_benchmark.get_last_interval() << std::endl;
+		      << "  TIME:  " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " us" << std::endl;
 }
 
 template<class F, class T>
 void test_fun(const std::string& comment, F fun, T p1, T p2)
 {
     T current_n = 0;
-    benchmark::clock current_benchmark;
-    current_benchmark.start(); {
+	std::chrono::high_resolution_clock clock;
+	auto start = clock.now();
+	{
         current_n = static_cast<T>(fun(p1, p2));
     }
-    current_benchmark.stop();
+	auto end = clock.now();
     std::cout << "BENCHMARK  " << comment << "  p1:  " << p1 
               << "  and  p2:  " << p2 <<  "  -  " << current_n
-              << "  TIME:  " << current_benchmark.get_last_interval() << std::endl;    
+			  << "  TIME:  " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " us" << std::endl;
 }
 
 template<class F, class T>

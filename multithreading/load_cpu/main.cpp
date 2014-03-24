@@ -20,7 +20,9 @@
  *  THE SOFTWARE.
  */
 
-#include <boost/thread.hpp>
+#include <vector>
+#include <thread>
+#include <algorithm>
 
 void load_stream()
 {
@@ -29,18 +31,20 @@ void load_stream()
 
 int main( int argc, char *argv[] )
 {
-    (void)argc;
-    (void)argv;
+    (void) argc;
+    (void) argv;
 
     // for core-i7
     int thread_col = 8;
 
-    boost::thread_group group;
+	std::vector<std::thread> group;
     for(int i = 0; i < thread_col; ++i) {
-        group.add_thread(new boost::thread(load_stream));
+		group.push_back(std::thread(load_stream));
     }
 
-     group.join_all();
+	std::for_each(group.begin(), group.end(), [&](std::thread& thread) {
+		thread.join();
+	});
 
     return 0;
 }

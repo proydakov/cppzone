@@ -22,11 +22,10 @@
 
 #include <list>
 #include <ctime>
+#include <chrono>
 #include <vector>
 #include <cstdlib>
 #include <iostream>
-
-#include <benchmark/clock.h>
 
 int main(int argc, char** argv)
 {
@@ -47,44 +46,43 @@ int main(int argc, char** argv)
         list_data.push_back(value);
     }
 
+	std::chrono::high_resolution_clock clock;
+
     ///////////////////////////////////////////////////////////////////////////
 
-    benchmark::clock viterclock;
-    viterclock.start();
+	auto viterclock_start = clock.now();
     double vector_iter_sum = 0;
     auto endVector = vector_iter_data.end();
     for(auto it = vector_iter_data.begin(); it != endVector; ++it) {
         vector_iter_sum += *it;
     }
-    viterclock.stop();
+	auto viterclock_end = clock.now();
 
     ///////////////////////////////////////////////////////////////////////////
 
-    benchmark::clock vindexclock;
-    vindexclock.start();
+	auto vindexclock_start = clock.now();
     double vector_index_sum = 0;
     for(size_t i = 0; i < data_size; i++) {
         vector_index_sum += vector_index_data[i];
     }
-    vindexclock.stop();
+	auto vindexclock_end = clock.now();
 
     ///////////////////////////////////////////////////////////////////////////
 
-    benchmark::clock lclock;
-    lclock.start();
+	auto lclock_start = clock.now();
     double list_sum = 0;
     auto endList = list_data.end();
     for(auto it = list_data.begin(); it != endList; ++it) {
         list_sum += *it;
     }
-    lclock.stop();
+	auto lclock_end = clock.now();
 
     ///////////////////////////////////////////////////////////////////////////
 
     std::cout << "sum elements num: " << data_size << std::endl;
-    std::cout << "vector iter  process time: " << viterclock.get_last_interval() << " result: " << vector_iter_sum << std::endl;
-    std::cout << "vector index process time: " << vindexclock.get_last_interval() << " result: " << vector_index_sum << std::endl;
-    std::cout << "list process time:         " << lclock.get_last_interval() << " result: " << list_sum << std::endl;
+	std::cout << "vector iter  process time: " << std::chrono::duration_cast<std::chrono::microseconds>(viterclock_end - viterclock_start).count() << " us" << " result: " << vector_iter_sum << std::endl;
+	std::cout << "vector index process time: " << std::chrono::duration_cast<std::chrono::microseconds>(vindexclock_end - vindexclock_start).count() << " us" << " result: " << vector_index_sum << std::endl;
+	std::cout << "list process time:         " << std::chrono::duration_cast<std::chrono::microseconds>(lclock_end - lclock_start).count() << " us" << " result: " << list_sum << std::endl;
 
     return 0;
 }

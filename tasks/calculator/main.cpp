@@ -22,6 +22,7 @@
 
 #include <list>
 #include <cmath>
+#include <locale>
 #include <chrono>
 #include <sstream>
 #include <iostream>
@@ -63,7 +64,8 @@ public:
                 break;
             }
         }
-        if(std::isdigit(text[0]) || (text[0] == '-' && std::isdigit(text[1]))) {
+		std::locale loc;
+		if (std::isdigit(text[0], loc) || (text[0] == '-' && std::isdigit(text[1], loc))) {
             m_type = type::number;
         }
     }
@@ -163,6 +165,7 @@ std::ostream& operator<<(std::ostream& os, const token::type& type)
 
 std::list<token> to_tokens(const std::string& input)
 {
+    std::locale loc;
     std::list<token> tokens;
     std::string value;
     bool first = true;
@@ -200,7 +203,7 @@ std::list<token> to_tokens(const std::string& input)
         }
             break;
         default:
-            if(std::isdigit(symbol) || '.' == symbol) {
+			if (std::isdigit(symbol, loc) || '.' == symbol) {
                 value.push_back(symbol);
                 operation = false;
             }
@@ -261,18 +264,22 @@ std::list<token> to_rpn(const std::list<token>& tokens)
                 throw std::runtime_error("Invalid token type");
             }
             auto priority = token::get_operator_priority(t.get_type());
-            auto temp_t = temp_stack.back();
-            while(!temp_stack.empty() && temp_t.is_operator()) {
-                auto temp_priority = token::get_operator_priority(temp_t.get_type());
-                if(priority <= temp_priority) {
-                    rpn_tokens.push_back(temp_t);
-                    temp_stack.pop_back();
-                }
-                else {
-                    break;
-                }
-                temp_t = temp_stack.back();
-            }
+			while (!temp_stack.empty()) {
+				auto temp_t = temp_stack.back();
+				if (temp_t.is_operator()) {
+					auto temp_priority = token::get_operator_priority(temp_t.get_type());
+					if (priority <= temp_priority) {
+						rpn_tokens.push_back(temp_t);
+						temp_stack.pop_back();
+					}
+					else {
+						break;
+					}
+				}
+				else {
+					break;
+				}
+			}
             temp_stack.push_back(t);
             break;
         }

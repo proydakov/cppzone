@@ -20,9 +20,9 @@
  *  THE SOFTWARE.
  */
 
+#include <thread>
+#include <vector>
 #include <iostream>
-
-#include <boost/thread.hpp>
 
 const int MAX_COUNTER_VALUE = 100000;
 
@@ -42,16 +42,16 @@ int main( int argc, char *argv[] )
     
     int thread_col = 30;
     
-    boost::thread_group group;
+    std::vector<std::thread> group;
     for(int i = 0; i < thread_col; ++i) {
-        group.add_thread(new boost::thread(thread_fun));
+        group.push_back(std::thread(thread_fun));
     }
     
     while(true) {
         if(counter > MAX_COUNTER_VALUE)
             break;
     }
-    
+
     std::cout << "COUNTER VALUE: " << counter << std::endl;
     
     return 0;
