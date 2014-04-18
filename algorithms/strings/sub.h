@@ -20,37 +20,33 @@
  *  THE SOFTWARE.
  */
 
-#ifndef I_OPERATIONS_WITH_STRINGS_H
-#define I_OPERATIONS_WITH_STRINGS_H
+#ifndef I_SUB_H
+#define I_SUB_H
 
-#include <iostream>
 #include <string.h>
 
-typedef long index_type;
-
-// ----------------------------- declaration ------------------------------- //
-
-index_type substring_search_bf(const std::string& string, const std::string& substring);
-
-index_type substring_search_aut(const std::string& string, const std::string& substring);
-
-// ----------------------------- realization ------------------------------- //
-
-index_type substring_search_bf(const std::string& string, const std::string& sub_string)
+template<class string>
+typename string::size_type substring_search_begin(const string& str, const string& substr)
 {
-    index_type size = string.size() - sub_string.size() + 1;
-    for(int i = 0; i < size; ++i) {
-        if(memcmp(string.data() + i, sub_string.data(), sub_string.size()) == 0)
+    typename string::size_type size = str.size() - substr.size();
+    for(typename string::size_type i = 0; i <= size; i++) {
+        if(memcmp(str.data() + i, substr.data(), substr.size()) == 0) {
             return i;
+        }
     }
     return -1;
 }
 
-index_type substring_search_aut(const std::string& string, const std::string& substring)
+template<class string>
+typename string::size_type substring_search_end(const string& str, const string& substr)
 {
-    (void)string;
-    (void)substring;
+    typename string::size_type size = str.size() - substr.size();
+    for(typename string::size_type i = size; i >= 0; i--) {
+        if(memcmp(str.data() + i, substr.data(), substr.size()) == 0) {
+            return i;
+        }
+    }
     return -1;
 }
 
-#endif // I_OPERATIONS_WITH_STRINGS_H
+#endif // I_SUB_H

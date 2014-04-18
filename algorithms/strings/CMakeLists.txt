@@ -1,5 +1,5 @@
 #==============================================================================
-# Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
+# Copyright (c) 2011-2014 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
 MESSAGE(STATUS "create  strings  algorithms")
@@ -7,7 +7,8 @@ MESSAGE(STATUS "create  strings  algorithms")
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 SET(HEADER_FILES
-    operations_with_strings.h
+    sub.h
+    split.h
     )
 
 SET(SOURCE_FILES

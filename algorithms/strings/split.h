@@ -20,37 +20,33 @@
  *  THE SOFTWARE.
  */
 
-#include <iostream>
+#ifndef I_SPLIT_H
+#define I_SPLIT_H
 
-#include <sub.h>
-#include <split.h>
+#include <vector>
 
-int main( int argc, char *argv[] )
+template<class string, class symbol>
+void split(string& text, symbol s, std::vector<string>& buffer)
 {
-    (void) argc;
-    (void) argv;
-    
-    {
-        std::string str("a12kkk12");
-        std::string substr("12");
-        std::cout << "str: " << str << " sub: " << substr << std::endl;
-        std::cout << "begin: " << substring_search_begin<std::string>(str, substr) << std::endl;
-        std::cout << "end: " << substring_search_end(str, substr) << std::endl;
-    }
-    {
-        char symbol = ',';
-        std::string text = "erwer,,a,,,,b,c";
-        std::vector<std::string> buffer;
-        split(text, symbol, buffer);
+    buffer.clear();
 
-        std::cout << "text: " << text << std::endl << "symbol: " << symbol << std::endl;
-        std::cout << std::endl;
-
-        std::cout << "buffer: " << std::endl;
-        std::vector<std::string>::size_type size = buffer.size();
-        for(std::string::size_type i = 0; i < size; i++) {
-            std::cout << buffer[i] << std::endl;
+    string temp;
+    typename string::size_type size = text.size();
+    for(typename string::size_type i = 0; i < size; i++) {
+        if(text[i] == s) {
+            if(!temp.empty()) {
+                buffer.push_back(temp);
+            }
+            temp = "";
+        }
+        else {
+            temp += text[i];
         }
     }
-    return 0;
+
+    if(!temp.empty()) {
+        buffer.push_back(temp);
+    }
 }
+
+#endif // I_SPLIT_H
