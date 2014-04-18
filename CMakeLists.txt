@@ -59,7 +59,7 @@ SET(FILES
 ADD_SUBDIRECTORY(algorithms)
 ADD_SUBDIRECTORY(data_structures)
 
-#FIND_PACKAGE(Boost)
+FIND_PACKAGE(Boost)
 IF(Boost_FOUND)
     ADD_SUBDIRECTORY(boost)
 ENDIF()
