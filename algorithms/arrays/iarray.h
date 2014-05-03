@@ -20,12 +20,12 @@
  *  THE SOFTWARE.
  */
 
-#ifndef I_OPERATIONS_WITH_ARRAYS_H
-#define I_OPERATIONS_WITH_ARRAYS_H
+#ifndef I_ARRAY_H
+#define I_ARRAY_H
 
+#include <string>
+#include <string.h>
 #include <vector>
-
-typedef unsigned long index_type;
 
 // ----------------------------- declaration ------------------------------- //
 
@@ -48,8 +48,8 @@ void merge(const std::vector<data_type>& a, const std::vector<data_type>& b, std
 {
     res.clear();
     
-    index_type index_a = 0;
-    index_type index_b = 0;
+    typename std::vector<data_type>::size_type index_a = 0;
+    typename std::vector<data_type>::size_type index_b = 0;
     
     while(index_a < a.size() && index_b < b.size()) {
         if(a[index_a] < b[index_b]) {
@@ -77,8 +77,8 @@ void intersection(const std::vector<data_type>& a, const std::vector<data_type>&
 {
     res.clear();
     
-    index_type index_a = 0;
-    index_type index_b = 0;
+    typename std::vector<data_type>::size_type index_a = 0;
+    typename std::vector<data_type>::size_type index_b = 0;
     
     while(index_a < a.size() && b.size()) {
         if(a[index_a] > b[index_b]) {
@@ -100,11 +100,11 @@ void subtraction(const std::vector<data_type>& a, const std::vector<data_type>& 
 {
     res.clear();
     
-    index_type index_a = 0;
-    index_type index_b = 0;
+    typename std::vector<data_type>::size_type index_a = 0;
+    typename std::vector<data_type>::size_type index_b = 0;
     
-    index_type size_a = a.size();
-    index_type size_b = b.size();
+    typename std::vector<data_type>::size_type size_a = a.size();
+    typename std::vector<data_type>::size_type size_b = b.size();
     
     while(index_a < size_a && index_b < size_b) {
         if(a[index_a] == b[index_b]) {
@@ -128,10 +128,12 @@ void subtraction(const std::vector<data_type>& a, const std::vector<data_type>& 
 template<typename data_type>
 data_type binary_search(const std::vector<data_type>& data, const data_type& a)
 {
-    index_type begin = 0;
-    index_type end = data.size() - 1;
-
-    index_type middle;
+    if(data.empty()) {
+        return -1;
+    }
+    typename std::vector<data_type>::size_type begin = 0;
+    typename std::vector<data_type>::size_type end = data.size() - 1;
+    typename std::vector<data_type>::size_type middle = 0;
     while(begin <= end) {
         middle = (end + begin) / 2;
         if(data[middle] > a) {
@@ -147,4 +149,49 @@ data_type binary_search(const std::vector<data_type>& data, const data_type& a)
     return -1;
 }
 
-#endif // I_OPERATIONS_WITH_ARRAYS_H
+bool is_cyclic_permutation(const std::string& etalon, const std::string& test)
+{
+    size_t size_etalon = etalon.size();
+    size_t size_test = test.size();
+
+    if(size_etalon != size_test) {
+        return false;
+    }
+
+    bool check1 = false;
+    bool check2 = false;
+
+    size_t size = 0;
+    for(size_t i = 0; i < size_etalon; i++) {
+        size = size_etalon - i;
+        if(size > 0) {
+            int res = memcmp(etalon.data(), test.data() + i, size);
+            if(res == 0) {
+                check1 = true;
+            }
+        }
+        else {
+            check1 = true;
+        }
+
+        if(i > 0) {
+            if(memcmp(etalon.data() + size, test.data(), i) == 0) {
+                check2 = true;
+            }
+        }
+        else {
+            check2 = true;
+        }
+
+        if(check1 && check2) {
+            return true;
+        }
+
+        check1 = false;
+        check2 = false;
+    }
+
+    return false;
+}
+
+#endif // I_ARRAY_H

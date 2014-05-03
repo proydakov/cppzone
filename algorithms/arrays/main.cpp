@@ -26,12 +26,13 @@
 #include <iostream>
 #include <algorithm>
 
-#include "operations_with_arrays.h"
+#include "iarray.h"
 
 typedef int data_type;
 
 typedef void (*prt_operation)(const std::vector<data_type>&, const std::vector<data_type>&, std::vector<data_type>&);
 void test_operations(const std::string& name, prt_operation operation, const std::vector<data_type>& a, const std::vector<data_type>& b, std::vector<data_type>& res);
+void test_binary_search(const std::vector<data_type>& data);
 
 template<typename T>
 std::ostream& operator<<(std::ostream& ostr, const std::vector<T>& vector)
@@ -45,8 +46,8 @@ std::ostream& operator<<(std::ostream& ostr, const std::vector<T>& vector)
 
 int main( int argc, char *argv[] )
 {
-    (void)argc;
-    (void)argv;
+    (void) (argc);
+    (void) (argv);
     
     // create data
     std::vector<data_type> a;
@@ -63,11 +64,8 @@ int main( int argc, char *argv[] )
     test_operations("INTERSECTION", &intersection, a, b, res);
     test_operations("SUBTRACTION", &subtraction, a, b, res);
     test_operations("SUBTRACTION", &subtraction, b, a, res);
-    
-    data_type value = 4;
-    std::cout << "input data: " << a << std::endl << "search element: " << value << " position:  " 
-              << binary_search(a, value) << std::endl;
-    
+    test_binary_search(a);
+
     return 0;
 }
 
@@ -78,4 +76,12 @@ void test_operations(const std::string& name, prt_operation operation, const std
     std::cout << "INPUT DATA:  " << std::endl << a << std::endl << b << std::endl;
     std::cout << "RESULT: " << std::endl << res << std::endl;
     std::cout << std::endl;
+}
+
+void test_binary_search(const std::vector<data_type>& data)
+{
+    data_type value = 4;
+    std::cout << "input data: " << data << std::endl << "search element: " << value << " position:  "
+              << binary_search(data, value) << std::endl;
+
 }

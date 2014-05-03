@@ -28,7 +28,6 @@
 
 typedef double data_type;
 typedef int natural_data_type;
-typedef int index_type;
 
 template<class F, class T>
 void test_fun(const std::string& comment, F fun, T n);

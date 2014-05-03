@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
+ *  Copyright (c) 2011-2014 Evgeny Proydakov <lord.tiran@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,6 @@
 #include <vector>
 #include <algorithm>
 
-typedef long index_type;
-
 // ----------------------------- declaration ------------------------------- //
 
 template<class type>
@@ -50,7 +48,7 @@ template<class type>
 void merge_sort(std::vector<type>& data);
 
 template<class type>
-void merge_sort(std::vector<type>& data, index_type begin, index_type end);
+void merge_sort(std::vector<type>& data, size_t begin, size_t end, std::vector<type>& buffer);
 
 template<class type>
 void heap_sort(std::vector<type>& data);
@@ -59,13 +57,7 @@ template<class type>
 void quick_sort(std::vector<type>& data);
 
 template<class type>
-void quick_sort(std::vector<type> &data, index_type begin, index_type end);
-
-template<class type>
-void quick_sort_new(std::vector<type>& data);
-
-template<class type>
-void quick_sort_new(std::vector<type> &data, index_type begin, index_type end);
+void quick_sort(std::vector<type> &data, size_t begin, size_t end);
 
 // ----------------------------- realization ------------------------------- //
 
@@ -73,10 +65,10 @@ template<class type>
 void bubble_sort(std::vector<type>& data)
 {
     bool key = true;
-    index_type size = data.size() - 1;
-    for(index_type i = size; i >= 0; --i) {
+    size_t size = data.size() - 1;
+    for(size_t i = size; i >= 0; --i) {
         key = false;
-        for(index_type j = 0; j < i; ++j) {
+        for(size_t j = 0; j < i; ++j) {
             if(data[j] > data[j + 1]) {
                 std::swap(data[j], data[j + 1]);
                 key = true;
@@ -91,10 +83,10 @@ void bubble_sort(std::vector<type>& data)
 template<class type>
 void shaker_sort(std::vector<type>& data)
 {
-    index_type size = data.size() - 1;
-    index_type begin = 0;
-    index_type end = size;
-    index_type index = 0;
+    size_t size = data.size() - 1;
+    size_t begin = 0;
+    size_t end = size;
+    size_t index = 0;
     while(begin < end) {
         for(index = begin; index < end; ++index) {
             if(data[index] > data[index + 1]) {
@@ -102,7 +94,7 @@ void shaker_sort(std::vector<type>& data)
             }
         }
         end = index - 1;
-        
+
         for(index = end; index > begin; --index) {
             if(data[index] < data[index - 1]) {
                 std::swap(data[index], data[index - 1]);
@@ -115,11 +107,11 @@ void shaker_sort(std::vector<type>& data)
 template<class type>
 void selection_sort(std::vector<type>& data)
 {
-    index_type min_element_index;
-    index_type size = data.size();
-    for(index_type i = 0; i < size; ++i) {
+    size_t min_element_index;
+    size_t size = data.size();
+    for(size_t i = 0; i < size; ++i) {
         min_element_index = i;
-        for(index_type j = i + 1; j < size; ++j) {
+        for(size_t j = i + 1; j < size; ++j) {
             if(data[j] < data[min_element_index]) {
                 min_element_index = j;
             }
@@ -131,109 +123,66 @@ void selection_sort(std::vector<type>& data)
 template<class type>
 void insertion_sort(std::vector<type>& data)
 {
-    index_type size = data.size();
-    for(index_type i = 1; i < size; ++i) {
+    size_t size = data.size();
+    for(size_t i = 1; i < size; ++i) {
         type element = data[i];
-        index_type j = i - 1;
-        for(;j >= 0 && data[j] > element;--j)
+        size_t j = i - 1;
+        for(;j >= 0 && data[j] > element; --j) {
             data[j + 1] = data[j];
+        }
         data[j + 1] = element;
     }
 }
 
 template<class type>
-void shell_sort_increment(std::vector<type>& data, index_type size)
+void merge(std::vector<type>& data, size_t begin, size_t middle, size_t end, std::vector<type>& buffer)
 {
-    index_type p1 = 1;
-    index_type p2 = 1;
-    index_type p3 = 1;
-    index_type s = -1;
-    do {
-        if (++s % 2) {
-            data.push_back(8*p1 - 6*p2 + 1);
-        }
-        else {
-            data.push_back(9*p1 - 9*p3 + 1);
-            p2 *= 2;
-            p3 *= 2;
-        }
-        p1 *= 2;
-    }
-    while(3 * data[s] < size);
-}
+    size_t pos1 = begin;
+    size_t pos2 = middle + 1;
+    size_t pos3 = 0;
 
-template<class type>
-void shell_sort(std::vector<type>& data)
-{
-    index_type size = data.size();
-    std::vector<index_type> increment_seq;
-    shell_sort_increment(increment_seq, size);
-    index_type increment_index = increment_seq.size() - 1;
-    while(increment_index >= 0) {
-        for(index_type i = 1; i < size; ++i) {
-            type element = data[i];
-            index_type j = i - increment_seq[increment_index];
-            while(j >= 0 && data[j] > element ) {
-                data[j + increment_seq[increment_index]] = data[j];
-                j -= increment_seq[increment_index];
-            }
-            data[j + increment_seq[increment_index]] = element;
-        }
-        --increment_index;
-    }
-}
-
-template<class type>
-void merge(type *a, index_type begin, index_type middle, index_type end) {
-    index_type pos1 = begin;
-    index_type pos2 = middle + 1;
-    index_type pos3 = 0;
-    
-    type *temp = new type[end - begin + 1];
-    
     while(pos1 <= middle && pos2 <= end) {
-        if (a[pos1] < a[pos2]) {
-            temp[pos3] = a[pos1];
+        if (data[pos1] < data[pos2]) {
+            buffer[pos3] = data[pos1];
             ++pos3;
             ++pos1;
         }
         else {
-            temp[pos3] = a[pos2];
+            buffer[pos3] = data[pos2];
             ++pos2;
             ++pos3;
         }
     }
     while(pos2 <= end) {
-        temp[pos3] = a[pos2];
+        buffer[pos3] = data[pos2];
         ++pos3;
         ++pos2;
     }
     while(pos1 <= middle) {
-        temp[pos3] = a[pos1];
+        buffer[pos3] = data[pos1];
         ++pos3;
         ++pos1;
     }
-    for(pos3 = 0; pos3 < end - begin + 1; ++pos3)
-        a[begin + pos3] = temp[pos3];
-    
-    delete [] temp;
+    for(size_t i = 0; i < end - begin + 1; i++) {
+        data[begin + i] = buffer[i];
+    }
 }
 
 template<class type>
 void merge_sort(std::vector<type>& data)
 {
-    merge_sort(data, 0, data.size() - 1);
+    std::vector<type> buffer(data.size(), 0);
+    merge_sort(data, 0, data.size() - 1, buffer);
 }
 
 template<class type>
-void merge_sort(std::vector<type>& data, index_type begin, index_type end)
+void merge_sort(std::vector<type>& data, size_t begin, size_t end, std::vector<type>& buffer)
 {
     if(begin < end) {
-        index_type middle = (begin + end) >> 1;
-        merge_sort(data, begin, middle);
-        merge_sort(data, middle + 1, end);
-		type* pointer = &data[0];
-        merge(pointer, begin, middle, end);
+        size_t middle = (begin + end) / 2;
+        merge_sort(data, begin, middle, buffer);
+        merge_sort(data, middle + 1, end, buffer);
+        merge(data, begin, middle, end, buffer);
     }
 }
 
@@ -241,13 +190,11 @@ template<class type>
 void heap_sort(std::vector<type>& data)
 {
     std::multiset<type> multiset;
-    
     int size = data.size();
-    for(index_type i = 0; i < size; ++i) {
+    for(size_t i = 0; i < size; ++i) {
         multiset.insert(data[i]);
     }
-    
-    index_type i = 0;
+    size_t i = 0;
     typename std::multiset<type>::const_iterator endIt = multiset.end();
     for(typename std::multiset<type>::const_iterator it = multiset.begin(); it != endIt; ++it, ++i) {
         data[i] = *it;
@@ -261,58 +208,31 @@ void quick_sort(std::vector<type>& data)
 }
 
 template<class type>
-void quick_sort(std::vector<type> &data, index_type begin, index_type end)
+void quick_sort(std::vector<type> &data, size_t begin, size_t end)
 {
-    index_type i = begin;
-    index_type j = end;
-    type medium = data[(i + j) >> 1];
+    size_t i = begin;
+    size_t j = end;
+
+    type medium = data[(i + j) / 2];
     while(i <= j) {
-        while(data[i] < medium)
+        while(data[i] < medium) {
             ++i;
-        while(data[j] > medium)
+        }
+        while(data[j] > medium) {
             --j;
+        }
         if(i <= j) {
             std::swap(data[i], data[j]);
             ++i;
             --j;
         }
     }
-    if(i < end)
+    if(i < end) {
         quick_sort(data, i, end);
-    if(j > begin)
-        quick_sort(data, begin, j);
-}
-
-template<class type>
-void quick_sort_new(std::vector<type>& data)
-{
-    quick_sort_new(data, 0, data.size() - 1);
-}
-
-template<class type>
-void quick_sort_new(std::vector<type> &data, index_type begin, index_type end)
-{
-    if(end - begin < 1)
-        return;
-    
-    index_type index = (begin + end) >> 1;
-    type pivot = data[index];
-    
-    {
-        index_type k = begin;
-        std::swap(data[index], data[end]);
-        for(index_type i = begin; i < end; ++i) {
-            if(data[i] <= pivot) {
-                std::swap(data[i], data[k]);
-                ++k;
-            }
-        }
-        std::swap(data[k], data[end]);
-        index = k;
     }
-    
-    quick_sort_new(data, begin, index - 1);
-    quick_sort_new(data, index + 1, end);
+    if(j > begin) {
+        quick_sort(data, begin, j);
+    }
 }
 
 #endif // I_MY_SORT_H
