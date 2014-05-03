@@ -111,8 +111,6 @@ int main(int argc, char* argv[])
         std::cerr << "Usage: boost_async_tcp_server <port>" << std::endl;
         return 1;
     }
-
-    const int WORKERS = 8;
     const int port(std::atoi(argv[1]));
 
     boost::asio::io_service io_service;
@@ -120,7 +118,7 @@ int main(int argc, char* argv[])
     std::cout << "Started server on 127.0.0.1 " << port << std::endl;
 
     boost::thread_group group;
-    for(int i = 0; i < WORKERS; i++) {
+    for(unsigned i = 0; i < boost::thread::hardware_concurrency(); i++) {
         group.add_thread(new boost::thread([&io_service]() {
             try
             {
