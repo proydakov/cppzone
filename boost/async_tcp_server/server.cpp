@@ -21,8 +21,6 @@
  */
 
 #include <memory>
-#include <thread>
-#include <chrono>
 #include <utility>
 #include <cstdlib>
 #include <iostream>
@@ -99,18 +97,6 @@ private:
     tcp::socket m_socket;
 };
 
-void worker(boost::asio::io_service& io_service)
-{
-    try
-    {
-        io_service.run();
-    }
-    catch (std::exception& e)
-    {
-        std::cerr << "Exception: " << e.what() << std::endl;
-    }
-}
-
 void signal_handler(int signum)
 {
     std::cout << "\n" << "catch: " << strsignal(signum) << "\n" << std::endl;
@@ -135,7 +121,16 @@ int main(int argc, char* argv[])
 
     boost::thread_group group;
     for(int i = 0; i < WORKERS; i++) {
-        group.add_thread(new boost::thread(boost::bind(&worker, boost::ref(io_service))));
+        group.add_thread(new boost::thread([&io_service]() {
+            try
+            {
+                io_service.run();
+            }
+            catch (std::exception& e)
+            {
+                std::cerr << "Exception: " << e.what() << std::endl;
+            }
+        }));
     }
     g_stop_application = boost::function<void()>([&io_service]() {
         io_service.stop();
