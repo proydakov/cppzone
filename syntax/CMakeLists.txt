@@ -12,6 +12,7 @@ SET(DIAMOND_INHERITANCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/diamond_inheritance)
 
 ADD_SUBDIRECTORY(adress_base)
 ADD_SUBDIRECTORY(caller)
+ADD_SUBDIRECTORY(cycle)
 ADD_SUBDIRECTORY(diamond_inheritance_basic)
 ADD_SUBDIRECTORY(diamond_inheritance_casting)
 ADD_SUBDIRECTORY(macro)
