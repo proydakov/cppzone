@@ -7,6 +7,7 @@ MESSAGE(STATUS "create  caller  example")
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 SET(SOURCE_FILES
-    main.cpp)
+    main.cpp
+    )
 
-I_ADD_EXECUTABLE(example_caller ${SOURCE_FILES})
+I_ADD_EXECUTABLE(syntax_caller ${SOURCE_FILES})
