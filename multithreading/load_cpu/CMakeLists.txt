@@ -2,7 +2,7 @@
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  load  cpu  multithreading")
+MESSAGE(STATUS "create load cpu multithreading")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 

@@ -21,5 +21,6 @@ ADD_SUBDIRECTORY(inheritance_basic)
 ADD_SUBDIRECTORY(inheritance_casting)
 ADD_SUBDIRECTORY(sizeof)
 ADD_SUBDIRECTORY(template_fun)
+ADD_SUBDIRECTORY(unique_ptr)
 
 MESSAGE(STATUS "")

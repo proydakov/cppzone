@@ -20,30 +20,16 @@
  *  THE SOFTWARE.
  */
 
-#include <vector>
-#include <thread>
-#include <algorithm>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-void load_stream()
+int main()
 {
-    while(true);
-}
-
-int main( int argc, char *argv[] )
-{
-    (void) argc;
-    (void) argv;
-
-    int thread_col = std::thread::hardware_concurrency();
-
-	std::vector<std::thread> group;
-    for(int i = 0; i < thread_col; ++i) {
-		group.push_back(std::thread(load_stream));
-    }
-
-	std::for_each(group.begin(), group.end(), [&](std::thread& thread) {
-		thread.join();
-	});
-
+    //setvbuf( stdout , NULL , _IONBF , 0 );
+    printf("hello");
+    //fflush(stdout);
+    fork();
+    printf("\n");
     return 0;
 }

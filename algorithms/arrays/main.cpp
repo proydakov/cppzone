@@ -21,8 +21,11 @@
  */
 
 #include <ctime>
+#include <chrono>
 #include <vector>
 #include <cstdlib>
+#include <sstream>
+#include <utility>
 #include <iostream>
 #include <algorithm>
 
@@ -31,25 +34,60 @@
 typedef int data_type;
 
 typedef void (*prt_operation)(const std::vector<data_type>&, const std::vector<data_type>&, std::vector<data_type>&);
-void test_operations(const std::string& name, prt_operation operation, const std::vector<data_type>& a, const std::vector<data_type>& b, std::vector<data_type>& res);
-void test_binary_search(const std::vector<data_type>& data);
+void test_operation(const std::string& name, prt_operation operation, const std::vector<data_type>& a, const std::vector<data_type>& b, std::vector<data_type>& res);
+
+long test_remove_duplicate_impl(std::vector<data_type>& data);
+
+void test_operations();
+void test_binary_search();
+void test_remove_duplicates();
 
 template<typename T>
 std::ostream& operator<<(std::ostream& ostr, const std::vector<T>& vector)
 {
     long size = vector.size();
-    ostr << "vector[" << size << "]  ";
+    ostr << "vector[" << size << "] ";
     for(int i = 0; i < size; ++i)
-        ostr << vector[i];
-    return ostr;    
+        ostr << vector[i] << " ";
+    return ostr;
 }
 
 int main( int argc, char *argv[] )
 {
     (void) (argc);
     (void) (argv);
-    
-    // create data
+
+    //test_operations();
+    //test_binary_search();
+    test_remove_duplicates();
+
+    return 0;
+}
+
+void test_operation(const std::string& name, prt_operation operation, const std::vector<data_type>& a, const std::vector<data_type>& b, std::vector<data_type>& res)
+{
+    std::cout << "TEST  " << name.c_str() << std::endl;
+    operation(a, b, res);
+    std::cout << "INPUT DATA:  " << std::endl << a << std::endl << b << std::endl;
+    std::cout << "RESULT: " << std::endl << res << std::endl;
+    std::cout << std::endl;
+}
+
+long test_remove_duplicate_impl(std::vector<data_type>& data, const std::string& comment)
+{
+    std::chrono::high_resolution_clock clock;
+    auto start = clock.now();
+    {
+        remove_duplicates(data);
+    }
+    auto end = clock.now();
+
+    long duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    return duration;
+}
+
+void test_operations()
+{
     std::vector<data_type> a;
     for(int i = 0; i < 5; ++i) {
         a.push_back(i);
@@ -59,29 +97,66 @@ int main( int argc, char *argv[] )
         b.push_back(i);
     }
     std::vector<data_type> res(std::min(a.size(), b.size()));
-    
-    test_operations("MERGE", merge, a, b, res);
-    test_operations("INTERSECTION", &intersection, a, b, res);
-    test_operations("SUBTRACTION", &subtraction, a, b, res);
-    test_operations("SUBTRACTION", &subtraction, b, a, res);
-    test_binary_search(a);
 
-    return 0;
+    test_operation("MERGE", merge, a, b, res);
+    test_operation("INTERSECTION", &intersection, a, b, res);
+    test_operation("SUBTRACTION", &subtraction, a, b, res);
+    test_operation("SUBTRACTION", &subtraction, b, a, res);
 }
 
-void test_operations(const std::string& name, prt_operation operation, const std::vector<data_type>& a, const std::vector<data_type>& b, std::vector<data_type>& res)
+void test_binary_search()
 {
-    std::cout << "TEST  " << name.c_str() << std::endl;
-    operation(a, b, res);
-    std::cout << "INPUT DATA:  " << std::endl << a << std::endl << b << std::endl;
-    std::cout << "RESULT: " << std::endl << res << std::endl;
-    std::cout << std::endl;
-}
+    std::vector<data_type> data;
+    for(int i = 0; i < 100; ++i) {
+        data.push_back(i);
+    }
 
-void test_binary_search(const std::vector<data_type>& data)
-{
     data_type value = 4;
-    std::cout << "input data: " << data << std::endl << "search element: " << value << " position:  "
-              << binary_search(data, value) << std::endl;
+    std::cout << "input data: " << data << std::endl
+              << "search element: " << value << " "
+              << "position: " << binary_search(data, value) << std::endl;
+}
+
+int irand()
+{
+   return rand() % 1000;
+}
+
+void test_remove_duplicates()
+{
+    std::vector<std::pair<size_t, long>> results;
+
+    srand((unsigned int) time(NULL));
+
+    size_t size = 25;
+    size_t step = size;
+    for(size_t i = step; i <= size; i += step) {
+        std::vector<data_type> etalon_data(i, 0);
+        std::generate(etalon_data.begin(), etalon_data.end(), irand);
+
+        std::cout << "before: " << etalon_data << std::endl;
+
+        std::stringstream sstream;
+        sstream << i;
+        long duration = test_remove_duplicate_impl(etalon_data, sstream.str());
+        results.push_back(std::make_pair(i, duration));
+
+        std::cout << "after: " << etalon_data << std::endl;
+    }
+    for(size_t i = 0; i < results.size(); i++) {
+        if(i > 0) {
+            std::cout << ", ";
+        }
+        std::cout << results[i].first;
+    }
+    std::cout << std::endl;
+
+    for(size_t i = 0; i < results.size(); i++) {
+        if(i > 0) {
+            std::cout << ", ";
+        }
+        std::cout << results[i].second;
+    }
+    std::cout << std::endl;
 
 }

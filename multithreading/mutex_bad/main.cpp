@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
+ *  Copyright (c) 2014 Evgeny Proydakov <lord.tiran@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -20,13 +20,23 @@
  *  THE SOFTWARE.
  */
 
-#include <vector>
+#include <mutex>
 #include <thread>
-#include <algorithm>
+#include <iostream>
+#include <functional>
 
-void load_stream()
+typedef std::recursive_mutex mutex;
+
+void function(mutex& m)
 {
-    while(true);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::cout << "try lock in thread: " << m.try_lock() << std::endl;
+    try {
+        m.unlock();
+    }
+    catch(std::exception& e) {
+        std::cout << "Exception: " << e.what() << std::endl;
+    }
 }
 
 int main( int argc, char *argv[] )
@@ -34,16 +44,12 @@ int main( int argc, char *argv[] )
     (void) argc;
     (void) argv;
 
-    int thread_col = std::thread::hardware_concurrency();
-
-	std::vector<std::thread> group;
-    for(int i = 0; i < thread_col; ++i) {
-		group.push_back(std::thread(load_stream));
-    }
-
-	std::for_each(group.begin(), group.end(), [&](std::thread& thread) {
-		thread.join();
-	});
+    mutex m;
+    std::thread thread(function, std::ref(m));
+    m.lock();
+    std::cout << "try lock in main: " << m.try_lock() << std::endl;
+    thread.join();
+    std::cout << "try lock after thread: " << m.try_lock() << std::endl;
 
     return 0;
 }

@@ -26,6 +26,7 @@
 #include <string>
 #include <string.h>
 #include <vector>
+#include <algorithm>
 
 // ----------------------------- declaration ------------------------------- //
 
@@ -40,6 +41,9 @@ void diminution(const std::vector<data_type>& a, const std::vector<data_type>& b
 
 template<typename data_type>
 data_type binary_search(const std::vector<data_type>& data, const data_type& a);
+
+template<typename data_type>
+void remove_duplicates(std::vector<data_type>& data);
 
 // ----------------------------- realization ------------------------------- //
 
@@ -165,8 +169,7 @@ bool is_cyclic_permutation(const std::string& etalon, const std::string& test)
     for(size_t i = 0; i < size_etalon; i++) {
         size = size_etalon - i;
         if(size > 0) {
-            int res = memcmp(etalon.data(), test.data() + i, size);
-            if(res == 0) {
+            if(memcmp(etalon.data(), test.data() + i, size) == 0) {
                 check1 = true;
             }
         }
@@ -192,6 +195,15 @@ bool is_cyclic_permutation(const std::string& etalon, const std::string& test)
     }
 
     return false;
+}
+
+template<typename data_type>
+void remove_duplicates(std::vector<data_type>& data)
+{
+    std::sort(data.begin(), data.end());
+    auto it = std::unique(data.begin(), data.end());
+    auto distance = std::distance(data.begin(), it);
+    data.resize(distance);
 }
 
 #endif // I_ARRAY_H

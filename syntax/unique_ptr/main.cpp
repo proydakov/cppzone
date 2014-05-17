@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
+ *  Copyright (c) 2014 Evgeny Proydakov <lord.tiran@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -20,30 +20,43 @@
  *  THE SOFTWARE.
  */
 
-#include <vector>
-#include <thread>
-#include <algorithm>
+#include <stdio.h>
+#include <memory>
+#include <iostream>
 
-void load_stream()
+class deleter
 {
-    while(true);
+public:
+    template <class F>
+    void operator() (F* f) {
+        std::cout << "[delete: " << f << "]\n";
+        fclose(f);
+    }
+};
+
+void use_file(const char *name)
+{
+    deleter del;
+    std::unique_ptr<FILE, deleter> ptr(fopen(name, "w"), del);
+    throw std::runtime_error("Runtime error");
 }
 
-int main( int argc, char *argv[] )
+int main(int argc, char *argv[])
 {
     (void) argc;
     (void) argv;
 
-    int thread_col = std::thread::hardware_concurrency();
-
-	std::vector<std::thread> group;
-    for(int i = 0; i < thread_col; ++i) {
-		group.push_back(std::thread(load_stream));
+    try {
+        use_file("/dev/random");
     }
-
-	std::for_each(group.begin(), group.end(), [&](std::thread& thread) {
-		thread.join();
-	});
+    catch(const std::exception& e)
+    {
+        std::cerr << "Catch: " << e.what() << std::endl;
+    }
+    catch(...)
+    {
+        std::cerr << "Catch all" << std::endl;
+    }
 
     return 0;
 }
