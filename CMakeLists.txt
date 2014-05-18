@@ -63,7 +63,7 @@ SET(FILES
 ADD_SUBDIRECTORY(algorithms)
 ADD_SUBDIRECTORY(data_structures)
 
-FIND_PACKAGE(Boost COMPONENTS thread system)
+FIND_PACKAGE(Boost COMPONENTS thread system date_time regex chrono)
 IF(Boost_FOUND)
     ADD_SUBDIRECTORY(boost)
 ENDIF()

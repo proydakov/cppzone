@@ -30,6 +30,17 @@
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 
+#ifdef _MSC_VER
+
+std::string strsignal(int sig)
+{
+	std::stringstream sstream;
+	sstream << sig;
+	return sstream.str();
+}
+
+#endif
+
 using boost::asio::ip::tcp;
 
 boost::function<void()> g_stop_application;

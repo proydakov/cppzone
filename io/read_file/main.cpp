@@ -20,9 +20,11 @@
  *  THE SOFTWARE.
  */
 
+#include <string>
 #include <vector>
 #include <thread>
 #include <chrono>
+#include <numeric>
 #include <fstream>
 #include <iostream>
 #include <algorithm>
@@ -71,9 +73,16 @@ int main(int argc, char *argv[])
     const size_t iters = 10;
     std::vector<long> results(10, 0);
 
-    std::size_t size = sizeof(int);
-    std::size_t elements = (1024 / size) * 1024 * 1024 * 2;
-    std::vector<int> buffer(elements, 0);
+	std::size_t size = sizeof(unsigned char);
+    std::size_t elements = (1024 / size) * 1024 * 1024;
+	std::vector<int> buffer;
+	try {
+		buffer.resize(elements, 0);
+	}
+	catch (const std::exception& e) {
+		std::cerr << e.what() << std::endl;
+		return EXIT_FAILURE;
+	}
     for(size_t i = 0; i <  elements; i++) {
         buffer[i] = i;
     }
