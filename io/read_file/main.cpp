@@ -77,8 +77,7 @@ int main(int argc, char *argv[])
     const size_t iters = 10;
     std::vector<long> results(10, 0);
 
-    std::size_t size = sizeof(unsigned char);
-    std::size_t elements = (1024 / size) * 1024 * 1024;
+    std::size_t elements = 4294967296;
     std::vector<unsigned char> buffer;
     try {
         buffer.resize(elements, 0);
