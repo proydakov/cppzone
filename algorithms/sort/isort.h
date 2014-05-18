@@ -189,16 +189,8 @@ void merge_sort(std::vector<type>& data, size_t begin, size_t end, std::vector<t
 template<class type>
 void heap_sort(std::vector<type>& data)
 {
-    std::multiset<type> multiset;
-    int size = data.size();
-    for(size_t i = 0; i < size; ++i) {
-        multiset.insert(data[i]);
-    }
-    size_t i = 0;
-    typename std::multiset<type>::const_iterator endIt = multiset.end();
-    for(typename std::multiset<type>::const_iterator it = multiset.begin(); it != endIt; ++it, ++i) {
-        data[i] = *it;
-    }
+    std::make_heap(data.begin(), data.end());
+    std::sort_heap(data.begin(), data.end());
 }
 
 template<class type>
