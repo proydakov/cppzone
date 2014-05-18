@@ -30,15 +30,19 @@
 #include <algorithm>
 #include <functional>
 
-void read_file(const std::string& path, std::vector<int>& buffer)
+void read_file(const std::string& path, std::vector<unsigned char>& buffer)
 {
     std::ifstream in(path, std::ios::binary);
     if(in.is_open()) {
-        size_t i = 0;
-        while(!in.eof()) {
-            buffer[i] = in.get();
-            i++;
-        }
+        std::streampos fsize;
+
+        // get its size:
+        in.seekg(0, std::ios::end);
+        fsize = in.tellg();
+        in.seekg(0, std::ios::beg);
+
+        // read the data:
+        in.read((char*) &buffer[0], fsize);
     }
     else {
         std::cerr << "Open fire: " << path << " error" << std::endl;
@@ -73,16 +77,16 @@ int main(int argc, char *argv[])
     const size_t iters = 10;
     std::vector<long> results(10, 0);
 
-	std::size_t size = sizeof(unsigned char);
+    std::size_t size = sizeof(unsigned char);
     std::size_t elements = (1024 / size) * 1024 * 1024;
-	std::vector<int> buffer;
-	try {
-		buffer.resize(elements, 0);
-	}
-	catch (const std::exception& e) {
-		std::cerr << e.what() << std::endl;
-		return EXIT_FAILURE;
-	}
+    std::vector<unsigned char> buffer;
+    try {
+        buffer.resize(elements, 0);
+    }
+    catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
     for(size_t i = 0; i <  elements; i++) {
         buffer[i] = i;
     }
