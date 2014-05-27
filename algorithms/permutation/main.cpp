@@ -23,11 +23,10 @@
 #include <string>
 #include <iostream>
 
-typedef int index;
 typedef std::string symbol_container;
 
 void generate_permutation(const symbol_container& data);
-void generate_permutation_recursive_step(symbol_container& data, index start, index end);
+void generate_permutation_recursive_step(symbol_container& data, size_t start, size_t end);
 
 int main(int argc, char *argv[])
 {
@@ -46,13 +45,13 @@ void generate_permutation(const symbol_container& data)
     generate_permutation_recursive_step(temp, 0, temp.size() - 1);
 }
 
-void generate_permutation_recursive_step(symbol_container& data, index start, index end)
+void generate_permutation_recursive_step(symbol_container& data, size_t start, size_t end)
 {
     if(start == end) {
         std::cout << data << std::endl;
         return;
     }
-    for(index i = start; i <= end; ++i) {
+	for (size_t i = start; i <= end; ++i) {
         std::swap(data[i], data[start]);
         symbol_container temp = data;
         generate_permutation_recursive_step(temp, start + 1, end);
