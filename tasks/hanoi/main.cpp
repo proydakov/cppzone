@@ -25,11 +25,9 @@
 #include <iostream>
 
 typedef int disk;
-typedef std::list<disk> tower; 
+typedef std::list<disk> tower;
 
-typedef int index;
-
-void hanoi(index num, tower& start, tower& middle, tower& end);
+void hanoi(size_t num, tower& start, tower& middle, tower& end);
 void show_tower(const tower& peg);
 void show_state(const tower& start, const tower& middle, const tower& end);
 
@@ -37,16 +35,16 @@ tower start_peg;
 tower middle_peg;
 tower end_peg;
 
-index counter = 0;
+size_t counter = 0;
 
 int main( int argc, char *argv[] )
 {
     (void)argc;
     (void)argv;
     
-    index num = 5;
+    size_t num = 5;
     
-    for(index i = num; i > 0; --i)
+    for(size_t i = num; i > 0; --i)
         start_peg.push_back(i);
     
     show_state(start_peg, middle_peg, end_peg);
@@ -57,7 +55,7 @@ int main( int argc, char *argv[] )
     return 0;
 }
 
-void hanoi(index num, tower& start, tower& middle, tower& end)
+void hanoi(size_t num, tower& start, tower& middle, tower& end)
 {
     if(num == 1) {
         end.push_back(start.back());
@@ -95,8 +93,8 @@ void show_state(const tower& start, const tower& middle, const tower& end)
     show_tower(middle);
     std::cout << "end    : ";
     show_tower(end);
-    index max = 4 + start.size() + middle.size() + end.size();
-    for(index i = 0; i < max; ++i) {
+    size_t max = 4 + start.size() + middle.size() + end.size();
+    for(size_t i = 0; i < max; ++i) {
         std::cout << "---";
     }
     std::cout << std::endl;

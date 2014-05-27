@@ -31,7 +31,6 @@
 
 //#define READ_FROM_FILE
 
-typedef unsigned int    index;
 typedef std::string     hash;
 typedef unsigned int    loop_index;
 typedef long double     priority;
@@ -41,8 +40,8 @@ typedef std::string     string;
 class dictionary
 {
 private:
-    static const index MAX_NUM_WORDS;
-    static const index MAX_WORD_SIZE;    
+    static const size_t MAX_NUM_WORDS;
+    static const size_t MAX_WORD_SIZE;
     
     static const priority MAX_WORD_PRIORITY;
     static const priority MIN_PRIORITY;
@@ -86,18 +85,18 @@ private:
     
 private:
     void hash_fun(const string& word, hash& word_hash) const;
-    void hash_fun(const query& word_query, index query_size, hash& word_hash) const;
+    void hash_fun(const query& word_query, size_t query_size, hash& word_hash) const;
     
-    inline index hash_index(hash word_hash) const {
-        index word_index = 0;
+    inline size_t hash_index(hash word_hash) const {
+        size_t word_index = 0;
         for(loop_index i = 0; i < word_hash.size(); ++i) {
             word_index = (word_index << 3) + word_hash[i];
         }
         return word_index % MAX_NUM_WORDS;
     }
     
-    inline index index_from_num_symbol(symbol s) const {
-        return (index)s - (index)'0';
+    inline size_t index_from_num_symbol(symbol s) const {
+        return (size_t)s - (size_t)'0';
     }
     
     inline symbol num_symbol_from_text_symbol(symbol s) const;
@@ -108,15 +107,15 @@ private:
     container m_data;
     
     query m_query;
-    index m_query_size;
-    index m_word_position;
+    size_t m_query_size;
+    size_t m_word_position;
     
     priority m_delta_priority;
 };
 
 
-const index dictionary::MAX_NUM_WORDS = 50000;
-const index dictionary::MAX_WORD_SIZE = 25;
+const size_t dictionary::MAX_NUM_WORDS = 50000;
+const size_t dictionary::MAX_WORD_SIZE = 25;
 
 const priority dictionary::MAX_WORD_PRIORITY = 3000;
 const priority dictionary::MIN_PRIORITY      =  0.00001;
@@ -144,7 +143,7 @@ private:
     };
     
 private: 
-    void print_mark(const string& marks, index& current_mark_index, bool& mark_enter_state);
+    void print_mark(const string& marks, size_t& current_mark_index, bool& mark_enter_state);
     void print_word(bool& word_enter_state);
     
 private:
@@ -177,7 +176,7 @@ bool dictionary::add_word(const string& word, priority word_priority)
     
     hash word_hash;
     hash_fun(word, word_hash);
-    index position = hash_index(word_hash);
+    size_t position = hash_index(word_hash);
     
     word_info new_word;
     
@@ -229,7 +228,7 @@ void dictionary::hash_fun(const string &word, hash& word_hash) const
     }
 }
 
-void dictionary::hash_fun(const query& word_query, index query_size, hash& word_hash) const
+void dictionary::hash_fun(const query& word_query, size_t query_size, hash& word_hash) const
 {
     word_hash = "";
     for(loop_index i = 0; i < query_size; ++i) {
@@ -271,11 +270,11 @@ void dictionary::get_priority_word(string& word)
 {
     hash word_hash("");
     hash_fun(m_query, m_query_size, word_hash);
-    index position = hash_index(word_hash);
+    size_t position = hash_index(word_hash);
     data_container::iterator data_it = m_data[position].find(word_hash);
     data_element::iterator word_it = data_it->second.begin();
     
-    for(index i = 0; i < m_word_position; ++i) {
+    for(size_t i = 0; i < m_word_position; ++i) {
         ++word_it;
     }
     word = word_it->m_word;
@@ -295,16 +294,15 @@ void phone::parse_message(const string& message)
     m_state = state_start;
     
     string marks = ".,?";
-    index current_mark_index = 0;
-    
-    index message_size = message.size();
+    size_t current_mark_index = 0;
+    size_t message_size = message.size();
     
     symbol current_symbol;
     
     bool started_writing_word = false;
     bool started_writing_mark = false;
     
-    for(index i = 0; i < message_size; ++i) {
+    for(size_t i = 0; i < message_size; ++i) {
         current_symbol = message[i];
         
         if(current_symbol == ' ') {
@@ -374,7 +372,7 @@ void phone::parse_message(const string& message)
     std::cout << std::endl;
 }
 
-void phone::print_mark(const string& marks, index& current_mark_index, bool& mark_enter_state)
+void phone::print_mark(const string& marks, size_t& current_mark_index, bool& mark_enter_state)
 {
     mark_enter_state = false;
     std::cout << marks[current_mark_index];
@@ -398,14 +396,14 @@ void read_input_data(dictionary &data, string& task)
 #endif // READ_FROM_FILE
     
     // read data
-    index lenght;
+    size_t lenght;
     data_stream >> lenght;
     
     string word;
     priority word_priority;
     string line;
     
-    for(index i = 0; i < lenght; ++i) {
+    for(size_t i = 0; i < lenght; ++i) {
         data_stream >> word;
         data_stream >> word_priority;
         data.add_word(word, word_priority);
