@@ -23,7 +23,7 @@
 #include <cmath>
 #include <iostream>
 
-#include <GL/glut.h>
+#include <common/iglut.h>
 
 #include "solar_system_info.h"
 

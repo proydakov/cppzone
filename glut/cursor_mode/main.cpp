@@ -22,7 +22,11 @@
 
 #include <vector>
 
-#include <GL/glut.h>
+#ifdef __APPLE__
+#   include <GLUT/glut.h>
+#else
+#   include <GL/glut.h>
+#endif
 
 const GLdouble CLEAR_COLOR[] = { 0.0, 0.0, 0.0 };
 const GLdouble DRAW_COLOR[]  = { 1.0, 1.0, 1.0 };

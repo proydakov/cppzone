@@ -27,7 +27,7 @@
 #include <iostream>
 #include <cassert>
 
-#include <GL/glut.h>
+#include <common/iglut.h>
 
 #include <terrain.h>
 

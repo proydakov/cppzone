@@ -24,7 +24,7 @@
 #include <iostream>
 #include <algorithm>
 
-#include <GL/glut.h>
+#include <common/iglut.h>
 
 typedef std::pair<GLfloat, GLfloat> point;
 typedef std::list<point> pointList;

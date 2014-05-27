@@ -20,7 +20,7 @@
  *  THE SOFTWARE.
  */
 
-#include <GL/glut.h>
+#include <common/iglut.h>
 
 void init()
 {

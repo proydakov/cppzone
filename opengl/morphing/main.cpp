@@ -26,7 +26,7 @@
 #include <cassert>
 #include <iostream>
 
-#include <GL/glut.h>
+#include <common/iglut.h>
 
 #include <cube.h>
 #include <torus.h>

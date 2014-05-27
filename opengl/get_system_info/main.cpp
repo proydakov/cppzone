@@ -24,7 +24,7 @@
 #include <fstream>
 #include <iostream>
 
-#include <GL/glut.h>
+#include <common/iglut.h>
 
 int main(int argc, char* argv[])
 {

@@ -24,7 +24,7 @@
 #include <string>
 #include <iostream>
 
-#include <GL/glut.h>
+#include <common/iglut.h>
 
 #include <texture/texture_loader.h>
 

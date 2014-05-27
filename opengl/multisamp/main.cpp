@@ -23,7 +23,7 @@
 #include <string>
 #include <iostream>
 
-#include <GL/glut.h>
+#include <common/iglut.h>
 
 #ifdef _MSC_VER
 

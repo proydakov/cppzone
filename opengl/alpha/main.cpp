@@ -23,7 +23,7 @@
 #include <string>
 #include <iostream>
 
-#include <GL/glut.h>
+#include <common/iglut.h>
 
 const std::string COMMENT = "Press any key to change the order of drawing objects.\nPress Esc for exit...";
 const GLdouble OBJECT_SIDE = 1;

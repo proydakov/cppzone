@@ -23,7 +23,7 @@
 #include <string>
 #include <iostream>
 
-#include <GL/glut.h>
+#include <common/iglut.h>
 
 const GLdouble WORLD_SIZE_KOEF = 1.0;
 const GLdouble ROTATION_DELTA  = 0.5;

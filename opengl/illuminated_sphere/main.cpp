@@ -20,7 +20,7 @@
  *  THE SOFTWARE.
  */
 
-#include <GL/glut.h>
+#include <common/iglut.h>
 
 const GLdouble WORLD_SIZE_KOEF = 1.5;
 const int SPHERE_PRECESSION = 50;

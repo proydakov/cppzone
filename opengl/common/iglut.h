@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
+ *  Copyright (c) 2014 Evgeny Proydakov <lord.tiran@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -20,44 +20,13 @@
  *  THE SOFTWARE.
  */
 
-#include <common/iglut.h>
+#ifndef _IGLUT_H_
+#define _IGLUT_H_
 
-void display()
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-    glColor3d(1.0, 1.0, 1.0);
+#ifdef __APPLE__
+#   include <GLUT/glut.h>
+#else
+#   include <GL/glut.h>
+#endif
 
-    glBegin(GL_POLYGON);
-    {
-        glVertex3d(0.25, 0.25, 0.0);
-        glVertex3d(0.75, 0.25, 0.0);
-        glVertex3d(0.75, 0.75, 0.0);
-        glVertex3d(0.25, 0.75, 0.0);
-    }
-    glEnd();
-
-    glFlush();
-}
-
-void init()
-{
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
-}
-
-int main(int argc, char** argv)
-{
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(250, 250);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow("Hello, World!!!");
-
-    init();
-    glutDisplayFunc(display);
-    glutMainLoop();
-
-    return 0;
-}
+#endif // _IGLUT_H_

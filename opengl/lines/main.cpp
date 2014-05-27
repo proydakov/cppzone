@@ -22,7 +22,7 @@
 
 #include <algorithm>
 
-#include <GL/glut.h>
+#include <common/iglut.h>
 
 typedef std::pair<GLdouble, GLdouble> point;
 

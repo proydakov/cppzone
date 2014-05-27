@@ -23,7 +23,7 @@
 #include <string>
 #include <iostream>
 
-#include <GL/glut.h>
+#include <common/iglut.h>
 
 const std::string COMMENT = "Press 'a' or 'r' key to change state.\nPress ESC for exit...";
 

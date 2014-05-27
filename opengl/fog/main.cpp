@@ -23,7 +23,7 @@
 #include <string>
 #include <iostream>
 
-#include <GL/glut.h>
+#include <common/iglut.h>
 
 const GLdouble WORLD_SIZE_KOEF = 2.5;
 const int SPHERE_PRECESSION = 20;
