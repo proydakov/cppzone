@@ -20,7 +20,7 @@
  *  THE SOFTWARE.
  */
 
-#include <GL/gl.h>
+#include <common/igl.h>
 
 #ifndef I_SOLAR_SYSTEM_INFO_H
 #define I_SOLAR_SYSTEM_INFO_H
