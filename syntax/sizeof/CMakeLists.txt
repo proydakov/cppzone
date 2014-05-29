@@ -2,11 +2,12 @@
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  sizeof  example")
+MESSAGE(STATUS "create sizeof syntax")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 SET(SOURCE_FILES
-    main.cpp)
+    main.cpp
+    )
 
-I_ADD_EXECUTABLE(example_sizeof ${SOURCE_FILES})
+I_ADD_EXECUTABLE(syntax_sizeof ${SOURCE_FILES})
