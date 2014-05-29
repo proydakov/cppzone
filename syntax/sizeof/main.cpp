@@ -20,24 +20,28 @@
  *  THE SOFTWARE.
  */
 
-#include <map>
 #include <set>
+#include <map>
 #include <list>
+#include <array>
+#include <queue>
+#include <stack>
 #include <vector>
+#include <unordered_set>
+#include <unordered_map>
 #include <iostream>
 
+#ifndef _MSC_VER
 class N
 {
-#ifndef _MSC_VER
     int k[0];
-#endif
 };
+#endif
 
 class O
 {
     
 };
-
 
 class A
 {
@@ -46,65 +50,70 @@ public :
 };
 
 
-class B : public A
+class B
 {
 public:
     virtual ~B();
 };
 
 
-class C : public B
+class C
 {
 public:
     virtual ~C();
 };
 
 
-class D : public B, public C
+class D : public A
 {
 public:
     virtual ~D();
 };
 
-
-class E : public A, public B, public C
+class E : public B, public C
 {
 public:
     virtual ~E();
 };
 
+class F : public A, public B, public C
+{
+public:
+    virtual ~F();
+};
 
 int main(int argc, char *argv[])
 {
-    (void)argc;
-    (void)argv;    
+    (void) argc;
+    (void) argv;
 
-    std::cout << "sizeof N:  " << sizeof(N) << std::endl;
+    std::cout << "sizeof class:" << std::endl;
     std::cout << "sizeof O:  " << sizeof(O) << std::endl;
     std::cout << "sizeof A:  " << sizeof(A) << std::endl;
     std::cout << "sizeof B:  " << sizeof(B) << std::endl;
     std::cout << "sizeof C:  " << sizeof(C) << std::endl;
     std::cout << "sizeof D:  " << sizeof(D) << std::endl;
     std::cout << "sizeof E:  " << sizeof(E) << std::endl;
-    
+    std::cout << "sizeof F:  " << sizeof(F) << std::endl;
     std::cout << std::endl;
-   
-    N null;
-    
-    std::cout << "sizeof null: "<< sizeof(null) << std::endl;
-    (void)null;
 
-    int size = 10;
-    N* p = new N[size];
-
+#ifndef _MSC_VER
+    std::cout << "sizeof null: "<< sizeof(N) << std::endl;
+    N* p = new N[10];
     N* pi = p;
-    for(int i = 0; i < size; ++i, ++pi)
+    for(size_t i = 0; i < sizeof(p); ++i, ++pi) {
         std::cout << "adress pi:   " << &pi << std::endl;
-
-    delete [] p;
-    
+    }
     std::cout << std::endl;
+    delete [] p;
+#endif
     
+    std::cout << "sizeof types:" << std::endl;
+    std::cout << "sizeof int:      " << sizeof(int) << std::endl;
+    std::cout << "sizeof long:     " << sizeof(long) << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "sizeof ptr types:" << std::endl;
     std::cout << "sizeof void*:    " << sizeof(void*) << std::endl;
     std::cout << "sizeof int*:     " << sizeof(int*) << std::endl;
     std::cout << "sizeof float*:   " << sizeof(float*) << std::endl;
@@ -114,19 +123,50 @@ int main(int argc, char *argv[])
     std::cout << "sizeof B*:       " << sizeof(B*) << std::endl;
     std::cout << "sizeof C*:       " << sizeof(C*) << std::endl;
     std::cout << "sizeof D*:       " << sizeof(D*) << std::endl;
-    
     std::cout << std::endl;
     
     typedef int type;
-    std::list<type> l;
-    std::vector<type> v;
-    std::set<type> s;
-    std::map<type, type> m;
+    std::list<type> list;
+    std::vector<type> vector;
+    std::stack<type> stack;
+    std::queue<type> queue;
+    std::priority_queue<type> priority_queue;
+    std::set<type> set;
+    std::multiset<type> mset;
+    std::map<type, type> map;
+    std::multimap<type, type> mmap;
+    std::unordered_set<type> uset;
+    std::unordered_map<type, type> umap;
+    std::unordered_multiset<type> umset;
+    std::unordered_multimap<type, type> ummap;
     
-    std::cout << "sizeof list:    " << sizeof(l) << std::endl;
-    std::cout << "sizeof vector:  " << sizeof(v) << std::endl;
-    std::cout << "sizeof set:     " << sizeof(s) << std::endl;
-    std::cout << "sizeof map:     " << sizeof(m) << std::endl;
-    
+    std::cout << "sizeof containers:" << std::endl;
+    std::cout << "sizeof array<int, 10>:     " << sizeof(std::array<int, 10>) << std::endl;
+    std::cout << "sizeof list:               " << sizeof(list) << std::endl;
+    std::cout << "sizeof vector:             " << sizeof(vector) << std::endl;
+    std::cout << "sizeof stack:              " << sizeof(stack) << std::endl;
+    std::cout << "sizeof queue:              " << sizeof(queue) << std::endl;
+    std::cout << "sizeof priority_queue:     " << sizeof(priority_queue) << std::endl;
+    std::cout << "sizeof set:                " << sizeof(set) << std::endl;
+    std::cout << "sizeof multiset:           " << sizeof(mset) << std::endl;
+    std::cout << "sizeof map:                " << sizeof(map) << std::endl;
+    std::cout << "sizeof multimap:           " << sizeof(mmap) << std::endl;
+    std::cout << "sizeof unordered_set:      " << sizeof(uset) << std::endl;
+    std::cout << "sizeof unordered_map:      " << sizeof(umap) << std::endl;
+    std::cout << "sizeof unordered_multiset: " << sizeof(umset) << std::endl;
+    std::cout << "sizeof unordered_multimap: " << sizeof(ummap) << std::endl;
+    std::cout << std::endl;
+
+    int* i_ptr = new int[10];
+    int int_array_10[10];
+    int int_array_16[16];
+    int int_array_64[64];
+
+    std::cout << "sizeof arrays:" << std::endl;
+    std::cout << "sizeof new int[10]: " << sizeof(i_ptr) << std::endl;
+    std::cout << "sizeof int[10]:     " << sizeof(int_array_10) << std::endl;
+    std::cout << "sizeof int[16]:     " << sizeof(int_array_16) << std::endl;
+    std::cout << "sizeof int[64]:     " << sizeof(int_array_64) << std::endl;
+
     return 0;
 }
