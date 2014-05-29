@@ -23,6 +23,7 @@ ADD_SUBDIRECTORY(inheritance_casting)
 ADD_SUBDIRECTORY(sizeof)
 ADD_SUBDIRECTORY(numeric_limits)
 ADD_SUBDIRECTORY(template_fun)
+ADD_SUBDIRECTORY(template_explicit_specialization_of_function)
 ADD_SUBDIRECTORY(unique_ptr)
 
 MESSAGE(STATUS "")
