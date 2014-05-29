@@ -37,7 +37,5 @@ int main(int argc, char *argv[])
     reinterpret_cast<B*>(a)->fun();
     
     delete a;
-    std::cout << std::endl;
-    
     return 0;
 }
