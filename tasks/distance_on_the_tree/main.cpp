@@ -149,7 +149,7 @@ bool tree::insert_arc(size_t child_id, size_t parent_id, size_t weight)
     return true;
 }
 
-distance tree::calculate_distance(value first_node_id, value second_node_id)
+distance tree::calculate_distance(size_t first_node_id, size_t second_node_id)
 {
     distance length_way = 0;
     
@@ -174,7 +174,7 @@ distance tree::calculate_distance(value first_node_id, value second_node_id)
     }
     
     length = 0;
-    auto next_element = min_element;
+    size_t next_element = min_element;
     
     element = &m_tree[min_element - 1];
     
