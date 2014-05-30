@@ -24,31 +24,16 @@
 #include <string>
 #include <iostream>
 #include <typeinfo>
+#include <typeindex>
 #include <functional>
 #include <unordered_map>
-
-typedef std::reference_wrapper<const std::type_info> TypeInfoRef;
-
-struct Hasher {
-    std::size_t operator()(TypeInfoRef code) const
-    {
-        return code.get().hash_code();
-    }
-};
-
-struct EqualTo {
-    bool operator()(TypeInfoRef lhs, TypeInfoRef rhs) const
-    {
-        return lhs.get() == rhs.get();
-    }
-};
 
 int main(int argc, char *argv[])
 {
     (void) argc;
     (void) argv;
 
-    std::unordered_map<TypeInfoRef, std::string, Hasher, EqualTo> type_names;
+    std::unordered_map<std::type_index, std::string> type_names;
 
     int i = 0;
     double d = 0;
