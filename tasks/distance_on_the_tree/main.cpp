@@ -30,33 +30,33 @@
 //#define COMMENT_OUTPUT
 //#define WAIT_EXIT
 
-typedef unsigned int uint;
+typedef long      value;
 typedef long long distance;
 
 class tree
 {
 public:
-    tree(uint size);
+    tree(size_t size);
     
-    bool insert_arc(uint child_id, uint parent_id, uint weight);
-    distance calculate_distance(uint first_node_id, uint second_node_id);
+    bool insert_arc(size_t child_id, size_t parent_id, size_t weight);
+    distance calculate_distance(size_t first_node_id, size_t second_node_id);
     
 private:
     struct node;
     typedef std::vector<node> container;
-    typedef std::map<uint, distance> way;
+    typedef std::map<size_t, distance> way;
     
     container m_tree;
 };
 
-typedef std::pair<uint, uint> task_pair;
+typedef std::pair<size_t, size_t> task_pair;
 typedef std::list<task_pair> task;
 
 void read_input_task(task& data);
 
 int main()
 {
-    uint data_size = 0;
+    size_t data_size = 0;
 #ifdef COMMENT_OUTPUT
     std::cout << "Enter number of graph arc: ";
 #endif // COMMENT_OUTPUT
@@ -64,11 +64,11 @@ int main()
     
     tree i_tree(data_size);
     
-    uint graph_node_name;
-    uint graph_parent_name;
-    uint length_to_the_parent;
+    size_t graph_node_name;
+    size_t graph_parent_name;
+    size_t length_to_the_parent;
     
-    for(uint i = 1; i < data_size; ++i) {
+    for(size_t i = 1; i < data_size; ++i) {
         std::cin >> graph_node_name;
         std::cin >> graph_parent_name;
         std::cin >> length_to_the_parent;
@@ -92,7 +92,7 @@ int main()
 struct tree::node
 {
     node() : m_node_id(1), m_parent(parent_node(0, nullptr)) ,m_exist(false) {}
-    node(uint node_id) : m_node_id(node_id), m_parent(parent_node(0, nullptr)) ,m_exist(true) {}
+    node(size_t node_id) : m_node_id(node_id), m_parent(parent_node(0, nullptr)) ,m_exist(true) {}
     
     bool is_head() const {
         return m_parent.second == nullptr;
@@ -106,17 +106,17 @@ struct tree::node
         m_exist = true;
     }
     
-    typedef std::pair<uint, node*>  parent_node;
+    typedef std::pair<size_t, node*>  parent_node;
     typedef std::list<node*>		child_nodes;
     
-    uint		m_node_id;
+    size_t		m_node_id;
     parent_node m_parent;
     child_nodes m_childs;
     
     bool		m_exist;
 };
 
-tree::tree(uint size)
+tree::tree(size_t size)
 {
     m_tree.resize(size);
     if(size == 1) {
@@ -124,7 +124,7 @@ tree::tree(uint size)
     }
 }
 
-bool tree::insert_arc(uint child_id, uint parent_id, uint weight)
+bool tree::insert_arc(size_t child_id, size_t parent_id, size_t weight)
 {
     bool exist_child = m_tree[child_id - 1].is_exist();
     bool exist_parent = m_tree[parent_id - 1].is_exist();
@@ -149,13 +149,13 @@ bool tree::insert_arc(uint child_id, uint parent_id, uint weight)
     return true;
 }
 
-distance tree::calculate_distance(uint first_node_id, uint second_node_id)
+distance tree::calculate_distance(size_t first_node_id, size_t second_node_id)
 {
     distance length_way = 0;
     
-    uint min_element = std::min(first_node_id, second_node_id);
-    uint max_element = std::max(first_node_id, second_node_id);
-    
+    auto min_element = std::min(first_node_id, second_node_id);
+    auto max_element = std::max(first_node_id, second_node_id);
+
     if(min_element < 0 && max_element >= m_tree.size()) {
         return -1;
     }
@@ -174,7 +174,7 @@ distance tree::calculate_distance(uint first_node_id, uint second_node_id)
     }
     
     length = 0;
-    uint next_element = min_element;
+    size_t next_element = min_element;
     
     element = &m_tree[min_element - 1];
     
@@ -193,13 +193,13 @@ void read_input_task(task& data)
 #ifdef COMMENT_OUTPUT
     std::cout << "Enter the number of pairs to find: ";
 #endif // COMMENT_OUTPUT
-    uint size = 0;
+    size_t size = 0;
     std::cin >> size;
     
-    uint first;
-    uint second;
+    value first;
+    value second;
     
-    for(uint i = 0; i < size; ++i) {
+    for(size_t i = 0; i < size; ++i) {
 #ifdef COMMENT_OUTPUT
         std::cout << "Enter to find a pair " << i + 1 << " (element a, element b):  ";
 #endif // COMMENT_OUTPUT
