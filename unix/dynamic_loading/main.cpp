@@ -21,13 +21,18 @@
  */
 
 #include <dlfcn.h>
+#include <sstream>
 #include <iostream>
 
 #include "object.h"
 
 void load_library()
 {
+#ifdef __APPLE__
+    char* name = (char*)("libpthread.dylib");
+#else
     char* name = (char*)("libpthread.so.0");
+#endif
     void* library = dlopen(name, RTLD_LAZY);
     if (library == nullptr) {
         std::cerr << "load library: " << name << " error" << std::endl;
@@ -39,7 +44,11 @@ void load_library()
 
 void load_object()
 {
-    char* name = (char*)("./libunix_object.so");
+#ifdef __APPLE__
+    char* name = (char*)("libunix_object.dylib");
+#else
+    char* name = (char*)("libunix_object.so");
+#endif
     void* library = dlopen(name, RTLD_LAZY);
     if (library == NULL) {
         std::cerr << "load library: " << name << " error" << std::endl;
