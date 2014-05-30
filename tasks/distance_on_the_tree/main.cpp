@@ -49,7 +49,7 @@ private:
     container m_tree;
 };
 
-typedef std::pair<value, value> task_pair;
+typedef std::pair<size_t, size_t> task_pair;
 typedef std::list<task_pair> task;
 
 void read_input_task(task& data);
