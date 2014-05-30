@@ -34,9 +34,9 @@
 
 std::string strsignal(int sig)
 {
-	std::stringstream sstream;
-	sstream << sig;
-	return sstream.str();
+    std::stringstream sstream;
+    sstream << sig;
+    return sstream.str();
 }
 
 #endif
@@ -48,11 +48,17 @@ boost::function<void()> g_stop_application;
 class session : public std::enable_shared_from_this<session>
 {
 public:
-    session(tcp::socket socket) : m_socket(std::move(socket))
+    typedef std::shared_ptr<session>     pointer;
+    typedef boost::asio::ip::tcp::socket socket;
+
+    static pointer create(boost::asio::io_service& io_service)
     {
+        return pointer(new session(io_service));
     }
-    ~session()
+
+    socket& get_socket()
     {
+        return m_socket;
     }
 
     void start()
@@ -61,12 +67,14 @@ public:
     }
 
 private:
+    session(boost::asio::io_service& io_service)
+        : m_socket(io_service)
+    {
+    }
+
     void do_write()
     {
-        std::stringstream sstream;
-        sstream << "worker thread id: " << boost::this_thread::get_id() << "\n";
-        std::string data(sstream.str());
-
+        auto data = make_message();
         auto self(shared_from_this());
         boost::asio::async_write(m_socket, boost::asio::buffer(data, data.length()),
                                  [this, self] (boost::system::error_code ec, std::size_t length)
@@ -78,6 +86,13 @@ private:
         });
     }
 
+    std::string make_message()
+    {
+        std::stringstream sstream;
+        sstream << "worker thread id: " << boost::this_thread::get_id() << "\n";
+        return sstream.str();
+    }
+
     tcp::socket m_socket;
 };
 
@@ -85,8 +100,7 @@ class server
 {
 public:
     server(boost::asio::io_service& io_service, short port)
-        : m_acceptor(io_service, tcp::endpoint(tcp::v4(), port)),
-          m_socket(io_service)
+        : m_acceptor(io_service, tcp::endpoint(tcp::v4(), port))
     {
         do_accept();
     }
@@ -94,18 +108,19 @@ public:
 private:
     void do_accept()
     {
-        m_acceptor.async_accept(m_socket, [this] (boost::system::error_code ec)
+        session::pointer session = session::create(m_acceptor.get_io_service());
+        m_acceptor.async_accept(session->get_socket(), [this, session] (boost::system::error_code ec)
         {
             if (!ec)
             {
-                std::make_shared<session>(std::move(m_socket))->start();
+                session->start();
+                do_accept();
             }
-            do_accept();
         });
+
     }
 
     tcp::acceptor m_acceptor;
-    tcp::socket m_socket;
 };
 
 void signal_handler(int signum)
