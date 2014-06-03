@@ -65,10 +65,11 @@ template<class type>
 void bubble_sort(std::vector<type>& data)
 {
     bool key = true;
-    size_t size = data.size() - 1;
-    for(size_t i = size; i >= 0; --i) {
+    size_t size = data.size();
+    for(size_t i = 0; i < size; i++) {
+        size_t t = size - 1 - i;
         key = false;
-        for(size_t j = 0; j < i; ++j) {
+        for(size_t j = 0; j < t; ++j) {
             if(data[j] > data[j + 1]) {
                 std::swap(data[j], data[j + 1]);
                 key = true;
