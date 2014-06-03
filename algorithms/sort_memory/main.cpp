@@ -23,6 +23,7 @@
 #include <ctime>
 #include <vector>
 #include <cstdlib>
+#include <iostream>
 #include <algorithm>
 
 int irandom()
@@ -42,7 +43,10 @@ int main( int argc, char *argv[] )
     size_t size = 1024 * 1024 * 1024 / size_element;
     std::vector<element> vector(size, 0);
 
+    std::cout << "start generate" << std::endl;
     std::generate(vector.begin(), vector.end(), irandom);
+    
+    std::cout << "start sort" << std::endl;
     std::stable_sort(vector.begin(), vector.end());
 
     return 0;
