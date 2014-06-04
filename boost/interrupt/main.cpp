@@ -39,7 +39,6 @@ void thread_fun()
 
 int main( )
 {
-
     boost::thread thread(boost::bind(&thread_fun));
     boost::this_thread::sleep(boost::posix_time::seconds(5));
     thread.interrupt();
