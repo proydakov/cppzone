@@ -27,17 +27,15 @@
 class deleter
 {
 public:
-    template <class F>
-    void operator() (F* f) {
-        std::cout << "[delete: " << f << "]\n";
-        fclose(f);
+    void operator() (FILE* file) {
+        std::cout << "[delete: " << file << "]\n";
+        fclose(file);
     }
 };
 
 void use_file(const char *name)
 {
-    deleter del;
-    std::unique_ptr<FILE, deleter> ptr(fopen(name, "w"), del);
+    std::unique_ptr<FILE, deleter> ptr(fopen(name, "w"));
     throw std::runtime_error("Runtime error");
 }
 
