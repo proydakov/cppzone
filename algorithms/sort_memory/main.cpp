@@ -47,7 +47,7 @@ int main( int argc, char *argv[] )
     std::generate(vector.begin(), vector.end(), irandom);
     
     std::cout << "start sort" << std::endl;
-    std::stable_sort(vector.begin(), vector.end());
+    std::sort(vector.begin(), vector.end());
 
     return 0;
 }
