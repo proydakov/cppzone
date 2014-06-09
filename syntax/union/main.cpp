@@ -34,7 +34,7 @@ int main()
 
     std::cout << "id.num: " << id.num << "\n\n";
     std::cout << "id.text: \n";
-    size_t size = sizeof(uid::text) / sizeof(uid::text[0]);
+    size_t size = sizeof(id.text) / sizeof(id.text[0]);
     for(size_t i = 0; i < size; i++) {
         std::cout << "i: " << i << " value: " << static_cast<int>(id.text[i]) << "\n";
     }
