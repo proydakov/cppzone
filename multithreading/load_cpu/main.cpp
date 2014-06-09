@@ -36,14 +36,14 @@ int main( int argc, char *argv[] )
 
     int thread_col = std::thread::hardware_concurrency();
 
-	std::vector<std::thread> group;
+    std::vector<std::thread> group;
     for(int i = 0; i < thread_col; ++i) {
-		group.push_back(std::thread(load_stream));
+        group.push_back(std::thread(load_stream));
     }
 
-	std::for_each(group.begin(), group.end(), [&](std::thread& thread) {
-		thread.join();
-	});
+    std::for_each(group.begin(), group.end(), [&](std::thread& thread) {
+        thread.join();
+    });
 
     return 0;
 }
