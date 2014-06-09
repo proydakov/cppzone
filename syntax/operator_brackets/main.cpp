@@ -20,12 +20,12 @@
  *  THE SOFTWARE.
  */
 
- #include <string>
- #include <iostream>
+#include <string>
+#include <iostream>
 
- class job
- {
- public:
+class job
+{
+public:
     job(const std::string& text) : 
         m_text(text)
     {
@@ -43,7 +43,7 @@
 
 private:
     const std::string m_text;
- };
+};
 
 int main()
 {
