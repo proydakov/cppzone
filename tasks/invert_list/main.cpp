@@ -42,12 +42,7 @@ node<T>* invert(node<T>* head)
         previous->next = nullptr;
     }
     while(current) {
-        if(current) {
-            next = current->next;
-        }
-        else {
-            next = nullptr;
-        }
+        next = current->next;
         current->next = previous;
         previous = current;
         current = next;
