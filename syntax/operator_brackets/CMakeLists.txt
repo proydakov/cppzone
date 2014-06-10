@@ -8,4 +8,4 @@ SET(SOURCE_FILES
     main.cpp
     )
 
-I_ADD_EXECUTABLE(syntax_template_explicit_specialization_of_function ${SOURCE_FILES})
+I_ADD_EXECUTABLE(syntax_operator_brackets ${SOURCE_FILES})

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
+ *  Copyright (c) 2014 Evgeny Proydakov <lord.tiran@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -20,30 +20,40 @@
  *  THE SOFTWARE.
  */
 
-#include <vector>
-#include <thread>
-#include <algorithm>
+#include <string>
+#include <iostream>
 
-void load_stream()
+class object
 {
-    while(true);
+public:
+    object() : m_data("data") { std::cout << "create" << std::endl; }
+    object(const object& obj) { std::cout << "copy" << std::endl; }
+    ~object() { std::cout << "destroy" << std::endl; }
+
+    const std::string m_data;
+};
+
+std::ostream& operator<<(std::ostream& os, const object& obj)
+{
+    std::cout << "object: " << obj.m_data;
+    return os;
 }
 
-int main( int argc, char *argv[] )
+object make_object_normal()
 {
-    (void) argc;
-    (void) argv;
+    return object();
+}
 
-    int thread_col = std::thread::hardware_concurrency();
+const object& make_object_error()
+{
+    const object& ref = make_object_normal();
+    std::cout << ref << std::endl;
+    return ref;
+}
 
-    std::vector<std::thread> group;
-    for(int i = 0; i < thread_col; ++i) {
-        group.push_back(std::thread(load_stream));
-    }
-
-    std::for_each(group.begin(), group.end(), [&](std::thread& thread) {
-        thread.join();
-    });
-
+int main()
+{
+    const object& ref = make_object_error();
+    std::cout << ref << std::endl;
     return 0;
 }

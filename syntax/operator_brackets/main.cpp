@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
+ *  Copyright (c) 2014 Evgeny Proydakov <lord.tiran@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -20,30 +20,40 @@
  *  THE SOFTWARE.
  */
 
-#include <vector>
-#include <thread>
-#include <algorithm>
+#include <string>
+#include <iostream>
 
-void load_stream()
+class job
 {
-    while(true);
-}
-
-int main( int argc, char *argv[] )
-{
-    (void) argc;
-    (void) argv;
-
-    int thread_col = std::thread::hardware_concurrency();
-
-    std::vector<std::thread> group;
-    for(int i = 0; i < thread_col; ++i) {
-        group.push_back(std::thread(load_stream));
+public:
+    job(const std::string& text) : 
+        m_text(text)
+    {
     }
 
-    std::for_each(group.begin(), group.end(), [&](std::thread& thread) {
-        thread.join();
-    });
+    job() :
+        m_text("default")
+    {
+    }
+
+    void operator()()
+    {
+        std::cout << "job text: " << m_text << std::endl;
+    }
+
+private:
+    const std::string m_text;
+};
+
+int main()
+{
+    job j1("create");
+    j1();
+
+    job j2;
+    j2();
+
+    job()();
 
     return 0;
 }

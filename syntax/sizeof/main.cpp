@@ -118,7 +118,6 @@ int main(int argc, char *argv[])
     std::cout << "sizeof int*:     " << sizeof(int*) << std::endl;
     std::cout << "sizeof float*:   " << sizeof(float*) << std::endl;
     std::cout << "sizeof double*:  " << sizeof(double*) << std::endl;
-    std::cout << "sizeof N*:       " << sizeof(N*) << std::endl;
     std::cout << "sizeof A*:       " << sizeof(A*) << std::endl;
     std::cout << "sizeof B*:       " << sizeof(B*) << std::endl;
     std::cout << "sizeof C*:       " << sizeof(C*) << std::endl;

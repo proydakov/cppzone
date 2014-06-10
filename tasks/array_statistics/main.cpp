@@ -23,6 +23,7 @@
 #include <ctime>
 #include <vector>
 #include <chrono>
+#include <string>
 #include <cstdlib>
 #include <iostream>
 #include <algorithm>
@@ -116,7 +117,7 @@ int main( int argc, char *argv[] )
         }
 
         auto end = clock.now();
-        print_statistics("std::count_if", std::chrono::duration_cast<std::chrono::microseconds>(end - start).count(), positive, negative, zero);
+        print_statistics("std::count_if", static_cast<long>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()), positive, negative, zero);
     }
     std::cout << std::endl;
     {
@@ -128,7 +129,7 @@ int main( int argc, char *argv[] )
         }
 
         auto end = clock.now();
-        print_statistics("std::for_each", std::chrono::duration_cast<std::chrono::microseconds>(end - start).count(), calculator.positive, calculator.negative, calculator.zero);
+        print_statistics("std::for_each", static_cast<long>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()), calculator.positive, calculator.negative, calculator.zero);
 
     }
 
