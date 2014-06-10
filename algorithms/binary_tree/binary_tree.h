@@ -388,15 +388,12 @@ template<class T>
 typename binary_tree<T>::node* binary_tree<T>::find_node(const value_type& value) const
 {
     node* current = m_root;
-    node* parent = nullptr;
     
     while(current != nullptr) {
         if(value == current->m_data) {
             break;
         }
         else {
-            parent = current;
-            
             if(value < current->m_data) {
                 current = current->m_left;
             }
