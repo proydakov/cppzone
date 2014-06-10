@@ -9,6 +9,5 @@ MESSAGE(STATUS "BUILD  SYSTEM\n")
 SET(PROJECT_FOLDER "system")
 
 ADD_SUBDIRECTORY(memory_leak)
-ADD_SUBDIRECTORY(address_modification)
 
 MESSAGE(STATUS "")
