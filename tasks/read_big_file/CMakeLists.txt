@@ -2,10 +2,10 @@
 # Copyright (c) 2014 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  IO\n")
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-SET(PROJECT_FOLDER "io")
+SET(SOURCE_FILES
+    main.cpp
+    )
 
-ADD_SUBDIRECTORY(read_file)
-
-MESSAGE(STATUS "")
+I_ADD_EXECUTABLE(task_read_big_file ${SOURCE_FILES})

@@ -2,10 +2,7 @@
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  sort  algorithms")
-
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-INCLUDE_DIRECTORIES(${BENCHMARK_DIRECTORY})
 
 SET(HEADER_FILES
     isort.h

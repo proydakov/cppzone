@@ -5,7 +5,6 @@
 #==============================================================================
 
 MESSAGE(STATUS "BUILD  LUA\n")
-MESSAGE(STATUS "create  lua  example")
 
 SET(PROJECT_FOLDER "lua")
 
@@ -19,7 +18,8 @@ SET(LUA_POSSIBLE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 #==============================================================================
 
 SET(LIB_FILES
-    ${LUA_POSSIBLE_DIRECTORY}/lib.cpp)
+    ${LUA_POSSIBLE_DIRECTORY}/lib.cpp
+    )
 
 I_ADD_LUA_LIBRARY(capabilities ${LIB_FILES})
 TARGET_LINK_LIBRARIES(capabilities ${LUA_LIBRARIES})

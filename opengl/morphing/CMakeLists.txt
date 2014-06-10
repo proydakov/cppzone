@@ -2,8 +2,6 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  morphing  opengl")
-
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 FIND_PACKAGE(GLUT)
@@ -20,10 +18,12 @@ SET(HEADER_FILES
     sphere.h
     spiral.h
     object.h
-    paraboloid.h)
+    paraboloid.h
+    )
 
 SET(SOURCE_FILES
-    main.cpp)
+    main.cpp
+    )
 
 I_ADD_EXECUTABLE(opengl_morphing ${HEADER_FILES} ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(opengl_morphing ${OPENGL_LIBRARIES})

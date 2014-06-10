@@ -20,51 +20,65 @@
  *  THE SOFTWARE.
  */
 
+#include <time.h>
+#include <cstdlib>
 #include <iostream>
 
-#include <vector.h>
+#include <binary_tree.h>
+
+typedef binary_tree<size_t> ctree;
+
+void print_ascending(const ctree& tree);
+void print_descending(const ctree& tree);
 
 int main( int argc, char *argv[] )
 {
     (void)argc;
     (void)argv;
     
-    vector<int> v2(10, 50);
+    ctree tree;
     
-    for(int i = 0; i < v2.size(); ++i) {
-        std::cout << v2[i] << std::endl;
+    std::cout << "SIZE : " << sizeof(ctree) << std::endl;
+    
+    size_t size = 15;
+    srand((unsigned int)time(NULL));
+    for (size_t i = 0; i < size; ++i) {
+        if(!tree.insert(rand() % size + 1))
+            return 1;
     }
     
-    v2.resize(20, 30);
+    tree.print();
+    print_ascending(tree);
+    print_descending(tree);
     
-    const int tc = v2.at(3);
-    int tn = v2.at(3);
-    
-    std::cout << "!!!!" << std::endl;
-    
-    long long size1 = v2.size();
-    long long cap1 = v2.capacity();
-    long long max1 = v2.max_size();
-    
-    for(int i = 0; i < v2.size(); ++i) {
-        std::cout << v2[i] << std::endl;
-    }
-    
-    int limit = v2.size() * 10;
-    for(int i = 0; i < limit; ++i) {
-        v2.push_back(i);
-    }
-    
-    std::cout << "!!!!" << std::endl;
-    
-    int size = v2.size();
-    for(int i = 0; i < size; ++i) {
-        std::cout << v2[i] << std::endl;
-    }
-    
-    long long size2 = v2.size();
-    long long cap2 = v2.capacity();
-    long long max2 = v2.max_size();
+    //tree.print();
+    for(size_t i = 0; i < size / 2; ++i)
+        tree.erase(rand() % size);
+    //tree.print();
     
     return 0;
+}
+
+void print_ascending(const ctree& tree)
+{
+    const ctree::node* current = tree.min();
+    
+    std::cout << "!!!!!!successor!!!!!!" << std::endl;
+    while(current != nullptr) {
+        ctree::print_node(current);
+        std::cout << std::endl;
+        current = tree.successor(current);
+    }
+}
+
+void print_descending(const ctree& tree)
+{
+    const ctree::node* current = tree.max();
+    
+    std::cout << "!!!!!!predecessor!!!!!!" << std::endl;
+    while(current != nullptr) {
+        ctree::print_node(current);
+        std::cout << std::endl;
+        current = tree.predecessor(current);
+    }
 }

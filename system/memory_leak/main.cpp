@@ -31,7 +31,7 @@ int main( int argc, char *argv[] )
 
     while(1) {
         int* leek = new int[1024];
-        (void)leek;
+        (void) leek;
     }
 
     return 0;

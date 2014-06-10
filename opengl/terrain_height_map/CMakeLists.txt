@@ -2,8 +2,6 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  terrain  height  map  opengl")
-
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${TEXTURE_LOADER_PIRECTORY})
 
@@ -16,17 +14,21 @@ FIND_PACKAGE(OpenGL)
 INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 
 SET(HEADER_FILES
-    terrain.h)
+    terrain.h
+    )
 
 SET(SOURCE_FILES
     terrain.cpp
-    main.cpp)
+    main.cpp
+    )
 
 SET(CONFIG_FILES
-    config_terrain_height_map.h)
+    config_terrain_height_map.h
+    )
 
 SET(IMAGE_FILES
-    data/terrain.raw)
+    data/terrain.raw
+    )
 
 I_ADD_EXECUTABLE(opengl_terrain_height_map ${HEADER_FILES} ${SOURCE_FILES} ${CONFIG_FILES} ${IMAGE_FILES})
 TARGET_LINK_LIBRARIES(opengl_terrain_height_map ${OPENGL_LIBRARIES})

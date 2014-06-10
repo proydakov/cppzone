@@ -71,20 +71,17 @@ SET(FILES
     )
 
 ADD_SUBDIRECTORY(algorithms)
-ADD_SUBDIRECTORY(data_structures)
 
 FIND_PACKAGE(Boost COMPONENTS thread system date_time regex chrono)
 IF(Boost_FOUND)
     ADD_SUBDIRECTORY(boost)
 ENDIF()
 
-ADD_SUBDIRECTORY(olympic)
 ADD_SUBDIRECTORY(multithreading)
 ADD_SUBDIRECTORY(stl)
 ADD_SUBDIRECTORY(syntax)
 ADD_SUBDIRECTORY(system)
 ADD_SUBDIRECTORY(tasks)
-ADD_SUBDIRECTORY(io)
 
 IF(UNIX)
     ADD_SUBDIRECTORY(unix)
