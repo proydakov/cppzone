@@ -10,4 +10,4 @@ SET(PROJECT_FOLDER "system")
 
 ADD_SUBDIRECTORY(memory_leak)
 
-MESSAGE(STATUS "")
+MESSAGE("")

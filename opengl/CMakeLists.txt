@@ -46,4 +46,4 @@ ELSE()
     MESSAGE(STATUS "SDL NOT FOUND !!! Texture loader is not created.")
 ENDIF()
 
-MESSAGE(STATUS "")
+MESSAGE("")

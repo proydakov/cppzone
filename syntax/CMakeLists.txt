@@ -30,4 +30,4 @@ ADD_SUBDIRECTORY(template_explicit_specialization_function)
 ADD_SUBDIRECTORY(unique_ptr)
 ADD_SUBDIRECTORY(union)
 
-MESSAGE(STATUS "")
+MESSAGE("")

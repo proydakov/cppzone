@@ -23,4 +23,4 @@ ADD_SUBDIRECTORY(vertex_shader_light)
 ADD_SUBDIRECTORY(pixel_shader_multitext)
 ADD_SUBDIRECTORY(terrain_height_map)
 
-MESSAGE(STATUS "")
+MESSAGE("")

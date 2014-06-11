@@ -13,4 +13,4 @@ ADD_SUBDIRECTORY(fork_memory)
 ADD_SUBDIRECTORY(pest)
 ADD_SUBDIRECTORY(dynamic_loading)
 
-MESSAGE(STATUS "")
+MESSAGE("")
