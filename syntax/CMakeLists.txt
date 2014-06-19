@@ -22,6 +22,7 @@ ADD_SUBDIRECTORY(exception_in_constructor)
 ADD_SUBDIRECTORY(inheritance_basic)
 ADD_SUBDIRECTORY(inheritance_casting)
 ADD_SUBDIRECTORY(operator_brackets)
+ADD_SUBDIRECTORY(initialization)
 ADD_SUBDIRECTORY(sizeof)
 ADD_SUBDIRECTORY(numeric_limits)
 ADD_SUBDIRECTORY(return_const_ref)
@@ -31,3 +32,4 @@ ADD_SUBDIRECTORY(unique_ptr)
 ADD_SUBDIRECTORY(union)
 
 MESSAGE("")
+
