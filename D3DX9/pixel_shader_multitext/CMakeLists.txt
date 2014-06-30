@@ -2,8 +2,6 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  pixel  shader  multitext  directx9")
-
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 CONFIGURE_FILE(config.pixel.shader.multitext.h.cmake ${CMAKE_CURRENT_SOURCE_DIR}/config_pixel_shader_multitext.h)

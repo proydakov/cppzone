@@ -2,8 +2,6 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "create  mesh  wall  directx9")
-
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 CONFIGURE_FILE(config.mesh.wall.h.cmake ${CMAKE_CURRENT_SOURCE_DIR}/config_mesh_wall.h)
