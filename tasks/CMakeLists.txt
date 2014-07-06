@@ -19,5 +19,6 @@ ADD_SUBDIRECTORY(output_number_in_base)
 ADD_SUBDIRECTORY(output_number_as_text)
 ADD_SUBDIRECTORY(t9)
 ADD_SUBDIRECTORY(unique_ip)
+ADD_SUBDIRECTORY(word_game)
 
 MESSAGE("")
