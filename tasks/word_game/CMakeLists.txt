@@ -12,6 +12,9 @@ FILE(GLOB_RECURSE DATA_FILES ${DATA_PATH}/*)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/data/en_alphabet.txt ${CMAKE_CURRENT_BINARY_DIR}/en_alphabet.txt)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/data/ru_alphabet.txt ${CMAKE_CURRENT_BINARY_DIR}/ru_alphabet.txt)
 
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/data/en_alphabet.txt ${EXECUTABLE_OUTPUT_PATH}/en_alphabet.txt)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/data/ru_alphabet.txt ${EXECUTABLE_OUTPUT_PATH}/ru_alphabet.txt)
+
 SET(HEADER_FILES
     node.h
     common.h
