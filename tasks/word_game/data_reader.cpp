@@ -56,14 +56,13 @@ void DataReader::readFileByLine(const std::string& path, data_t& data)
     std::wifstream file;
     file.imbue(utf8_locale);
 #else
-    std::wifstream file;
-    file.imbue(std::locale("ru_RU.UTF-8"));
+    std::ifstream file;
 #endif
     file.open(path);
     if (!file.is_open()) {
         throw std::runtime_error("Open file: " + path + " error");
     }
-    std::wstring buffer;
+    istring buffer;
     while (std::getline(file, buffer))
     {
         data.push_back(buffer);

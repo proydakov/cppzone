@@ -51,7 +51,11 @@ int main(int argc, char* argv[])
     }
 
     for (auto &el : solution) {
+#ifdef _MSC_VER
         std::wcout << el << "\n";
+#else
+        std::cout << el << "\n";
+#endif
     }
 
     return EXIT_SUCCESS;

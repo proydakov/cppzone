@@ -36,10 +36,10 @@ public:
     static void solve(const data_t& task, const data_t& dict, data_t& solution);
 
 private:
-    static void findChilds(node<std::wstring>* element, const std::unordered_set<std::wstring>& hash_dict,
-                           const std::wstring& alphabet, std::unordered_set<std::wstring>& hash_words);
-    static void findTarget(node<std::wstring>* element, const std::wstring& target, std::vector<std::wstring>& solution);
-    static void buildSolution(node<std::wstring>* target, std::vector<std::wstring>& solution);
+    static void findChilds(node<istring>* element, const std::unordered_set<istring>& hash_dict,
+                           const istring& alphabet, std::unordered_set<istring>& hash_words);
+    static void findTarget(node<istring>* element, const istring& target, std::vector<istring>& solution);
+    static void buildSolution(node<istring>* target, std::vector<istring>& solution);
 };
 
 #endif // I_WORD_GAME_SOLVER

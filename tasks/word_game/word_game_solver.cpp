@@ -36,18 +36,18 @@ void WordGameSolver::solve(const data_t& task, const data_t& dict, data_t& solut
     if (data.empty()) {
         throw std::runtime_error("Empty ru file alphabet.");
     }
-    std::wstring ru_alphabet = data[0];
+    auto ru_alphabet = data[0];
 
     DataReader::readFileByLine("en_alphabet.txt", data);
     if (data.empty()) {
         throw std::runtime_error("Empty en file alphabet.");
     }
-    std::wstring en_alphabet = data[0];
+    auto en_alphabet = data[0];
 
-    std::wstring start = task[0];
-    std::wstring target = task[1];
+    auto start = task[0];
+    auto target = task[1];
 
-    const std::wstring* alphabet = nullptr;
+    const istring* alphabet = nullptr;
     if (std::find(ru_alphabet.begin(), ru_alphabet.end(), start[0]) != ru_alphabet.end()) {
         alphabet = &ru_alphabet;
     }
@@ -59,14 +59,14 @@ void WordGameSolver::solve(const data_t& task, const data_t& dict, data_t& solut
     }
 
     solution.clear();
-    auto head = std::shared_ptr<node<std::wstring>>(new node<std::wstring>(start, nullptr));
+    auto head = std::shared_ptr<node<istring>>(new node<istring>(start, nullptr));
 
-    std::list<node<std::wstring>*> search_list;
-    std::list<node<std::wstring>*> next_search_list;
+    std::list<node<istring>*> search_list;
+    std::list<node<istring>*> next_search_list;
     search_list.push_back(head.get());
 
-    std::unordered_set<std::wstring> hash_dict(dict.size());
-    std::unordered_set<std::wstring> hash_words(dict.size());
+    std::unordered_set<istring> hash_dict(dict.size());
+    std::unordered_set<istring> hash_words(dict.size());
     hash_words.insert(head->value);
 
     for (auto& el : dict) {
@@ -95,8 +95,8 @@ void WordGameSolver::solve(const data_t& task, const data_t& dict, data_t& solut
     }
 }
 
-void WordGameSolver::findChilds(node<std::wstring>* element, const std::unordered_set<std::wstring>& hash_dict,
-                                const std::wstring& alphabet, std::unordered_set<std::wstring>& hash_words)
+void WordGameSolver::findChilds(node<istring>* element, const std::unordered_set<istring>& hash_dict,
+                                const istring& alphabet, std::unordered_set<istring>& hash_words)
 {
     const auto value = element->value;
     const size_t word_size = value.size();
@@ -106,14 +106,14 @@ void WordGameSolver::findChilds(node<std::wstring>* element, const std::unordere
         for (size_t a = 0; a < alphabet_size; a++) {
             test_value[w] = alphabet[a];
             if (hash_dict.count(test_value) > 0 && hash_words.count(test_value) == 0) {
-                element->childs.push_back(new node<std::wstring>(test_value, element));
+                element->childs.push_back(new node<istring>(test_value, element));
                 hash_words.insert(test_value);
             }
         }
     }
 }
 
-void WordGameSolver::findTarget(node<std::wstring>* element, const std::wstring& target, std::vector<std::wstring>& solution)
+void WordGameSolver::findTarget(node<istring>* element, const istring& target, std::vector<istring>& solution)
 {
     for (auto& el : element->childs) {
         if (el->value == target) {
@@ -123,10 +123,10 @@ void WordGameSolver::findTarget(node<std::wstring>* element, const std::wstring&
     }
 }
 
-void WordGameSolver::buildSolution(node<std::wstring>* target, std::vector<std::wstring>& solution)
+void WordGameSolver::buildSolution(node<istring>* target, std::vector<istring>& solution)
 {
     solution.clear();
-    node<std::wstring>* ptr = target;
+    node<istring>* ptr = target;
     while (ptr != nullptr) {
         solution.push_back(ptr->value);
         ptr = ptr->parent;

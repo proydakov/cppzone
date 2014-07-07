@@ -26,6 +26,12 @@
 #include <vector>
 #include <string>
 
-typedef std::vector<std::wstring> data_t;
+#ifdef _MSC_VER
+typedef std::wstring istring;
+#else
+typedef std::string istring;
+#endif
+
+typedef std::vector<istring> data_t;
 
 #endif // I_COMMON
