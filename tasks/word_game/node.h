@@ -23,6 +23,8 @@
 #ifndef I_NODE
 #define I_NODE
 
+#include <list>
+
 template<class T>
 struct node
 {

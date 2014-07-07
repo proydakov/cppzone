@@ -66,7 +66,7 @@ void test_alg_solution_found(const std::string& task_path, const std::string dic
 
     if (solution.size() < 2) {
         std::stringstream sstream;
-        sstream << "Error: " << __FUNCTION__ << "solution size < 2";
+        sstream << "Error: " << __FUNCTION__ << " solution size < 2";
         throw std::runtime_error(sstream.str());
     }
 
@@ -78,14 +78,14 @@ void test_alg_solution_found(const std::string& task_path, const std::string dic
 
     if (task[0] != solution[0]) {
         std::stringstream sstream;
-        sstream << "Error: " << __FUNCTION__ << "bad solution: first element != task begin";
+        sstream << "Error: " << __FUNCTION__ << " bad solution: first element != task begin";
         throw std::runtime_error(sstream.str());
     }
 
     auto sln_size = solution.size();
     if (task[1] != solution[sln_size - 1]) {
         std::stringstream sstream;
-        sstream << "Error: " << __FUNCTION__ << "bad solution: last element != task end";
+        sstream << "Error: " << __FUNCTION__ << " bad solution: last element != task end";
         throw std::runtime_error(sstream.str());
     }
 
@@ -112,7 +112,7 @@ void test_alg_impl(const std::string& task_name, const std::string& dict_name)
 
 int main()
 {
-    setlocale(LC_ALL, "Rus");
+    setlocale(LC_ALL, "RUS");
 
     test_alg_impl("task1.txt", "ru_dict_7.txt");
     test_alg_impl("task2.txt", "ru_dict_15.txt");

@@ -23,8 +23,10 @@
 #include <string>
 #include <vector>
 #include <cstdlib>
-#include <iostream>
 #include <sstream>
+#include <iostream>
+#include <stdexcept>
+
 #include <data_validator.h>
 
 void test_validate_dict_ok()
