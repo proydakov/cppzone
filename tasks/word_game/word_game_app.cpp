@@ -37,16 +37,6 @@ std::ostream& operator<<(std::ostream& ostr, const std::vector<T>& vector)
     return ostr;
 }
 
-template<typename T>
-std::wostream& operator<<(std::wostream& ostr, const std::vector<T>& vector)
-{
-    for (auto &el : vector) {
-        ostr << el << "\n";
-    }
-    return ostr;
-}
-
-
 void WordGameApp::solve(const std::string& task_path, const std::string& dict_path, data_t& solution)
 {
     m_task.clear();
@@ -79,17 +69,9 @@ void WordGameApp::get_solution(data_t& solution)
 
 void WordGameApp::debug_solve()
 {
-#ifdef _MSC_VER
-    std::wcout << "Task: \n";
-    std::wcout << m_task << "\n";
-
-    std::wcout << "Solution: \n";
-    std::wcout << m_solution << "\n";
-#else
     std::cout << "Task: \n";
     std::cout << m_task << "\n";
 
     std::cout << "Solution: \n";
     std::cout << m_solution << "\n";
-#endif
 }

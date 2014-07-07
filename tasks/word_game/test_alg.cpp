@@ -99,7 +99,7 @@ void test_alg_solution_found(const std::string& task_path, const std::string& di
     std::cout << "Total process time: " << duration << " milliseconds \n" << std::endl;
     app.debug_solve();
 
-    std::cout << "Success: " << __FUNCTION__ << std::endl;
+    std::cout << "Success: " << __FUNCTION__ << " task path: " << task_path << " dict path: " << dict_path << std::endl;
 }
 
 void test_alg_solution_not_found(const std::string& task_path, const std::string& dict_path)
@@ -115,7 +115,7 @@ void test_alg_solution_not_found(const std::string& task_path, const std::string
         throw std::runtime_error(sstream.str());
     }
 
-    std::cout << "Success: " << __FUNCTION__ << std::endl;
+    std::cout << "Success: " << __FUNCTION__ << " task path: " << task_path << " dict path: " << dict_path << std::endl;
 }
 
 void test_alg_solution_found_impl(const std::string& task_name, const std::string& dict_name)
@@ -166,7 +166,8 @@ int main()
     test_alg_solution_found_impl("task20.txt", "ru_dict_32000.txt");
     test_alg_solution_found_impl("task21.txt", "en_dict_3000.txt");
 
-    test_alg_solution_not_found_impl("task_bad.txt", "ru_dict_32000.txt");
+    test_alg_solution_not_found_impl("task_bad1.txt", "ru_dict_32000.txt");
+    test_alg_solution_not_found_impl("task_bad2.txt", "ru_dict_32000.txt");
 
     return EXIT_SUCCESS;
 }

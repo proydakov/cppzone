@@ -21,9 +21,6 @@
 */
 
 #include <locale>
-#ifdef _MSC_VER
-#include <codecvt>
-#endif
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
@@ -47,17 +44,7 @@ void DataReader::readFileByLine(const std::string& path, data_t& data)
     data.clear();
     data.shrink_to_fit();
 
-#ifdef _MSC_VER
-    const std::locale empty_locale = std::locale::empty();
-    typedef std::codecvt_utf8<wchar_t> converter_type;
-    const converter_type* converter = new converter_type;
-    const std::locale utf8_locale = std::locale(empty_locale, converter);
-
-    std::wifstream file;
-    file.imbue(utf8_locale);
-#else
     std::ifstream file;
-#endif
     file.open(path);
     if (!file.is_open()) {
         throw std::runtime_error("Open file: " + path + " error");
