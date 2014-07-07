@@ -50,8 +50,13 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
+    bool first = true;
     for (auto &el : solution) {
-        std::cout << el << "\n";
+        if (!first) {
+            std::cout << "\n";
+        }
+        std::cout << el;
+        first = false;
     }
 
     return EXIT_SUCCESS;
