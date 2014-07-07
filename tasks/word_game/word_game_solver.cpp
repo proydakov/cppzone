@@ -23,10 +23,11 @@
 #include <list>
 #include <memory>
 #include <iostream>
+#include <algorithm>
 
 #include "word_game_solver.h"
 
-const std::string WordGameSolver::ru_alphabet = "ÀÁÂÃÄÅ¨ÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäå¸æçèéêëìíîïğñòóôõö÷øùúûüışÿ";
+const std::string WordGameSolver::ru_alphabet = "ĞĞ‘Ğ’Ğ“Ğ”Ğ•ĞĞ–Ğ—Ğ˜Ğ™ĞšĞ›ĞœĞĞĞŸĞ Ğ¡Ğ¢Ğ£Ğ¤Ğ¥Ğ¦Ğ§Ğ¨Ğ©ĞªĞ«Ğ¬Ğ­Ğ®Ğ¯Ğ°Ğ±Ğ²Ğ³Ğ´ĞµÑ‘Ğ¶Ğ·Ğ¸Ğ¹ĞºĞ»Ğ¼Ğ½Ğ¾Ğ¿Ñ€ÑÑ‚ÑƒÑ„Ñ…Ñ†Ñ‡ÑˆÑ‰ÑŠÑ‹ÑŒÑÑÑ";
 const std::string WordGameSolver::en_alphabet = "ABCDEFGHIJKLMNOPQRSTUWXYZabcdefghijklmnopqrstuwxyz";
 
 void WordGameSolver::solve(const std::vector<std::string>& task, const std::vector<std::string>& dict, std::vector<std::string>& solution)
@@ -35,10 +36,10 @@ void WordGameSolver::solve(const std::vector<std::string>& task, const std::vect
     std::string target = task[1];
 
     const std::string* alphabet = nullptr;
-    if (std::find(ru_alphabet.begin(), ru_alphabet.end(), task[0][0]) != ru_alphabet.end()) {
+    if (std::find(ru_alphabet.begin(), ru_alphabet.end(), start[0]) != ru_alphabet.end()) {
         alphabet = &ru_alphabet;
     }
-    else if (std::find(en_alphabet.begin(), en_alphabet.end(), task[0][0]) != en_alphabet.end()) {
+    else if (std::find(en_alphabet.begin(), en_alphabet.end(),start[0]) != en_alphabet.end()) {
         alphabet = &en_alphabet;
     }
     else {
@@ -53,8 +54,8 @@ void WordGameSolver::solve(const std::vector<std::string>& task, const std::vect
     std::list<node<std::string>*> next_search_list;
     search_list.push_back(head.get());
 
-    std::unordered_set<std::string> hash_dict;
-    std::unordered_set<std::string> hash_words;
+    std::unordered_set<std::string> hash_dict(dict.size());
+    std::unordered_set<std::string> hash_words(dict.size());
     hash_words.insert(head->value);
 
     for (auto& el : dict) {
