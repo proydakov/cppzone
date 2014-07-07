@@ -32,8 +32,8 @@
 void test_validate_dict_ok()
 {
     data_t dict;
-    dict.push_back(istring("robot"));
-    dict.push_back(istring("xobot"));
+    dict.push_back(istring());
+    dict.push_back(istring());
     try {
         DataValidator::validateDict(dict);
     }

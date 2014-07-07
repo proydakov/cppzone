@@ -54,7 +54,7 @@ void check_word_pair(const T& first, const T& second)
     }
 }
 
-void test_alg_solution_found(const std::string& task_path, const std::string dict_path)
+void test_alg_solution_found(const std::string& task_path, const std::string& dict_path)
 {
     WordGameApp app;
     data_t solution;
@@ -98,9 +98,27 @@ void test_alg_solution_found(const std::string& task_path, const std::string dic
 
     std::cout << "Total process time: " << duration << " milliseconds \n" << std::endl;
     app.debug_solve();
+
+    std::cout << "Success: " << __FUNCTION__ << std::endl;
 }
 
-void test_alg_impl(const std::string& task_name, const std::string& dict_name)
+void test_alg_solution_not_found(const std::string& task_path, const std::string& dict_path)
+{
+    WordGameApp app;
+    data_t solution;
+
+    app.solve(task_path, dict_path, solution);
+
+    if (!solution.empty()) {
+        std::stringstream sstream;
+        sstream << "Error: " << __FUNCTION__ << " bad solution: not empty";
+        throw std::runtime_error(sstream.str());
+    }
+
+    std::cout << "Success: " << __FUNCTION__ << std::endl;
+}
+
+void test_alg_solution_found_impl(const std::string& task_name, const std::string& dict_name)
 {
     std::stringstream task;
     task << DATA_DIRECTORY << "/" << task_name;
@@ -111,31 +129,44 @@ void test_alg_impl(const std::string& task_name, const std::string& dict_name)
     test_alg_solution_found(task.str(), dict.str());
 }
 
+void test_alg_solution_not_found_impl(const std::string& task_name, const std::string& dict_name)
+{
+    std::stringstream task;
+    task << DATA_DIRECTORY << "/" << task_name;
+
+    std::stringstream dict;
+    dict << DATA_DIRECTORY << "/" << dict_name;
+
+    test_alg_solution_not_found(task.str(), dict.str());
+}
+
 int main()
 {
     setlocale(LC_ALL, "RUS");
 
-    test_alg_impl("task1.txt", "ru_dict_7.txt");
-    test_alg_impl("task2.txt", "ru_dict_15.txt");
-    test_alg_impl("task3.txt", "ru_dict_5000.txt");
-    test_alg_impl("task4.txt", "ru_dict_5000.txt");
-    test_alg_impl("task5.txt", "ru_dict_32000.txt");
-    test_alg_impl("task6.txt", "ru_dict_32000.txt");
-    test_alg_impl("task7.txt", "ru_dict_32000.txt");
-    test_alg_impl("task8.txt", "ru_dict_32000.txt");
-    test_alg_impl("task9.txt", "ru_dict_32000.txt");
-    test_alg_impl("task10.txt", "ru_dict_32000.txt");
-    test_alg_impl("task11.txt", "ru_dict_32000.txt");
-    test_alg_impl("task12.txt", "ru_dict_32000.txt");
-    test_alg_impl("task13.txt", "ru_dict_32000.txt");
-    test_alg_impl("task14.txt", "ru_dict_32000.txt");
-    test_alg_impl("task15.txt", "ru_dict_32000.txt");
-    test_alg_impl("task16.txt", "ru_dict_32000.txt");
-    test_alg_impl("task17.txt", "ru_dict_32000.txt");
-    test_alg_impl("task18.txt", "ru_dict_32000.txt");
-    test_alg_impl("task19.txt", "ru_dict_32000.txt");
-    test_alg_impl("task20.txt", "ru_dict_32000.txt");
-    test_alg_impl("task21.txt", "en_dict_3000.txt");
+    test_alg_solution_found_impl("task1.txt", "ru_dict_7.txt");
+    test_alg_solution_found_impl("task2.txt", "ru_dict_15.txt");
+    test_alg_solution_found_impl("task3.txt", "ru_dict_5000.txt");
+    test_alg_solution_found_impl("task4.txt", "ru_dict_5000.txt");
+    test_alg_solution_found_impl("task5.txt", "ru_dict_32000.txt");
+    test_alg_solution_found_impl("task6.txt", "ru_dict_32000.txt");
+    test_alg_solution_found_impl("task7.txt", "ru_dict_32000.txt");
+    test_alg_solution_found_impl("task8.txt", "ru_dict_32000.txt");
+    test_alg_solution_found_impl("task9.txt", "ru_dict_32000.txt");
+    test_alg_solution_found_impl("task10.txt", "ru_dict_32000.txt");
+    test_alg_solution_found_impl("task11.txt", "ru_dict_32000.txt");
+    test_alg_solution_found_impl("task12.txt", "ru_dict_32000.txt");
+    test_alg_solution_found_impl("task13.txt", "ru_dict_32000.txt");
+    test_alg_solution_found_impl("task14.txt", "ru_dict_32000.txt");
+    test_alg_solution_found_impl("task15.txt", "ru_dict_32000.txt");
+    test_alg_solution_found_impl("task16.txt", "ru_dict_32000.txt");
+    test_alg_solution_found_impl("task17.txt", "ru_dict_32000.txt");
+    test_alg_solution_found_impl("task18.txt", "ru_dict_32000.txt");
+    test_alg_solution_found_impl("task19.txt", "ru_dict_32000.txt");
+    test_alg_solution_found_impl("task20.txt", "ru_dict_32000.txt");
+    test_alg_solution_found_impl("task21.txt", "en_dict_3000.txt");
+
+    test_alg_solution_not_found_impl("task_bad.txt", "ru_dict_32000.txt");
 
     return EXIT_SUCCESS;
 }
