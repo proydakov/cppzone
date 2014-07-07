@@ -20,26 +20,12 @@
 *  THE SOFTWARE.
 */
 
-#ifndef I_WORD_GAME_SOLVER
-#define I_WORD_GAME_SOLVER
+#ifndef I_COMMON
+#define I_COMMON
 
-#include <string>
 #include <vector>
-#include <unordered_set>
+#include <string>
 
-#include <node.h>
-#include <common.h>
+typedef std::vector<std::wstring> data_t;
 
-class WordGameSolver
-{
-public:
-    static void solve(const data_t& task, const data_t& dict, data_t& solution);
-
-private:
-    static void findChilds(node<std::wstring>* element, const std::unordered_set<std::wstring>& hash_dict,
-                           const std::wstring& alphabet, std::unordered_set<std::wstring>& hash_words);
-    static void findTarget(node<std::wstring>* element, const std::wstring& target, std::vector<std::wstring>& solution);
-    static void buildSolution(node<std::wstring>* target, std::vector<std::wstring>& solution);
-};
-
-#endif // I_WORD_GAME_SOLVER
+#endif // I_COMMON

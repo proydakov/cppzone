@@ -25,11 +25,12 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "word_game_app.h"
+#include <common.h>
+#include <word_game_app.h>
 
 int main(int argc, char* argv[])
 {
-    setlocale(LC_ALL, "Rus");
+    setlocale(LC_ALL, "RUS");
 
     if (argc != 3)
     {
@@ -41,7 +42,7 @@ int main(int argc, char* argv[])
 
     WordGameApp app;
 
-    std::vector<std::string> solution;
+    data_t solution;
     app.solve(task_file_path, dict_file_path, solution);
 
     if (solution.empty()) {
@@ -50,7 +51,7 @@ int main(int argc, char* argv[])
     }
 
     for (auto &el : solution) {
-        std::cout << el << "\n";
+        std::wcout << el << "\n";
     }
 
     return EXIT_SUCCESS;

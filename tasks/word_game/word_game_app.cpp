@@ -29,7 +29,7 @@
 #include "word_game_app.h"
 
 template<typename T>
-std::ostream& operator<<(std::ostream& ostr, const std::vector<T>& vector)
+std::wostream& operator<<(std::wostream& ostr, const std::vector<T>& vector)
 {
     for (auto &el : vector) {
         ostr << el << "\n";
@@ -37,7 +37,7 @@ std::ostream& operator<<(std::ostream& ostr, const std::vector<T>& vector)
     return ostr;
 }
 
-void WordGameApp::solve(const std::string& task_path, const std::string& dict_path, std::vector<std::string>& solution)
+void WordGameApp::solve(const std::string& task_path, const std::string& dict_path, data_t& solution)
 {
     m_task.clear();
     m_dict.clear();
@@ -52,29 +52,29 @@ void WordGameApp::solve(const std::string& task_path, const std::string& dict_pa
     solution = m_solution;
 }
 
-void WordGameApp::get_task(std::vector<std::string>& task)
+void WordGameApp::get_task(data_t& task)
 {
     task = m_task;
 }
 
-void WordGameApp::get_dict(std::vector<std::string>& dict)
+void WordGameApp::get_dict(data_t& dict)
 {
     dict = m_dict;
 }
 
-void WordGameApp::get_solution(std::vector<std::string>& solution)
+void WordGameApp::get_solution(data_t& solution)
 {
     solution = m_solution;
 }
 
 void WordGameApp::debug_solve()
 {
-    std::cout << "Task: \n";
-    std::cout << m_task << "\n";
+    std::wcout << "Task: \n";
+    std::wcout << m_task << "\n";
 
     //std::cout << "Dict: \n";
     //std::cout << m_dict << "\n";
 
-    std::cout << "Solution: \n";
-    std::cout << m_solution << "\n";
+    std::wcout << "Solution: \n";
+    std::wcout << m_solution << "\n";
 }

@@ -9,8 +9,12 @@ CONFIGURE_FILE(config_path.h.cmake ${CMAKE_CURRENT_SOURCE_DIR}/config_path.h)
 SET(DATA_PATH ${CMAKE_CURRENT_SOURCE_DIR}/data)
 FILE(GLOB_RECURSE DATA_FILES ${DATA_PATH}/*)
 
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/data/en_alphabet.txt ${EXECUTABLE_OUTPUT_PATH}/en_alphabet.txt)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/data/ru_alphabet.txt ${EXECUTABLE_OUTPUT_PATH}/ru_alphabet.txt)
+
 SET(HEADER_FILES
     node.h
+    common.h
     data_reader.h
     data_validator.h
     word_game_solver.h

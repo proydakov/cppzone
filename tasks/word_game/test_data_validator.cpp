@@ -31,9 +31,9 @@
 
 void test_validate_dict_ok()
 {
-    std::vector<std::string> dict;
-    dict.push_back("robot");
-    dict.push_back("xobot");
+    data_t dict;
+    dict.push_back(L"robot");
+    dict.push_back(L"xobot");
     try {
         DataValidator::validateDict(dict);
     }
@@ -47,7 +47,7 @@ void test_validate_dict_ok()
 
 void test_validate_dict_error()
 {
-    std::vector<std::string> dict;
+    data_t dict;
 
     bool ok = false;
     try {

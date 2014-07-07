@@ -20,35 +20,43 @@
 *  THE SOFTWARE.
 */
 
+#include <locale>
+#include <codecvt>
 #include <fstream>
+#include <iostream>
 #include <stdexcept>
 #include <algorithm>
 
 #include "data_reader.h"
 
-void DataReader::readTask(const std::string& path, std::vector<std::string>& data)
+void DataReader::readTask(const std::string& path, data_t& task)
 {
-    readFileByLine(path, data);
+    readFileByLine(path, task);
 }
 
-void DataReader::readDict(const std::string& path, std::vector<std::string>& data)
+void DataReader::readDict(const std::string& path, data_t& dict)
 {
-    readFileByLine(path, data);
-    std::sort(data.begin(), data.end());
+    readFileByLine(path, dict);
+    std::sort(dict.begin(), dict.end());
 }
 
-void DataReader::readFileByLine(const std::string& path, std::vector<std::string>& data)
+void DataReader::readFileByLine(const std::string& path, data_t& data)
 {
     data.clear();
     data.shrink_to_fit();
 
-    std::ifstream file;
+    const std::locale empty_locale = std::locale::empty();
+    typedef std::codecvt_utf8<wchar_t> converter_type;
+    const converter_type* converter = new converter_type;
+    const std::locale utf8_locale = std::locale(empty_locale, converter);
+
+    std::wifstream file;
+    file.imbue(utf8_locale);
     file.open(path);
     if (!file.is_open()) {
         throw std::runtime_error("Open file: " + path + " error");
     }
-
-    std::string buffer;
+    std::wstring buffer;
     while (std::getline(file, buffer))
     {
         data.push_back(buffer);

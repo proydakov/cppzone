@@ -35,7 +35,7 @@ void test_read_ok(const std::string& name, const std::string& error)
     std::stringstream sstream;
     sstream << DATA_DIRECTORY << "/" << name;
 
-    std::vector<std::string> data;
+    data_t data;
     try {
         DataReader::readTask(sstream.str(), data);
     }
@@ -58,7 +58,7 @@ void test_read_error(const std::string& name, const std::string& error)
     sstream << DATA_DIRECTORY << "/" << "task_not_found.txt";
 
     bool ok = false;
-    std::vector<std::string> data;
+    data_t data;
     try {
         DataReader::readTask(sstream.str(), data);
     }

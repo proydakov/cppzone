@@ -25,7 +25,7 @@
 
 #include "data_validator.h"
 
-void DataValidator::validateTask(const std::vector<std::string>& data)
+void DataValidator::validateTask(const data_t& data)
 {
     auto size = data.size();
     if (size != 2) {
@@ -35,7 +35,7 @@ void DataValidator::validateTask(const std::vector<std::string>& data)
     }
     if (data[0].size() != data[1].size()) {
         std::stringstream sstream;
-        sstream << "Bad task: words of different lengths " << data[0] << " : " << data[1];
+        sstream << "Bad task: words of different lengths " << data[0].c_str() << " : " << data[1].c_str();
         throw std::runtime_error(sstream.str());
     }
     if (data[0].empty() || data[1].empty()) {
@@ -45,7 +45,7 @@ void DataValidator::validateTask(const std::vector<std::string>& data)
     }
 }
 
-void DataValidator::validateDict(const std::vector<std::string>& data)
+void DataValidator::validateDict(const data_t& data)
 {
     auto size = data.size();
     if (size < 2) {

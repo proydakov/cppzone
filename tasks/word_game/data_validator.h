@@ -26,11 +26,13 @@
 #include <string>
 #include <vector>
 
+#include <common.h>
+
 class DataValidator
 {
 public:
-    static void validateTask(const std::vector<std::string>& data);
-    static void validateDict(const std::vector<std::string>& data);
+    static void validateTask(const data_t& data);
+    static void validateDict(const data_t& data);
 };
 
 #endif // I_DATA_VALIDATOR

@@ -26,14 +26,14 @@
 #include <string>
 #include <vector>
 
+#include <common.h>
+
 class DataReader
 {
 public:
-    static void readTask(const std::string& path, std::vector<std::string>& data);
-    static void readDict(const std::string& path, std::vector<std::string>& data);
-
-private:
-    static void readFileByLine(const std::string& path, std::vector<std::string>& data);
+    static void readTask(const std::string& path, data_t& task);
+    static void readDict(const std::string& path, data_t& dict);
+    static void readFileByLine(const std::string& path, data_t& data);
 };
 
 #endif // I_DATA_READER

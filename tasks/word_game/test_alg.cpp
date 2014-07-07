@@ -32,7 +32,8 @@
 #include "config_path.h"
 #include "word_game_app.h"
 
-void check_word_pair(const std::string& first, const std::string& second)
+template<class T>
+void check_word_pair(const T& first, const T& second)
 {
     if (first.size() != second.size()) {
         std::stringstream sstream;
@@ -56,7 +57,7 @@ void check_word_pair(const std::string& first, const std::string& second)
 void test_alg_solution_found(const std::string& task_path, const std::string dict_path)
 {
     WordGameApp app;
-    std::vector<std::string> solution;
+    data_t solution;
 
     auto start = std::chrono::high_resolution_clock::now();
     {
@@ -70,10 +71,10 @@ void test_alg_solution_found(const std::string& task_path, const std::string dic
         throw std::runtime_error(sstream.str());
     }
 
-    std::vector<std::string> task;
+    data_t task;
     app.get_task(task);
 
-    std::vector<std::string> dict;
+    data_t dict;
     app.get_dict(dict);
 
     if (task[0] != solution[0]) {

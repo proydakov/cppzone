@@ -26,21 +26,23 @@
 #include <string>
 #include <vector>
 
+#include <common.h>
+
 class WordGameApp
 {
 public:
-    void solve(const std::string& task_path, const std::string& dict_path, std::vector<std::string>& solution);
+    void solve(const std::string& task_path, const std::string& dict_path, data_t& solution);
 
-    void get_task(std::vector<std::string>& task);
-    void get_dict(std::vector<std::string>& dict);
-    void get_solution(std::vector<std::string>& solution);
+    void get_task(data_t& task);
+    void get_dict(data_t& dict);
+    void get_solution(data_t& solution);
 
     void debug_solve();
 
 private:
-    std::vector<std::string> m_task;
-    std::vector<std::string> m_dict;
-    std::vector<std::string> m_solution;
+    data_t m_task;
+    data_t m_dict;
+    data_t m_solution;
 };
 
 #endif // I_WORD_GAME_APP
