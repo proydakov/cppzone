@@ -142,7 +142,7 @@ void test_alg_solution_not_found_impl(const std::string& task_name, const std::s
 
 int main()
 {
-    setlocale(LC_ALL, "RUS");
+    setlocale(LC_CTYPE, "Russian");
 
     test_alg_solution_found_impl("task1.txt", "ru_dict_7.txt");
     test_alg_solution_found_impl("task2.txt", "ru_dict_15.txt");

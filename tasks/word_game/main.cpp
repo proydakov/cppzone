@@ -30,7 +30,7 @@
 
 int main(int argc, char* argv[])
 {
-    setlocale(LC_ALL, "RUS");
+    setlocale(LC_CTYPE, "Russian");
 
     if (argc != 3)
     {
