@@ -61,7 +61,7 @@ void WordGameSolver::solve(const std::vector<std::string>& task, const std::vect
         hash_dict.insert(el);
     }
 
-    size_t dict_size = dict.size();
+    const size_t dict_size = dict.size();
     for (size_t i = 0; i < dict_size; i++) {
         auto searchListEndIt = search_list.end();
         for (auto it = search_list.begin(); it != searchListEndIt; ++it) {
