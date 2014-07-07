@@ -10,17 +10,18 @@ SET(DATA_PATH ${CMAKE_CURRENT_SOURCE_DIR}/data)
 FILE(GLOB_RECURSE DATA_FILES ${DATA_PATH}/*)
 
 SET(HEADER_FILES
+    node.h
     data_reader.h
     data_validator.h
-	word_game_solver.h
-	word_game_app.h
+    word_game_solver.h
+    word_game_app.h
     )
 
 SET(SOURCE_FILES
     data_reader.cpp
     data_validator.cpp
-	word_game_solver.cpp
-	word_game_app.cpp
+    word_game_solver.cpp
+    word_game_app.cpp
     )
 
 I_ADD_LIBRARY(task_word_game_impl

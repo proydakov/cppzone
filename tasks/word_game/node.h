@@ -20,29 +20,28 @@
 *  THE SOFTWARE.
 */
 
-#ifndef I_WORD_GAME_SOLVER
-#define I_WORD_GAME_SOLVER
+#ifndef I_NODE
+#define I_NODE
 
-#include <string>
-#include <vector>
-#include <unordered_set>
-
-#include <node.h>
-
-class WordGameSolver
+template<class T>
+struct node
 {
-public:
-    static void solve(const std::vector<std::string>& task, const std::vector<std::string>& dict, std::vector<std::string>& solution);
+    node(const T& value, node* parent) :
+        value(value),
+        parent(parent)
+    {
+    }
+    ~node()
+    {
+        auto endIt = childs.end();
+        for (auto it = childs.begin(); it != endIt; ++it) {
+            delete (*it);
+        }
+    }
 
-private:
-    static const std::string ru_alphabet;
-    static const std::string en_alphabet;
-
-private:
-    static void findChilds(node<std::string>* element, const std::unordered_set<std::string>& hash_dict,
-                           const std::string& alphabet, std::unordered_set<std::string>& hash_words);
-    static void findTarget(node<std::string>* element, const std::string& target, std::vector<std::string>& solution);
-    static void buildSolution(node<std::string>* target, std::vector<std::string>& solution);
+    T value;
+    node* parent;
+    std::list<node*> childs;
 };
 
-#endif // I_WORD_GAME_SOLVER
+#endif // I_NODE
