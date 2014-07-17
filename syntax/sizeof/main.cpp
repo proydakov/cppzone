@@ -26,10 +26,13 @@
 #include <array>
 #include <queue>
 #include <stack>
+#include <mutex>
 #include <vector>
 #include <unordered_set>
 #include <unordered_map>
+
 #include <iostream>
+
 
 #ifndef _MSC_VER
 class N
@@ -166,6 +169,10 @@ int main(int argc, char *argv[])
     std::cout << "sizeof int[10]:     " << sizeof(int_array_10) << std::endl;
     std::cout << "sizeof int[16]:     " << sizeof(int_array_16) << std::endl;
     std::cout << "sizeof int[64]:     " << sizeof(int_array_64) << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "sizeof sync type:" << std::endl;
+    std::cout << "sizeof std::mutex:  " << sizeof(std::mutex) << std::endl;
 
     return 0;
 }
