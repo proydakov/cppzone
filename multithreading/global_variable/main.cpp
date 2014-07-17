@@ -35,11 +35,8 @@ void thread_fun()
     }
 }
 
-int main( int argc, char *argv[] )
+int main()
 {
-    (void)argc;
-    (void)argv;
-    
     int thread_col = 30;
     
     std::vector<std::thread> group;
@@ -48,8 +45,9 @@ int main( int argc, char *argv[] )
     }
     
     while(true) {
-        if(counter > MAX_COUNTER_VALUE)
+        if(counter > MAX_COUNTER_VALUE) {
             break;
+        }
     }
 
     std::cout << "COUNTER VALUE: " << counter << std::endl;

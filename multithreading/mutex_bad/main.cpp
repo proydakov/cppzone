@@ -39,11 +39,8 @@ void function(mutex& m)
     }
 }
 
-int main( int argc, char *argv[] )
+int main()
 {
-    (void) argc;
-    (void) argv;
-
     mutex m;
     std::thread thread(function, std::ref(m));
     m.lock();

@@ -131,8 +131,7 @@ typedef void (A::*pointer4)(const std::string&);
 
 int main()
 {
-    typedef std::list<i_caller*> call_list;
-    call_list list;
+    std::list<i_caller*> list;
 
     A a;
     B b;
@@ -148,7 +147,7 @@ int main()
     list.push_back(&a_fun4);
     list.push_back(&a_fun5);
 
-    call_list::const_iterator it = list.begin();
+    auto it = list.begin();
     while(it != list.end()) {
         (*it)->run();
         ++it;

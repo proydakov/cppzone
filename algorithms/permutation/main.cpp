@@ -28,11 +28,8 @@ typedef std::string symbol_container;
 void generate_permutation(const symbol_container& data);
 void generate_permutation_recursive_step(symbol_container& data, size_t start, size_t end);
 
-int main(int argc, char *argv[])
+int main()
 {
-    (void)argc;
-    (void)argv;    
-    
     symbol_container ex1 = "012345";
     generate_permutation(ex1);
     
@@ -51,7 +48,7 @@ void generate_permutation_recursive_step(symbol_container& data, size_t start, s
         std::cout << data << std::endl;
         return;
     }
-	for (size_t i = start; i <= end; ++i) {
+    for (size_t i = start; i <= end; ++i) {
         std::swap(data[i], data[start]);
         symbol_container temp = data;
         generate_permutation_recursive_step(temp, start + 1, end);

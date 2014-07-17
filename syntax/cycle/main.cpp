@@ -48,11 +48,8 @@ private:
 
 size_t helper::counter = 0;
 
-int main(int argc, char *argv[])
+int main()
 {
-    (void) argc;
-    (void) argv;
-
     std::cout << "before: " << helper::get_counter() << std::endl;
 
     for(size_t i = 0; i < helper::size(); i++) {

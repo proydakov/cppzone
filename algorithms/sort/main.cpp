@@ -32,11 +32,8 @@ typedef double data_type;
 typedef void (*prt_sort)(std::vector<data_type>&);
 void test_sort(const std::string& name, prt_sort sort, std::vector<data_type>& data, const std::vector<data_type>& sorted_data);
 
-int main( int argc, char *argv[] )
+int main()
 {
-    (void) (argc);
-    (void) (argv);
-
     size_t array_size = 10000;
     srand((unsigned int) time(NULL));
     std::vector<data_type> input_data(array_size, 0);

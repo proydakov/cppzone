@@ -22,11 +22,8 @@
 
 #include <iostream>
 
-int main(int argc, char *argv[])
+int main()
 {
-    (void)argc;
-    (void)argv;
-    
     int a = 'a';
     int b = 'b';
     

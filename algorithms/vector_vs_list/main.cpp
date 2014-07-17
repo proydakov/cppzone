@@ -27,11 +27,8 @@
 #include <cstdlib>
 #include <iostream>
 
-int main(int argc, char** argv)
+int main()
 {
-    (void) (argc);
-    (void) (argv);
-
     srand((unsigned int)time(NULL));
 
     std::vector<double> vector_iter_data;

@@ -31,11 +31,8 @@ int irandom()
     return (std::rand() % 1000000);
 }
 
-int main( int argc, char *argv[] )
+int main()
 {
-    (void) (argc);
-    (void) (argv);
-
     std::srand ( unsigned ( std::time(0) ) );
 
     typedef int element;

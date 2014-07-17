@@ -29,11 +29,8 @@ void load_stream()
     while(true);
 }
 
-int main( int argc, char *argv[] )
+int main()
 {
-    (void) argc;
-    (void) argv;
-
     int thread_col = std::thread::hardware_concurrency();
 
     std::vector<std::thread> group;

@@ -35,11 +35,8 @@ void* task(void* x)
     return 0;
 }
 
-int main( int argc, char *argv[] )
+int main()
 {
-    (void)argc;
-    (void)argv;
-    
     pthread_t thread_a, thread_b, thread_c;
     
     int n1 = 6;

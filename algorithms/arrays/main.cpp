@@ -52,11 +52,8 @@ std::ostream& operator<<(std::ostream& ostr, const std::vector<T>& vector)
     return ostr;
 }
 
-int main( int argc, char *argv[] )
+int main()
 {
-    (void) (argc);
-    (void) (argv);
-
     //test_operations();
     //test_binary_search();
     test_remove_duplicates();
@@ -119,7 +116,7 @@ void test_binary_search()
 
 int irand()
 {
-   return rand() % 1000;
+    return rand() % 1000;
 }
 
 void test_remove_duplicates()

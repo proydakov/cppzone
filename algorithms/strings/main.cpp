@@ -26,11 +26,8 @@
 #include <sub.h>
 #include <split.h>
 
-int main( int argc, char *argv[] )
+int main()
 {
-    (void) argc;
-    (void) argv;
-    
     {
         std::string str("a12kkk12");
         std::string substr("12");
