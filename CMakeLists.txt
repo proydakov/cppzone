@@ -2,7 +2,7 @@
 # Copyright (c) 2011-2014 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0)
 
 PROJECT(I++)
 MESSAGE(STATUS "CREATE  PROJECT  I++")
