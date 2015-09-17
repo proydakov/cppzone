@@ -72,6 +72,7 @@ public:
     double operator() (vertex_descriptor v) {
         double x = (m_goal[0] - v[0]) * (m_goal[0] - v[0]);
         double y = (m_goal[1] - v[1]) * (m_goal[1] - v[1]);
+
         return sqrt(x + y);
     }
 
@@ -161,6 +162,12 @@ public:
     bool way_contains(vertex_descriptor u) const {
         return m_way.find(u) != m_way.end();
     }
+    const vertex_set& get_way() const {
+        return m_way;
+    }
+    const vertex_set& get_solution() const {
+        return m_solution;
+    }
 
 private:
     grid create_grid(std::size_t x, std::size_t y) {
@@ -223,59 +230,6 @@ bool maze::solve()
         return true;
     }
     return false;
-}
-
-#define BARRIER "#"
-
-// Print the maze as an ASCII map.
-std::ostream& operator<<(std::ostream& output, const maze& m) {
-    // Header
-    for (vertices_size_type i = 0; i < m.length(0) + 2; i++) {
-        output << BARRIER;
-    }
-    output << std::endl;
-
-    vertices_size_type nx = m.length(0);
-    vertices_size_type ny = m.length(1);
-
-    // Body
-    for (vertices_size_type y = 0; y < ny; y++) {
-        // Enumerate rows in reverse order and columns in regular order so that
-        // (0,0) appears in the lower left-hand corner.  This requires that y be
-        // int and not the unsigned vertices_size_type because the loop exit
-        // condition is y==-1.
-        for (vertices_size_type x = 0; x < nx; x++) {
-            // Put a barrier on the left-hand side.
-            if (x == 0) {
-                output << BARRIER;
-            }
-            // Put the character representing this point in the maze grid.
-            vertex_descriptor u = {{x, y}};
-            if (m.solution_contains(u)) {
-                output << ".";
-            }
-            else if (m.has_barrier(u)) {
-                output << BARRIER;
-            }
-            else {
-                output << " ";
-            }
-            // Put a barrier on the right-hand side.
-            if (x == m.length(0) - 1) {
-                output << BARRIER;
-            }
-        }
-        // Put a newline after every row except the last one.
-        output << std::endl;
-    }
-    // Footer
-    for (vertices_size_type i = 0; i < m.length(0)+2; i++) {
-        output << BARRIER;
-    }
-    if (m.solved()) {
-        output << std::endl << "Solution length " << m.m_solution_length;
-    }
-    return output;
 }
 
 // Return a random integer in the interval [a, b].

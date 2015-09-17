@@ -26,7 +26,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include <GL/glut.h>
+#include <common/iglut.h>
 
 #include <maze.h>
 
@@ -121,6 +121,50 @@ void display()
     if(!g_app.animate) {
     }
 
+    // way
+    {
+        glColor3d(0.8, 0.75, 0.75);
+        auto way = g_app.sp_maze->get_way();
+        for(const auto& el : way) {
+            int x = el.elems[0];
+            int y = el.elems[1];
+            
+            glLoadIdentity();
+            glTranslated(size * x, size * y, 0);
+            
+            glBegin(GL_POLYGON);
+            {
+                glVertex3d( 0.0,  0.0, 0.0);
+                glVertex3d( 0.0, size, 0.0);
+                glVertex3d(size, size, 0.0);
+                glVertex3d(size,  0.0, 0.0);
+            }
+            glEnd();
+        }
+    }
+    
+    // solution
+    {
+        glColor3d(1, 0.5, 0);
+        auto solution = g_app.sp_maze->get_solution();
+        for(const auto& el : solution) {
+            int x = el.elems[0];
+            int y = el.elems[1];
+            
+            glLoadIdentity();
+            glTranslated(size * x, size * y, 0);
+            
+            glBegin(GL_POLYGON);
+            {
+                glVertex3d( 0.0,  0.0, 0.0);
+                glVertex3d( 0.0, size, 0.0);
+                glVertex3d(size, size, 0.0);
+                glVertex3d(size,  0.0, 0.0);
+            }
+            glEnd();
+        }
+    }
+    
     // start
     {
         vertex_descriptor s = g_app.sp_maze->source();
@@ -194,7 +238,7 @@ void display()
             glEnd();
         }
     }
-
+    
     glFlush();
     glutSwapBuffers();
 }
