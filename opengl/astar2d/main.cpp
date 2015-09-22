@@ -87,38 +87,27 @@ void display()
     vertices_size_type ny = g_app.sp_maze->length(1);
 
     const double size = std::min(g_app.window_width / nx, g_app.window_height / ny);
-    double obj_half_size = 0;
 
-    // maze
-    for (vertices_size_type y = 0; y < ny; y++) {
-        for (vertices_size_type x = 0; x < nx; x++) {
-
-            obj_half_size = size / 2;
+    // barrier
+    {
+        glColor3d(0.0, 0.5, 1);
+        auto way = g_app.sp_maze->get_barriers();
+        for(const auto& el : way) {
+            int x = el.elems[0];
+            int y = el.elems[1];
 
             glLoadIdentity();
-            glTranslated(size * x + size / 2, size * y + size / 2, 0);
-
-            vertex_descriptor u = {{x, y}};
-
-            if (g_app.sp_maze->has_barrier(u)) {
-                glColor3d(0.0, 0.5, 1);
-            }
-            else {
-                glColor3d(0, 0, 0);
-            }
+            glTranslated(size * x, size * y, 0);
 
             glBegin(GL_POLYGON);
             {
-                glVertex3d(-obj_half_size, -obj_half_size, 0.0);
-                glVertex3d(-obj_half_size,  obj_half_size, 0.0);
-                glVertex3d( obj_half_size,  obj_half_size, 0.0);
-                glVertex3d( obj_half_size, -obj_half_size, 0.0);
+                glVertex3d( 0.0,  0.0, 0.0);
+                glVertex3d( 0.0, size, 0.0);
+                glVertex3d(size, size, 0.0);
+                glVertex3d(size,  0.0, 0.0);
             }
             glEnd();
         }
-    }
-
-    if(!g_app.animate) {
     }
 
     // way
@@ -128,10 +117,10 @@ void display()
         for(const auto& el : way) {
             int x = el.elems[0];
             int y = el.elems[1];
-            
+
             glLoadIdentity();
             glTranslated(size * x, size * y, 0);
-            
+
             glBegin(GL_POLYGON);
             {
                 glVertex3d( 0.0,  0.0, 0.0);
@@ -150,10 +139,10 @@ void display()
         for(const auto& el : solution) {
             int x = el.elems[0];
             int y = el.elems[1];
-            
+
             glLoadIdentity();
             glTranslated(size * x, size * y, 0);
-            
+
             glBegin(GL_POLYGON);
             {
                 glVertex3d( 0.0,  0.0, 0.0);
@@ -300,7 +289,7 @@ int main(int argc, char** argv)
 {
     info();
 
-    std::size_t size = 100;
+    std::size_t size = 50;
 
     std::size_t x = size;
     std::size_t y = size;

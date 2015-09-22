@@ -20,31 +20,36 @@
  *  THE SOFTWARE.
  */
 
+#include <chrono>
 #include <iostream>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/unordered_set.hpp>
 #include <boost/graph/grid_graph.hpp>
-#include <boost/random/uniform_int.hpp>
 #include <boost/graph/astar_search.hpp>
 #include <boost/graph/filtered_graph.hpp>
+#include <boost/random/uniform_int.hpp>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/variate_generator.hpp>
 
 boost::mt19937 random_generator;
 
-// Distance traveled in the maze
-typedef double distance;
-
 #define GRID_RANK 2
 
+typedef int distance_t;
 typedef boost::grid_graph<GRID_RANK> grid;
 typedef boost::graph_traits<grid>::vertex_descriptor vertex_descriptor;
 typedef boost::graph_traits<grid>::vertices_size_type vertices_size_type;
 
+std::ostream& operator<<(std::ostream& os, const vertex_descriptor& vertex)
+{
+    os << "( " << vertex[0] << ", " << vertex[1] << " )";
+    return os;
+}
+
 // A hash function for vertices.
-struct vertex_hash:std::unary_function<vertex_descriptor, std::size_t>
+struct vertex_hash : std::unary_function<vertex_descriptor, std::size_t>
 {
     std::size_t operator()(vertex_descriptor const& u) const
     {
@@ -55,6 +60,7 @@ struct vertex_hash:std::unary_function<vertex_descriptor, std::size_t>
     }
 };
 
+typedef std::vector<vertex_descriptor> vertex_vector;
 typedef boost::unordered_set<vertex_descriptor, vertex_hash> vertex_set;
 typedef boost::vertex_subset_complement_filter<grid, vertex_set>::type filtered_grid;
 
@@ -67,13 +73,12 @@ typedef boost::vertex_subset_complement_filter<grid, vertex_set>::type filtered_
 class euclidean_heuristic : public boost::astar_heuristic<filtered_grid, double>
 {
 public:
-    euclidean_heuristic(vertex_descriptor goal) : m_goal(goal) {};
+    euclidean_heuristic(const vertex_descriptor& goal) : m_goal(goal) {};
 
     double operator() (vertex_descriptor v) {
         double x = (m_goal[0] - v[0]) * (m_goal[0] - v[0]);
         double y = (m_goal[1] - v[1]) * (m_goal[1] - v[1]);
-
-        return sqrt(x + y);
+        return std::sqrt(std::pow(x, 2) + std::pow(y, 2));
     }
 
 private:
@@ -86,18 +91,18 @@ struct found_goal {};
 // Visitor that terminates when we find the goal vertex
 struct astar_goal_visitor : public boost::default_astar_visitor
 {
-    astar_goal_visitor(vertex_descriptor goal, vertex_set& way) : m_way(way), m_goal(goal) { m_way.clear(); };
+    astar_goal_visitor(const vertex_descriptor& goal, vertex_vector& way) : m_goal(goal), m_way(way) { m_way.clear(); };
 
-    void examine_vertex(vertex_descriptor u, const filtered_grid&) {
+    void examine_vertex(const vertex_descriptor& u, const filtered_grid&) {
         if (u == m_goal) {
             throw found_goal();
         }
-        m_way.insert(u);
+        m_way.push_back(u);
     }
 
 private:
-    vertex_set& m_way;
     vertex_descriptor m_goal;
+    vertex_vector& m_way;
 };
 
 //
@@ -140,11 +145,6 @@ public:
     vertices_size_type length(std::size_t d) const {
         return m_grid.length(d);
     }
-
-    bool has_barrier(vertex_descriptor u) const {
-        return m_barriers.find(u) != m_barriers.end();
-    }
-
     vertex_descriptor source() const {
         return m_soure;
     }
@@ -156,17 +156,17 @@ public:
     bool solved() const {
         return !m_solution.empty();
     }
-    bool solution_contains(vertex_descriptor u) const {
-        return m_solution.find(u) != m_solution.end();
-    }
-    bool way_contains(vertex_descriptor u) const {
-        return m_way.find(u) != m_way.end();
-    }
-    const vertex_set& get_way() const {
+    const vertex_vector& get_way() const {
         return m_way;
     }
-    const vertex_set& get_solution() const {
+    const vertex_vector& get_solution() const {
         return m_solution;
+    }
+    const vertex_set& get_barriers() const {
+        return m_barriers;
+    }
+    bool has_barrier(vertex_descriptor u) const {
+        return m_barriers.find(u) != m_barriers.end();
     }
 
 private:
@@ -182,9 +182,8 @@ private:
     grid m_grid;
     filtered_grid m_barrier_grid;
     vertex_set m_barriers;
-    vertex_set m_solution;
-    distance m_solution_length;
-    vertex_set m_way;
+    std::vector<vertex_descriptor> m_solution;
+    std::vector<vertex_descriptor> m_way;
     vertex_descriptor m_soure;
     vertex_descriptor m_goal;
 };
@@ -192,17 +191,15 @@ private:
 // Solve the maze using A-star search.  Return true if a solution was found.
 bool maze::solve()
 {
-    boost::static_property_map<distance> weight(0);
+    boost::static_property_map<distance_t> weight(1);
+
     // The predecessor map is a vertex-to-vertex mapping.
-    typedef boost::unordered_map<vertex_descriptor,
-            vertex_descriptor,
-            vertex_hash> pred_map;
+    typedef boost::unordered_map<vertex_descriptor, vertex_descriptor, vertex_hash> pred_map;
     pred_map predecessor;
     boost::associative_property_map<pred_map> pred_pmap(predecessor);
+
     // The distance map is a vertex-to-distance mapping.
-    typedef boost::unordered_map<vertex_descriptor,
-            distance,
-            vertex_hash> dist_map;
+    typedef boost::unordered_map<vertex_descriptor, distance_t, vertex_hash> dist_map;
     dist_map distance;
     boost::associative_property_map<dist_map> dist_pmap(distance);
 
@@ -211,25 +208,36 @@ bool maze::solve()
     euclidean_heuristic heuristic(g);
     astar_goal_visitor visitor(g, m_way);
 
-    try {
-        astar_search(m_barrier_grid, s, heuristic,
-                     boost::weight_map(weight).
-                     predecessor_map(pred_pmap).
-                     distance_map(dist_pmap).
-                     visitor(visitor)
-                     );
-    }
-    catch(found_goal fg) {
-        // Walk backwards from the goal through the predecessor chain adding
-        // vertices to the solution path.
-        for (vertex_descriptor u = g; u != s; u = predecessor[u]) {
-            m_solution.insert(u);
+    bool result = false;
+    const int iters = 10;
+
+    std::chrono::high_resolution_clock clock;
+    auto start = clock.now();
+
+    for(int i = 0; i < iters; i++) {
+        try {
+            boost::astar_search(m_barrier_grid, s, heuristic,
+                                boost::visitor(visitor).
+                                weight_map(weight).
+                                predecessor_map(pred_pmap).
+                                distance_map(dist_pmap)
+                                );
         }
-        m_solution.insert(s);
-        m_solution_length = distance[g];
-        return true;
+        catch(found_goal fg) {
+            // Walk backwards from the goal through the predecessor chain adding
+            // vertices to the solution path.
+            for (vertex_descriptor u = g; u != s; u = predecessor[u]) {
+                m_solution.push_back(u);
+            }
+            m_solution.push_back(s);
+            std::reverse(m_solution.begin(), m_solution.end());
+            result = true;
+        }
     }
-    return false;
+    auto end = clock.now();
+    std::cout << "solve. result: " << result << " process time: " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / iters << " us" << std::endl;
+
+    return result;
 }
 
 // Return a random integer in the interval [a, b].
