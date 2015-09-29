@@ -20,6 +20,7 @@
  *  THE SOFTWARE.
  */
 
+#include <cmath>
 #include <chrono>
 #include <fstream>
 #include <iostream>
@@ -88,8 +89,8 @@ public:
     euclidean_heuristic(const grid& graph, const vertex_descriptor& goal) : m_graph(graph), m_goal(goal) {}
 
     distance_t operator() (vertex_descriptor v) {
-        double x = std::abs((m_graph[m_goal].x - m_graph[v].x));
-        double y = std::abs((m_graph[m_goal].y - m_graph[v].y));
+        distance_t x = std::fabs(m_graph[m_goal].x - m_graph[v].x);
+        distance_t y = std::fabs(m_graph[m_goal].y - m_graph[v].y);
         return std::sqrt(std::pow(x, 2) + std::pow(y, 2));
     }
 
@@ -172,6 +173,11 @@ public:
         return x + y * m_width;
     }
 
+    const grid::vertex_bundled& get_vertex_property(vertex_descriptor vertex) const
+    {
+        return m_grid[vertex];
+    }
+
     bool search_path(const vertex_descriptor& source, const vertex_descriptor& goal, vertex_vector& solution)
     {
         const size_t solution_assessment_size = m_width + m_height;
@@ -247,13 +253,19 @@ private:
 
 int main()
 {
-    const size_t w = 50;
-    const size_t h = 50;
+    const size_t w = 5;
+    const size_t h = 5;
 
     grid_map map(w, h);
 
     vertex_descriptor source = map.calc_vertex_index(0, 0);
     vertex_descriptor goal = map.calc_vertex_index(w - 1, h - 1);
+
+    auto property_source = map.get_vertex_property(source);
+    std::cout << "search from: (" << property_source.x << ", " << property_source.y << ")";
+
+    auto property_goal = map.get_vertex_property(goal);
+    std::cout << " to: (" << property_goal.x << ", " << property_goal.y << ")" << std::endl;
 
     vertex_vector solution;
     map.search_path(source, goal, solution);

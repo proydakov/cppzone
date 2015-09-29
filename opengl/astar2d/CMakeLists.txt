@@ -16,10 +16,13 @@ FIND_PACKAGE(OpenGL)
 INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 
 SET(HEADER_FILES
-    maze.h)
+    maze.h
+)
 
 SET(SOURCE_FILES
-    main.cpp)
+    maze.cpp
+    main.cpp
+)
 
 I_ADD_EXECUTABLE(opengl_astar2d ${HEADER_FILES} ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(opengl_astar2d ${OPENGL_LIBRARIES})

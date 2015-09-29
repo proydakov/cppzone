@@ -93,8 +93,9 @@ void display()
         glColor3d(0.0, 0.5, 1);
         auto way = g_app.sp_maze->get_barriers();
         for(const auto& el : way) {
-            int x = el.elems[0];
-            int y = el.elems[1];
+            auto property = g_app.sp_maze->get_vertex_property(el);
+            int x = property.x;
+            int y = property.y;
 
             glLoadIdentity();
             glTranslated(size * x, size * y, 0);
@@ -115,8 +116,9 @@ void display()
         glColor3d(0.8, 0.75, 0.75);
         auto way = g_app.sp_maze->get_way();
         for(const auto& el : way) {
-            int x = el.elems[0];
-            int y = el.elems[1];
+            auto property = g_app.sp_maze->get_vertex_property(el);
+            int x = property.x;
+            int y = property.y;
 
             glLoadIdentity();
             glTranslated(size * x, size * y, 0);
@@ -137,8 +139,9 @@ void display()
         glColor3d(1, 0.5, 0);
         auto solution = g_app.sp_maze->get_solution();
         for(const auto& el : solution) {
-            int x = el.elems[0];
-            int y = el.elems[1];
+            auto property = g_app.sp_maze->get_vertex_property(el);
+            int x = property.x;
+            int y = property.y;
 
             glLoadIdentity();
             glTranslated(size * x, size * y, 0);
@@ -156,10 +159,11 @@ void display()
     
     // start
     {
-        vertex_descriptor s = g_app.sp_maze->source();
+        vertex_descriptor s = g_app.sp_maze->source_vertex();
 
-        int x = s[0];
-        int y = s[1];
+        auto property = g_app.sp_maze->get_vertex_property(s);
+        int x = property.x;
+        int y = property.y;
 
         glLoadIdentity();
         glTranslated(size * x, size * y, 0);
@@ -178,10 +182,11 @@ void display()
 
     // end
     {
-        vertex_descriptor g = g_app.sp_maze->goal();
+        vertex_descriptor g = g_app.sp_maze->goal_vertex();
 
-        int x = g[0];
-        int y = g[1];
+        auto property = g_app.sp_maze->get_vertex_property(g);
+        int x = property.x;
+        int y = property.y;
 
         glLoadIdentity();
         glTranslated(size * x, size * y, 0);
