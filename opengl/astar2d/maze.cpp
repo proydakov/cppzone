@@ -81,8 +81,8 @@ private:
 maze::maze(std::size_t width, std::size_t height) :
     m_width(width),
     m_height(height),
-    m_barrier_grid(create_barrier_grid()),
-    m_barriers(width * height, vertex_hash(m_grid))
+    m_barriers(width * height, vertex_hash(m_grid)),
+    m_barrier_grid(create_barrier_grid())
 {
     const size_t size = width * height;
     m_name.resize(size);

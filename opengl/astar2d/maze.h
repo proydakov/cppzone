@@ -141,8 +141,8 @@ private:
 
     grid            m_grid;
     name_vector     m_name;
-    filtered_grid   m_barrier_grid;
     vertex_set      m_barriers;
+    filtered_grid   m_barrier_grid;
 
     vertex_vector m_solution;
     vertex_vector m_way;
