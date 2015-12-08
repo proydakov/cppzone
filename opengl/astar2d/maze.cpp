@@ -250,7 +250,9 @@ bool maze::solve()
     astar_goal_visitor<filtered_grid>      visitor  (goal);
 
     bool result = false;
-    const int iters = 10;
+    const int iters = 1;
+
+	std::cout << "astar search... ";
 
     std::chrono::high_resolution_clock clock;
     auto start = clock.now();
