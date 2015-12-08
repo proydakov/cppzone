@@ -20,6 +20,7 @@
  *  THE SOFTWARE.
  */
 
+#include <ctime>
 #include <iostream>
 
 #include <boost/random.hpp>

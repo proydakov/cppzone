@@ -31,28 +31,60 @@ struct found_goal {};
 
 ///////////////////////////////////////////////////////////////////////////////
 
+distance_t euclidean_distance(distance_t dx, distance_t dy)
+{
+	return std::sqrt(dx * dx + dy * dy);
+}
+
+distance_t euclidean_squared_distance(distance_t dx, distance_t dy)
+{
+	return dx * dx + dy * dy;
+}
+
+distance_t manhattan_distance(distance_t dx, distance_t dy)
+{
+	return dx + dy;
+}
+
+distance_t diagonal_distance(distance_t dx, distance_t dy)
+{
+	return dx + dy + (14 - 20) / 10.0 * std::min(dx, dy);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 //
-// Euclidean heuristic for a grid
+// Heuristic for a grid
 //
 // This calculates the Euclidean distance between a vertex and a goal
 // vertex.
 //
-template<class graph_t>
+template<class graph_t, class heuristic_impl>
 class euclidean_heuristic : public boost::astar_heuristic<graph_t, distance_t>
 {
 public:
-    euclidean_heuristic(const graph_t& graph, const vertex_descriptor& goal) : m_graph(graph), m_goal(goal) {}
+    euclidean_heuristic(const graph_t& graph, const heuristic_impl& impl, vertex_vector& tested, const vertex_descriptor& goal) :
+		m_graph(graph),
+		m_impl(impl),
+		m_tested(tested),
+		m_goal(goal)
+	{
+	}
 
     distance_t operator() (vertex_descriptor v) {
-        distance_t x = std::abs(m_graph[m_goal].x - m_graph[v].x) * 10;
-        distance_t y = std::abs(m_graph[m_goal].y - m_graph[v].y) * 10;
+		m_tested.push_back(v);
 
-        distance_t result = std::sqrt(x * x + y * y);
+        distance_t dx = std::abs(m_graph[m_goal].x - m_graph[v].x) * 10;
+        distance_t dy = std::abs(m_graph[m_goal].y - m_graph[v].y) * 10;
+
+		distance_t result = m_impl(dx, dy);
         return result;
     }
 
 private:
     const graph_t& m_graph;
+	const heuristic_impl m_impl;
+	vertex_vector& m_tested;
     vertex_descriptor m_goal;
 };
 
@@ -62,23 +94,25 @@ private:
 template<class graph_t>
 struct astar_goal_visitor : public boost::default_astar_visitor
 {
-    astar_goal_visitor(const vertex_descriptor& goal, vertex_vector& way) : m_goal(goal), m_way(way) {}
+    astar_goal_visitor(const vertex_descriptor& goal) :
+		m_goal(goal)
+	{
+	}
 
     void examine_vertex(const vertex_descriptor& u, const graph_t& graph) {
         if (u == m_goal) {
             throw found_goal();
         }
-        m_way.push_back(u);
     }
 
 private:
     vertex_descriptor m_goal;
-    vertex_vector& m_way;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
 maze::maze(std::size_t width, std::size_t height) :
+	m_heuristic_type(heuristic_type::euclidean),
     m_width(width),
     m_height(height),
     m_barriers(width * height, vertex_hash(m_grid)),
@@ -127,6 +161,39 @@ maze::maze(std::size_t width, std::size_t height) :
             m_name[index] = sstream.str();
         }
     }
+
+	set_heuristic(m_heuristic_type);
+}
+
+void maze::set_heuristic(heuristic_type h)
+{
+	heuristic_t heuristic;
+
+	switch (h) {
+	case heuristic_type::euclidean:
+		heuristic = heuristic_t(std::bind(&euclidean_distance, std::placeholders::_1, std::placeholders::_2));
+		break;
+
+	case heuristic_type::euclidean_squared:
+		heuristic = heuristic_t(std::bind(&euclidean_squared_distance, std::placeholders::_1, std::placeholders::_2));
+		break;
+
+	case heuristic_type::manhattan:
+		heuristic = heuristic_t(std::bind(&manhattan_distance, std::placeholders::_1, std::placeholders::_2));
+		break;
+
+	case heuristic_type::diagonal:
+		heuristic = heuristic_t(std::bind(&diagonal_distance, std::placeholders::_1, std::placeholders::_2));
+		break;
+
+	default:
+		assert(false);
+		break;
+	}
+	if (heuristic) {
+		m_heuristic = heuristic;
+		m_heuristic_type = h;
+	}
 }
 
 vertices_size_type maze::length(std::size_t d) const
@@ -179,8 +246,8 @@ bool maze::solve()
     dist_map distance(solution_assessment_size, hash);
     boost::associative_property_map<dist_map> dist_pmap(distance);
 
-    euclidean_heuristic<grid>          heuristic(m_grid, goal);
-    astar_goal_visitor<filtered_grid>  visitor  (goal, m_way);
+    euclidean_heuristic<grid, heuristic_t> heuristic(m_grid, m_heuristic, m_tested, goal);
+    astar_goal_visitor<filtered_grid>      visitor  (goal);
 
     bool result = false;
     const int iters = 10;
@@ -189,7 +256,7 @@ bool maze::solve()
     auto start = clock.now();
 
     for(int i = 0; i < iters; i++) {
-        m_way.clear();
+		m_tested.clear();
         solution.clear();
         predecessor.clear();
         distance.clear();
@@ -214,9 +281,11 @@ bool maze::solve()
     auto end = clock.now();
     
     distance_t dist = distance[goal];
-    std::cout << "solve. result: " << result << " size: " << dist << " process time: "
-    << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / iters << " us"
-    << std::endl;
+    std::cout << "solve. result: " << result << " size: " << dist 
+		<< " heuristic: " << heuristic_type_2_string(m_heuristic_type)
+		<< " process time: "
+		<< std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / iters << " us"
+		<< std::endl;
 
     dump_to_dot();
 
@@ -228,9 +297,9 @@ bool maze::solved() const
     return !m_solution.empty();
 }
 
-const vertex_vector& maze::get_way() const
+const vertex_vector& maze::get_heuristic_tested() const
 {
-    return m_way;
+    return m_tested;
 }
 
 const vertex_vector& maze::get_solution() const
@@ -299,6 +368,33 @@ filtered_grid maze::create_barrier_grid()
 size_t maze::calc_vertex_index(size_t x, size_t y)
 {
     return x + y * m_width;
+}
+
+std::string maze::heuristic_type_2_string(heuristic_type h) const
+{
+	std::string text;
+	switch (h) {
+	case heuristic_type::euclidean:
+		text = "euclidean_distance";
+		break;
+
+	case heuristic_type::euclidean_squared:
+		text = "euclidean_squared_distance";
+		break;
+
+	case heuristic_type::manhattan:
+		text = "manhattan_distance";
+		break;
+
+	case heuristic_type::diagonal:
+		text = "diagonal_distance";
+		break;
+
+	default:
+		assert(false);
+		break;
+	}
+	return text;
 }
 
 // Return a random integer in the interval [a, b].

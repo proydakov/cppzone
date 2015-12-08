@@ -18,12 +18,12 @@ IF (WIN32)
 
         FIND_LIBRARY( GLUT_glutr_LIBRARY NAMES glut glut32 freeglut_static
             PATHS
-            ${GLUT_ROOT_PATH}/lib/Release
+            ${GLUT_ROOT_PATH}/lib
             )
 
         FIND_LIBRARY( GLUT_glutd_LIBRARY NAMES glut glut32 freeglut_static
             PATHS
-            ${GLUT_ROOT_PATH}/lib/Debug
+            ${GLUT_ROOT_PATH}/lib
             )
 
         SET(GLUT_FOUND TRUE)
@@ -36,6 +36,5 @@ IF (WIN32)
         ENDIF()
 
         SET(GLUT_LIBRARIES "debug" ${GLUT_glutd_LIBRARY} "optimized" ${GLUT_glutr_LIBRARY})
-        ADD_DEFINITIONS(-DFREEGLUT_STATIC)
     ENDIF()
-ENDIF ()
+ENDIF()

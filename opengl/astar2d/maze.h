@@ -22,6 +22,7 @@
 
 #include <chrono>
 #include <iostream>
+#include <functional>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/unordered_map.hpp>
@@ -101,11 +102,18 @@ private:
 class maze
 {
 public:
-    enum maze_type {
+    enum class maze_type {
         fixed,
         empty,
         random
     };
+
+	enum class heuristic_type {
+		euclidean,
+		euclidean_squared,
+		manhattan,
+		diagonal
+	};
 
 public:
     friend boost::shared_ptr<maze> random_maze(std::size_t x, std::size_t y);
@@ -114,38 +122,47 @@ public:
 
     maze(std::size_t width, std::size_t height);
 
-    vertices_size_type length(std::size_t direction) const;
+	void set_heuristic(heuristic_type h);
+
+	bool solve();
+	bool solved() const;
+
+	bool has_barrier(vertex_descriptor u) const;
+
     vertex_descriptor source_vertex() const;
     vertex_descriptor goal_vertex() const;
-    bool solve();
-    bool solved() const;
-    const vertex_vector& get_way() const;
+
+    const vertex_vector& get_heuristic_tested() const;
     const vertex_vector& get_solution() const;
     const vertex_set& get_barriers() const;
 
     const grid::vertex_bundled& get_vertex_property(vertex_descriptor vertex) const;
 
-    bool has_barrier(vertex_descriptor u) const;
+	vertices_size_type length(std::size_t direction) const;
     vertex_descriptor next(vertex_descriptor u, std::size_t direction);
 
     void dump_to_dot();
 
 private:
     filtered_grid create_barrier_grid();
-
     size_t calc_vertex_index(size_t x, size_t y);
+	std::string heuristic_type_2_string(heuristic_type h) const;
 
 private:
+	typedef std::function<distance_t(distance_t, distance_t)> heuristic_t;
+
     size_t m_width;
     size_t m_height;
 
     grid            m_grid;
+	heuristic_type  m_heuristic_type;
+	heuristic_t     m_heuristic;
     name_vector     m_name;
     vertex_set      m_barriers;
     filtered_grid   m_barrier_grid;
 
     vertex_vector m_solution;
-    vertex_vector m_way;
+	vertex_vector m_tested;
     vertex_descriptor m_soure;
     vertex_descriptor m_goal;
 };

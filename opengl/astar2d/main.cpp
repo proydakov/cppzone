@@ -55,17 +55,24 @@ void info()
 
 void new_maze()
 {
+	std::cout << "-------------------------------------------------------------------------------" << std::endl;
     g_app.sp_maze.reset();
-    if(g_app.type == maze::fixed) {
+    if(g_app.type == maze::maze_type::fixed) {
         g_app.sp_maze = fixed();
     }
-    else if(g_app.type == maze::empty) {
+    else if(g_app.type == maze::maze_type::empty) {
         g_app.sp_maze = empty_maze(g_app.maze_width, g_app.maze_height);
     }
-    else if(g_app.type == maze::random) {
+    else if(g_app.type == maze::maze_type::random) {
         g_app.sp_maze = random_maze(g_app.maze_width, g_app.maze_height);
     }
     g_app.sp_maze->solve();
+}
+
+void set_heuristic(maze::heuristic_type h)
+{
+	g_app.sp_maze->set_heuristic(h);
+	g_app.sp_maze->solve();
 }
 
 void animate()
@@ -114,8 +121,8 @@ void display()
     // way
     {
         glColor3d(0.8, 0.75, 0.75);
-        auto way = g_app.sp_maze->get_way();
-        for(const auto& el : way) {
+        auto vector = g_app.sp_maze->get_heuristic_tested();
+        for(const auto& el : vector) {
             auto property = g_app.sp_maze->get_vertex_property(el);
             int x = property.x;
             int y = property.y;
@@ -248,17 +255,17 @@ void keyboard(unsigned char key, int x, int y)
         break;
 
     case '1':
-        g_app.type = maze::fixed;
+        g_app.type = maze::maze_type::fixed;
         new_maze();
         break;
 
     case '2':
-        g_app.type = maze::empty;
+        g_app.type = maze::maze_type::empty;
         new_maze();
         break;
 
     case '3':
-        g_app.type = maze::random;
+        g_app.type = maze::maze_type::random;
         new_maze();
         break;
 
@@ -267,10 +274,30 @@ void keyboard(unsigned char key, int x, int y)
         new_maze();
         break;
 
-    case 'A':
-    case 'a':
-        animate();
-        break;
+	case 'E':
+	case 'e':
+		set_heuristic(maze::heuristic_type::euclidean);
+		break;
+
+	case 'S':
+	case 's':
+		set_heuristic(maze::heuristic_type::euclidean_squared);
+		break;
+
+	case 'M':
+	case 'm':
+		set_heuristic(maze::heuristic_type::manhattan);
+		break;
+
+	case 'D':
+	case 'd':
+		set_heuristic(maze::heuristic_type::diagonal);
+		break;
+
+//    case 'A':
+//    case 'a':
+//        animate();
+//        break;
 
     default:
         break;
@@ -309,7 +336,7 @@ int main(int argc, char** argv)
     g_app.maze_width = x;
     g_app.maze_height = y;
     g_app.animate = false;
-    g_app.type = maze::fixed;
+    g_app.type = maze::maze_type::fixed;
 
     random_generator.seed(std::time(0));
 
