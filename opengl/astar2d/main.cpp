@@ -55,7 +55,7 @@ void info()
 
 void new_maze()
 {
-	std::cout << "-------------------------------------------------------------------------------" << std::endl;
+    std::cout << "-------------------------------------------------------------------------------" << std::endl;
     g_app.sp_maze.reset();
     if(g_app.type == maze::maze_type::fixed) {
         g_app.sp_maze = fixed();
@@ -71,8 +71,8 @@ void new_maze()
 
 void set_heuristic(maze::heuristic_type h)
 {
-	g_app.sp_maze->set_heuristic(h);
-	g_app.sp_maze->solve();
+    g_app.sp_maze->set_heuristic(h);
+    g_app.sp_maze->solve();
 }
 
 void animate()
@@ -274,25 +274,25 @@ void keyboard(unsigned char key, int x, int y)
         new_maze();
         break;
 
-	case 'E':
-	case 'e':
-		set_heuristic(maze::heuristic_type::euclidean);
-		break;
+    case 'E':
+    case 'e':
+        set_heuristic(maze::heuristic_type::euclidean);
+        break;
 
-	case 'S':
-	case 's':
-		set_heuristic(maze::heuristic_type::euclidean_squared);
-		break;
+    case 'S':
+    case 's':
+        set_heuristic(maze::heuristic_type::euclidean_squared);
+        break;
 
-	case 'M':
-	case 'm':
-		set_heuristic(maze::heuristic_type::manhattan);
-		break;
+    case 'M':
+    case 'm':
+        set_heuristic(maze::heuristic_type::manhattan);
+        break;
 
-	case 'D':
-	case 'd':
-		set_heuristic(maze::heuristic_type::diagonal);
-		break;
+    case 'D':
+    case 'd':
+        set_heuristic(maze::heuristic_type::diagonal);
+        break;
 
 //    case 'A':
 //    case 'a':
@@ -321,7 +321,7 @@ int main(int argc, char** argv)
 {
     info();
 
-    std::size_t size = 50;
+    std::size_t size = 1000;
 
     std::size_t x = size;
     std::size_t y = size;
