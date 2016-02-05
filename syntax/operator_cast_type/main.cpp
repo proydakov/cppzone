@@ -42,10 +42,11 @@ private:
 int main()
 {
     extended_value<int> value(22);
-
     int result = 30 + value;
-
     std::cout << "result: " << result << std::endl;
+
+    int raw = value;
+    std::cout << "raw: " << raw << std::endl;
 
     return 0;
 }
