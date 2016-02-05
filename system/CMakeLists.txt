@@ -10,5 +10,6 @@ SET(PROJECT_FOLDER "system")
 
 ADD_SUBDIRECTORY(memory_leak)
 ADD_SUBDIRECTORY(stack_size)
+ADD_SUBDIRECTORY(stack_size_recursion)
 
 MESSAGE("")
