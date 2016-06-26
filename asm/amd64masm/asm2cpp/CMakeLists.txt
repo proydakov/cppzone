@@ -4,13 +4,11 @@
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-ENABLE_LANGUAGE(ASM)
+ENABLE_LANGUAGE(ASM_MASM)
 
 SET(SOURCE_FILES
     main.cpp
     impl.asm
     )
-
-set_source_files_properties(impl.asm PROPERTIES COMPILE_FLAGS "-x assembler-with-cpp")
 
 I_ADD_EXECUTABLE(asm_amd64masm_asm_2_cpp ${SOURCE_FILES})
