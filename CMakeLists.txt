@@ -76,7 +76,7 @@ SET(FILES
 
 ADD_SUBDIRECTORY(algorithms)
 
-FIND_PACKAGE(Boost COMPONENTS thread system date_time regex chrono coroutine)
+FIND_PACKAGE(Boost COMPONENTS thread system date_time regex chrono coroutine context)
 IF(Boost_FOUND)
     ADD_SUBDIRECTORY(boost)
 ENDIF()

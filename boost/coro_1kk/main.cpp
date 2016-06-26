@@ -3,8 +3,8 @@
 #include <iostream>
 #include <boost/coroutine/asymmetric_coroutine.hpp>
 
-using coroutine_t = typename boost::coroutines::asymmetric_coroutine<std::size_t>::pull_type;
-using yield_t     = typename boost::coroutines::asymmetric_coroutine<std::size_t>::push_type;
+using coroutine_t = boost::coroutines::asymmetric_coroutine<std::size_t>::pull_type;
+using yield_t     = boost::coroutines::asymmetric_coroutine<std::size_t>::push_type;
 
 void functor(yield_t& yield)
 {

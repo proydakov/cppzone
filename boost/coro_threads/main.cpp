@@ -1,3 +1,4 @@
+#include <mutex>
 #include <thread>
 #include <vector>
 #include <iostream>
@@ -5,8 +6,8 @@
 #include <unordered_map>
 #include <boost/coroutine/asymmetric_coroutine.hpp>
 
-using coroutine_t = typename boost::coroutines::asymmetric_coroutine<std::size_t>::pull_type;
-using yield_t     = typename boost::coroutines::asymmetric_coroutine<std::size_t>::push_type;
+using coroutine_t = boost::coroutines::asymmetric_coroutine<std::size_t>::pull_type;
+using yield_t     = boost::coroutines::asymmetric_coroutine<std::size_t>::push_type;
 
 std::mutex safe_log_mutex;
 std::unordered_map<std::thread::id, size_t> thread_ids;
@@ -38,6 +39,7 @@ void worker(std::mutex& mutex, coroutine_t& coroutine)
             }
             thread_step(coroutine);
         }
+        std::this_thread::sleep_for(std::chrono::microseconds(10));
     }
     thread_safe_log("thread finished");
 }
