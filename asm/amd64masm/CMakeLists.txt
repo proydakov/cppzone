@@ -1,1 +1,2 @@
 add_subdirectory(asm2cpp)
+add_subdirectory(logic)
