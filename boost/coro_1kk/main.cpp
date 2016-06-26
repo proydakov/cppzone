@@ -13,12 +13,17 @@ void functor(yield_t& yield)
     }
 }
 
-int main()
+int main(int argc, char* argv[])
 {
+    int coroutine_count = 1000000;
+    if (argc == 2) {
+        coroutine_count = atoi(argv[1]);
+    }
+
     std::chrono::high_resolution_clock clock;
     auto start = clock.now();
     std::vector<coroutine_t> coroutines;
-    for(size_t i = 0; i < 1000000; i++) {
+    for(size_t i = 0; i < coroutine_count; i++) {
         coroutine_t coroutine(functor);
         coroutines.push_back(std::move(coroutine));
     }
