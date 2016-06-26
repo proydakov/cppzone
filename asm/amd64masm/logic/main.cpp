@@ -13,7 +13,7 @@ void test(T func, const std::string& desc)
 
     for (size_t i = 0; i < vec.size(); i++) {
         for (size_t j = 0; j < vec.size(); j++) {
-            std::cout << "test func: " << desc << " for: " << vec[i] << " " << vec[j] << " res: " << func(vec[i], vec[j]) << std::endl;
+            std::cout << desc << " : " << vec[i] << " " << vec[j] << " : " << func(vec[i], vec[j]) << std::endl;
         }
     }
     std::cout << "" << std::endl;
