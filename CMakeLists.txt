@@ -74,6 +74,10 @@ SET(FILES
     ${I_PLUS_PLUS_DIRECTORY}/COPYING
     )
 
+IF(MSVC)
+    ADD_SUBDIRECTORY(asm)
+ENDIF()
+
 ADD_SUBDIRECTORY(algorithms)
 
 FIND_PACKAGE(Boost COMPONENTS thread system date_time regex chrono coroutine context)
