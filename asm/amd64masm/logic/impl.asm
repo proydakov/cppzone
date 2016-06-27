@@ -8,7 +8,7 @@ LogicAND endp
 
 LogicOR proc
 	mov eax, ecx
-	or eax, edx
+	or  eax, edx
 	ret
 LogicOR endp
 
