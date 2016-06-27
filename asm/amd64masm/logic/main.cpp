@@ -16,7 +16,7 @@ void test(T func, const std::string& desc)
             std::cout << desc << " : " << vec[i] << " " << vec[j] << " : " << func(vec[i], vec[j]) << std::endl;
         }
     }
-    std::cout << "" << std::endl;
+    std::cout << std::endl;
 }
 
 int main()
