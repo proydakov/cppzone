@@ -20,25 +20,100 @@
 *  THE SOFTWARE.
 */
 
+#include <string>
 #include <iostream>
 #include <hash_map.h>
 #include <unordered_map>
 
 template<class hash_table>
-void info(const hash_table& table)
+void info()
 {
+    hash_table table;
+
+    table[0] = 1;
+    table[0]++;
+
+    table[8] = 9;
+    table[8]--;
+
     std::cout << "max_bucket_count: " << table.bucket_count() << std::endl;
     std::cout << "size: " << table.size() << std::endl;
     std::cout << "load_factor: " << table.load_factor() << std::endl;
 }
 
+template<class hash_table>
+void test_operator_access()
+{
+    hash_table word_map;
+
+    std::vector<std::string> words = {
+        "this", "sentence", "is", "not", "a", "sentence",
+        "this", "sentence", "is", "a", "hoax"
+    };
+
+    for (auto w : words) {
+        ++word_map[w];
+    }
+
+    int i = 0;
+    /*
+    for (auto elem : word_map) {
+        std::cout << elem.second
+        << " occurrences of word '"
+        << elem.first << "'\n";
+    }
+     */
+}
+
+template<class hash_table>
+void test_iterator()
+{
+    hash_table mymap{ { "Australia","Canberra" },{ "U.S.","Washington" },{ "France","Paris" } };
+
+    /*
+    std::cout << "mymap contains:";
+    for (auto it = mymap.begin(); it != mymap.end(); ++it)
+        std::cout << " " << it->first << ":" << it->second;
+    std::cout << std::endl;
+    */
+    std::cout << "mymap's buckets contain:\n";
+    for (unsigned i = 0; i < mymap.bucket_count(); ++i) {
+        std::cout << "bucket #" << i << " contains:";
+        for (auto local_it = mymap.begin(i); local_it != mymap.end(i); ++local_it)
+            std::cout << " " << local_it->first << ":" << local_it->second;
+        std::cout << std::endl;
+    }
+}
+
 int main()
 {
-    std::unordered_map<int, int> table_std(10);
-    hash_map<int, int> table(10);
+    {
+        std::cout << "/// STD ///" << std::endl;
+        info< std::unordered_map<int, int> >();
 
-    info(table_std);
-    info(table);
+        std::cout << "/// ITD ///" << std::endl;
+        info< hash_map<int, int> >();
+    }
+
+    std::cout << "///////////////////////////////////////////////////////////////////////////////" << std::endl;
+
+    {
+        std::cout << "/// STD ///" << std::endl;
+        test_operator_access< std::unordered_map<std::string, size_t> >();
+
+        std::cout << "/// ITD ///" << std::endl;
+        test_operator_access< hash_map<std::string, size_t> >();
+    }
+
+    std::cout << "///////////////////////////////////////////////////////////////////////////////" << std::endl;
+
+    {
+        std::cout << "/// STD ///" << std::endl;
+        test_iterator< std::unordered_map<std::string, std::string> >();
+
+        std::cout << "/// ITD ///" << std::endl;
+        test_iterator< hash_map<std::string, std::string> >();
+    }
 
     return 0;
 };
