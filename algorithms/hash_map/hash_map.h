@@ -95,12 +95,13 @@ template<class key, class value, class hash, class equal>
 hash_map<key, value, hash, equal>::hash_map(std::initializer_list<std::pair<const key, const value>> l, size_type n, const hasher& hf, const key_equal& eql) :
     m_data(std::max(get_next_pow_2(std::max(l.size(), n)), size_t(min_buckets_count))),
     m_max_load_factor(1.0f),
-    m_size(0)
+    m_size(0),
+    m_hf(hf),
+    m_eql(eql)
 {
     for (auto it = l.begin(); it != l.end(); ++it) {
         insert((*it));
     }
-    int i = 0;
 }
 
 template<class key, class value, class hash, class equal>
