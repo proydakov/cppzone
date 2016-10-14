@@ -1,5 +1,5 @@
 #==============================================================================
-# Copyright (c) 2011-2014 Evgeny Proydakov <lord.tiran@gmail.com>
+# Copyright (c) 2011-2016 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0)
@@ -117,7 +117,6 @@ ENDIF()
 FIND_PACKAGE(GLUT)
 FIND_PACKAGE(OpenGL)
 IF(GLUT_FOUND AND OPENGL_FOUND)
-    ADD_SUBDIRECTORY(glut)
     ADD_SUBDIRECTORY(opengl)
 ENDIF()
 
