@@ -1,0 +1,51 @@
+git:
+    submodules: false
+
+# Enable C++ support
+language: cpp
+
+# Compiler selection
+sudo: required
+dist: trusty
+
+matrix:
+  include:
+    - env: BUILD_TYPE=Debug
+      os: linux
+      compiler: clang
+
+    - env: BUILD_TYPE=Release
+      os: linux
+      compiler: clang
+
+    - env: BUILD_TYPE=Debug
+      os: linux
+      compiler: gcc
+
+    - env: BUILD_TYPE=Release
+      os: linux
+      compiler: gcc
+
+    - env: BUILD_TYPE=Debug
+      os: osx
+      osx_image: xcode8
+      compiler: clang
+
+    - env: BUILD_TYPE=Release
+      os: osx
+      osx_image: xcode8
+      compiler: clang
+
+install:
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      sudo apt-get update -qq
+      sudo bash ./scripts/ubuntu_deps.sh
+    fi
+
+script:
+  - $CXX --version
+  - mkdir build
+  - cd build
+  - cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ..
+  - make

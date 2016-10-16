@@ -55,7 +55,6 @@ void test_operator_access()
         ++word_map[w];
     }
 
-    int i = 0;
     /*
     for (auto elem : word_map) {
         std::cout << elem.second

@@ -42,6 +42,12 @@ ENDIF()
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
+IF( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+    SET( SEARCH_PATH "x64" )
+ELSE( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+    SET( SEARCH_PATH "x86" )
+ENDIF( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 IF(WIN32)
     SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/windows)
@@ -66,16 +72,14 @@ ENDIF()
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
 SET(PROJECT_FOLDER "null")
-
 SET(I_PLUS_PLUS_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 SET(FILES
-    ${I_PLUS_PLUS_DIRECTORY}/README
+    ${I_PLUS_PLUS_DIRECTORY}/README.md
     ${I_PLUS_PLUS_DIRECTORY}/COPYING
     )
 
 ADD_SUBDIRECTORY(asm)
-
 ADD_SUBDIRECTORY(algorithms)
 
 FIND_PACKAGE(Boost COMPONENTS thread system date_time regex chrono coroutine context)
@@ -125,15 +129,6 @@ IF(LUA51_FOUND)
     ADD_SUBDIRECTORY(lua)
 ENDIF()
 
-SET(BUILD_OpenCV FALSE)
-
-IF(BUILD_OpenCV)
-    FIND_PACKAGE(OpenCV)
-    IF(OpenCV_FOUND)
-        ADD_SUBDIRECTORY(opencv)
-    ENDIF()
-ENDIF()
-
 #==============================================================================
 #---------------------------------- info --------------------------------------
 #==============================================================================
@@ -148,3 +143,22 @@ MESSAGE(STATUS ${BUILD_INFO_BAR})
 MESSAGE(STATUS "Build type : ${CMAKE_BUILD_TYPE}")
 MESSAGE(STATUS ${BUILD_INFO_BAR})
 MESSAGE(STATUS ${NOOP_STRING})
+
+#==============================================================================
+
+IF(WIN32)
+
+SET(SDL2_BINARIES ${PROJECT_SOURCE_DIR}/thirdparty/windows/SDL2/lib/${SEARCH_PATH}/SDL2.dll)
+SET(GLUT_BINARIES ${PROJECT_SOURCE_DIR}/thirdparty/windows/freeglut/bin/${SEARCH_PATH}/freeglut.dll)
+SET(LUA_BINARIES ${PROJECT_SOURCE_DIR}/thirdparty/windows/Lua5.1/lib/${SEARCH_PATH}/lua5.1.dll)
+
+SET(DLL_FILES
+	${SDL2_BINARIES}
+	${GLUT_BINARIES}
+	${LUA_BINARIES}
+)
+
+FILE(COPY ${DLL_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug)
+FILE(COPY ${DLL_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release)
+
+ENDIF()

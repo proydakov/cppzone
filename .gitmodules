@@ -1,0 +1,3 @@
+[submodule "thirdparty"]
+	path = thirdparty
+	url = git@github.com:proydakov/cppzone-thirdparty.git

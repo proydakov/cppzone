@@ -20,8 +20,9 @@
  *  THE SOFTWARE.
  */
 
+#include <chrono>
+#include <thread>
 #include <iostream>
-#include <boost/thread.hpp>
 
 #include <sound.h>
 
@@ -41,7 +42,7 @@ int main(int argc, char** argv)
     }
     isound.play();
     
-    boost::this_thread::sleep(boost::posix_time::seconds(97));
+    std::this_thread::sleep_for (std::chrono::seconds(100));
     
     return 0;
 }

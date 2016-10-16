@@ -22,7 +22,7 @@
 # and no SDL2_LIBRARY, it means CMake did not find your SDL2 library
 # (SDL2.dll, libsdl2.so, SDL2.framework, etc).
 # Set SDL2_LIBRARY_TEMP to point to your SDL2 library, and configure again.
-# Similarly, if you see an empty SDL2MAIN_LIBRARY, you should set this value
+# Similarly, if you see an empty SDL2_MAIN_LIBRARY, you should set this value
 # as appropriate. These values are used to generate the final SDL2_LIBRARY
 # variable, but when these values are unset, SDL2_LIBRARY does not get created.
 #
@@ -84,12 +84,11 @@ FIND_PATH(SDL2_INCLUDE_DIR SDL.h
   /opt/csw # Blastwave
   /opt
 )
-#MESSAGE("SDL2_INCLUDE_DIR is ${SDL2_INCLUDE_DIR}")
 
 FIND_LIBRARY(SDL2_LIBRARY_TEMP
   NAMES SDL2
   HINTS
-  $ENV{SDL2DIR}
+  $ENV{SDL2DIR}/lib/${SEARCH_PATH}
   PATH_SUFFIXES lib64 lib
   PATHS
   /sw
@@ -98,18 +97,16 @@ FIND_LIBRARY(SDL2_LIBRARY_TEMP
   /opt
 )
 
-#MESSAGE("SDL2_LIBRARY_TEMP is ${SDL2_LIBRARY_TEMP}")
-
 IF(NOT SDL2_BUILDING_LIBRARY)
   IF(NOT ${SDL2_INCLUDE_DIR} MATCHES ".framework")
     # Non-OS X framework versions expect you to also dynamically link to
     # SDL2main. This is mainly for Windows and OS X. Other (Unix) platforms
     # seem to provide SDL2main for compatibility even though they don't
     # necessarily need it.
-    FIND_LIBRARY(SDL2MAIN_LIBRARY
+    FIND_LIBRARY(SDL2_MAIN_LIBRARY
       NAMES SDL2main
       HINTS
-      $ENV{SDL2DIR}
+	  $ENV{SDL2DIR}/lib/${SEARCH_PATH}
       PATH_SUFFIXES lib64 lib
       PATHS
       /sw
@@ -139,9 +136,9 @@ SET(SDL2_FOUND "NO")
 IF(SDL2_LIBRARY_TEMP)
   # For SDL2main
   IF(NOT SDL2_BUILDING_LIBRARY)
-    IF(SDL2MAIN_LIBRARY)
-      SET(SDL2_LIBRARY_TEMP ${SDL2MAIN_LIBRARY} ${SDL2_LIBRARY_TEMP})
-    ENDIF(SDL2MAIN_LIBRARY)
+    IF(SDL2_MAIN_LIBRARY)
+      SET(SDL2_LIBRARY_TEMP ${SDL2_MAIN_LIBRARY} ${SDL2_LIBRARY_TEMP})
+    ENDIF(SDL2_MAIN_LIBRARY)
   ENDIF(NOT SDL2_BUILDING_LIBRARY)
 
   # For OS X, SDL2 uses Cocoa as a backend so it must link to Cocoa.
@@ -176,5 +173,4 @@ ENDIF(SDL2_LIBRARY_TEMP)
 
 INCLUDE(FindPackageHandleStandardArgs)
 
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2
-                                  REQUIRED_VARS SDL2_LIBRARY SDL2_INCLUDE_DIR)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2 REQUIRED_VARS SDL2_LIBRARY SDL2_INCLUDE_DIR)

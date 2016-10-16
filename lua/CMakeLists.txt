@@ -45,6 +45,8 @@ SET(MAIN_FILES
     )
 
 I_ADD_EXECUTABLE(lua_example ${MAIN_FILES} ${CONFIG_FILES} ${LUA_FILES})
+add_dependencies(lua_example capabilities)
 TARGET_LINK_LIBRARIES(lua_example ${LUA_LIBRARIES})
+TARGET_LINK_LIBRARIES(lua_example capabilities)
 
 MESSAGE("")
