@@ -75,6 +75,7 @@ FIND_PATH(SDL2_INCLUDE_DIR SDL.h
   $ENV{SDL2DIR}
   PATH_SUFFIXES include/SDL2 include
   PATHS
+  ${PROJECT_SOURCE_DIR}/thirdparty/windows/SDL2/include
   ~/Library/Frameworks
   /Library/Frameworks
   /usr/local/include/SDL2
@@ -88,9 +89,10 @@ FIND_PATH(SDL2_INCLUDE_DIR SDL.h
 FIND_LIBRARY(SDL2_LIBRARY_TEMP
   NAMES SDL2
   HINTS
-  $ENV{SDL2DIR}/lib/${SEARCH_PATH}
+  $ENV{SDL2DIR}
   PATH_SUFFIXES lib64 lib
   PATHS
+  ${PROJECT_SOURCE_DIR}/thirdparty/windows/SDL2/lib/${SEARCH_PATH}
   /sw
   /opt/local
   /opt/csw
@@ -106,9 +108,10 @@ IF(NOT SDL2_BUILDING_LIBRARY)
     FIND_LIBRARY(SDL2_MAIN_LIBRARY
       NAMES SDL2main
       HINTS
-	  $ENV{SDL2DIR}/lib/${SEARCH_PATH}
+      $ENV{SDL2DIR}
       PATH_SUFFIXES lib64 lib
       PATHS
+	  ${PROJECT_SOURCE_DIR}/thirdparty/windows/SDL2/lib/${SEARCH_PATH}
       /sw
       /opt/local
       /opt/csw
