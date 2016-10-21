@@ -8,4 +8,4 @@ SET(SOURCE_FILES
     main.cpp
     )
 
-I_ADD_EXECUTABLE(system_cache ${SOURCE_FILES})
+I_ADD_EXECUTABLE(system_cpu_cache ${SOURCE_FILES})
