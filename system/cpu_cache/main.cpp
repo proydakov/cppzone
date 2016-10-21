@@ -25,7 +25,7 @@ const int data_size = 128 * MB / sizeof(int);
 const int repeats = 64 * MB;
 const int steps = 8 * MB;
 const int times = 8;
-const float cache_k = 1.25;
+const float cache_k = 1.15;
 
 long long clock_time()
 {
