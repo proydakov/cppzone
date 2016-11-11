@@ -58,7 +58,9 @@ int main(int argc, char* argv[])
     for(size_t i = 0; i < hardware_concurrency; i++) {
         std::string blob_name(file + ".blob" +  std::to_string(i));
         std::cout << "generate: " << blob_name
-                  << " size: " << pretty_size(segment_size) << std::endl;
+                  << " size: "    << pretty_size(segment_size)
+                  << std::endl;
+
         threads.push_back(std::move(std::thread([blob_name, segment_size](){
             generate(blob_name, segment_size);
         })));

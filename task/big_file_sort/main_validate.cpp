@@ -8,10 +8,9 @@ struct data
     size_t      count;
 };
 
-void parse(const std::string& str, data& obj)
+template<class cstream>
+void parse(cstream& sstream, data& obj)
 {
-    std::stringstream sstream;
-    sstream << str;
     sstream >> obj.email;
     sstream >> obj.count;
 }
@@ -28,15 +27,12 @@ int main(int argc, char* argv[])
     data obj1;
 
     std::ifstream input(file);
-    std::string line;
-
-    std::getline(input, line);
-    parse(line, obj1);
+    parse(input, obj1);
 
     data obj2;
-
-    while (std::getline(input, line)) {
-        parse(line, obj2);
+    while (true) {
+        parse(input, obj2);
+        if( input.eof() ) break;
         if(obj2.email < obj1.email) {
             std::cerr << "file: " << file << " is unsorted" << std::endl;
             return 1;

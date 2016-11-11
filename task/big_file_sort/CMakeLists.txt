@@ -5,5 +5,6 @@
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 I_ADD_EXECUTABLE(task_big_file_sort main_sort.cpp)
+I_ADD_EXECUTABLE(task_big_file_sort_std main_sort_std.cpp)
 I_ADD_EXECUTABLE(task_big_file_generate main_generate.cpp)
 I_ADD_EXECUTABLE(task_big_file_validate main_validate.cpp)
