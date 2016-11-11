@@ -37,6 +37,17 @@ ENDMACRO(I_ADD_LIBRARY)
 
 ###############################################################################
 
+MACRO(I_ADD_SHARED_LIBRARY args)
+
+SET(LIBRARY_NAME ${ARGV0})
+ADD_LIBRARY(${LIBRARY_NAME} SHARED ${ARGN})
+SOURCE_GROUP(source FILES ${ARGN})
+SET_PROPERTY(TARGET ${LIBRARY_NAME} PROPERTY FOLDER ${PROJECT_FOLDER})
+
+ENDMACRO(I_ADD_SHARED_LIBRARY)
+
+###############################################################################
+
 MACRO(I_ADD_LUA_LIBRARY args)
 
 SET(LIBRARY_NAME ${ARGV0})
