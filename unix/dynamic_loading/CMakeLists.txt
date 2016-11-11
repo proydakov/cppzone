@@ -13,7 +13,7 @@ SET(LIBRARY_FILES
     object.cpp
     )
 
-I_ADD_LIBRARY(unix_object ${LIBRARY_FILES})
+I_ADD_SHARED_LIBRARY(unix_object ${LIBRARY_FILES})
 
 SET(SOURCE_FILES
     main.cpp

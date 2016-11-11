@@ -47,7 +47,7 @@ void load_object()
 #ifdef __APPLE__
     char* name = (char*)("libunix_object.dylib");
 #else
-    char* name = (char*)("libunix_object.so");
+    char* name = (char*)("./libunix_object.so");
 #endif
     void* library = dlopen(name, RTLD_LAZY);
     if (library == NULL) {
