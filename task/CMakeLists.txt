@@ -1,12 +1,10 @@
 #==============================================================================
 # Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
-# CMake for  TASKS  PROJECT
-#==============================================================================
 
-MESSAGE(STATUS "BUILD  TASKS\n")
+MESSAGE(STATUS "BUILD  TASK\n")
 
-SET(PROJECT_FOLDER "tasks")
+SET(PROJECT_FOLDER "task")
 
 ADD_SUBDIRECTORY(array_statistics)
 ADD_SUBDIRECTORY(calculator)
