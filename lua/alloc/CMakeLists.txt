@@ -2,8 +2,8 @@
 # Copyright (c) 2016 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-FIND_PACKAGE(LuaJIT)
-INCLUDE_DIRECTORIES(${LUAJIT_INCLUDE_DIR})
+FIND_PACKAGE(Lua51)
+INCLUDE_DIRECTORIES(${LUA_INCLUDE_DIR})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -22,4 +22,4 @@ SET(MAIN_FILES
     )
 
 I_ADD_EXECUTABLE(lua_alloc ${MAIN_FILES} ${LUA_FILES})
-TARGET_LINK_LIBRARIES(lua_alloc ${LUAJIT_LIBRARY})
+TARGET_LINK_LIBRARIES(lua_alloc ${LUA_LIBRARIES})
