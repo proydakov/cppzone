@@ -10,6 +10,7 @@ SET(PROJECT_FOLDER "multithreading")
 
 IF(UNIX)
     ADD_SUBDIRECTORY(pthread)
+    ADD_SUBDIRECTORY(mutex_impl)
 ENDIF()
 
 ADD_SUBDIRECTORY(global_variable)
