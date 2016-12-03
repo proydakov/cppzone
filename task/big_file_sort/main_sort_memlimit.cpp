@@ -25,10 +25,15 @@ void* operator new(size_t sz) throw (std::bad_alloc)
     if (nullptr == mem) {
         throw std::bad_alloc();
     }
+
+#ifdef _MSC_VER 
+    const size_t allocated_step = sz;
+#else
     size_t* ptr = (size_t*)(mem);
     ptr -= 1;
-
     const size_t allocated_step = *ptr;
+#endif
+
     allocated_total += allocated_step;
 
     /*

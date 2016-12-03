@@ -10,22 +10,27 @@ void* operator new(size_t sz) throw (std::bad_alloc)
 {
     if(sz != obj_size) {
         obj_size = sz;
-        std::cout << "size: " << sz << std::endl;
+        //std::cout << "size: " << sz << std::endl;
     }
 
     void* mem = malloc(sz);
     if (nullptr == mem) {
         throw std::bad_alloc();
     }
+
+#ifdef _MSC_VER 
+    const size_t allocated_step = sz + 16 + 3;
+#else
     size_t* ptr = (size_t*)(mem);
     ptr -= 1;
-
     const size_t allocated_step = *ptr;
+#endif
+
     allocated += allocated_step;
 
     if(allocated_step != allocated_size) {
         allocated_size = allocated_step;
-        std::cout << "allocated_size: " << allocated_size << std::endl;
+        //std::cout << "allocated_size: " << allocated_size << std::endl;
     }
     return mem;
 }
@@ -39,7 +44,7 @@ int main(int argc, char **argv)
 {
     std::string data{"ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890 0987654321 1234567890"};
 
-    std::vector<std::string> vect(1024 * 1024 * 32, data);
+    std::vector<std::string> vect(1024 * 1024 * 16, data);
 
     std::cout << "sizeof str: " << sizeof(std::string) << std::endl;
     std::cout << "size data:  " << data.capacity() + 1 << std::endl;

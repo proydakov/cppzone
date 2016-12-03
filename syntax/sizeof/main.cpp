@@ -110,10 +110,11 @@ int main(int argc, char *argv[])
     std::cout << std::endl;
     delete [] p;
 #endif
-    
+
     std::cout << "sizeof types:" << std::endl;
     std::cout << "sizeof int:      " << sizeof(int) << std::endl;
     std::cout << "sizeof long:     " << sizeof(long) << std::endl;
+    std::cout << "sizeof size_t:   " << sizeof(size_t) << std::endl;
     std::cout << std::endl;
 
     std::cout << "sizeof ptr types:" << std::endl;
