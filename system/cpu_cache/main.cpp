@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <chrono>
 #include <vector>
+#include <iostream>
 
 #if _MSC_VER
 
@@ -56,10 +57,11 @@ int main()
     for (size_t i = 0; i < steps.size(); i++) {
         double totalTime = 0;    
         int size_mask = steps[i] / sizeof(int) - 1;
+
         for (int k = 0; k < times; k++) {
             long long start = clock_time();
             for (int j = 0; j < repeats; j++) {
-                ++data[ (j * 64) & size_mask ];
+                ++data[ (j * sizeof(int) * sizeof(int) * sizeof(int) ) & size_mask ];
             }
             long long end = clock_time();
             totalTime += (end - start) / 1000000000.0;
