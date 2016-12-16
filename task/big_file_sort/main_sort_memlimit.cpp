@@ -106,10 +106,8 @@ void merge_blob(const std::vector<std::string>& blobs, const std::string& opath)
     data buffer;
 
     for(size_t i = 0; i < blobs.size(); i++) {
-        std::ifstream input(blobs[i]);
-        read_data(input, buffer);
-
-        inputs.push_back(std::move(input));
+        inputs.emplace_back(blobs[i].c_str());
+        read_data(inputs.back(), buffer);
         sources.insert( std::make_pair( buffer, i ) );
     }
     std::cout << "merge: " << opath << std::endl;

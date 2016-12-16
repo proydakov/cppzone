@@ -1,5 +1,5 @@
 git:
-    submodules: false
+  submodules: false
 
 # Enable C++ support
 language: cpp
@@ -8,28 +8,24 @@ language: cpp
 sudo: required
 dist: trusty
 
+addons:
+  apt:
+    sources:
+      - llvm-toolchain-precise
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-5
+      - gcc-5
+
 matrix:
   include:
-    - env: BUILD_TYPE=Debug
+    - env: BUILD_TYPE=Release
       os: linux
       compiler: clang
 
     - env: BUILD_TYPE=Release
       os: linux
-      compiler: clang
-
-    - env: BUILD_TYPE=Debug
-      os: linux
-      compiler: gcc
-
-    - env: BUILD_TYPE=Release
-      os: linux
-      compiler: gcc
-
-    - env: BUILD_TYPE=Debug
-      os: osx
-      osx_image: xcode8
-      compiler: clang
+      compiler: gcc-5
 
     - env: BUILD_TYPE=Release
       os: osx
@@ -39,6 +35,7 @@ matrix:
 install:
   - |
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
       sudo apt-get update -qq
       sudo bash ./scripts/ubuntu_deps.sh
     fi
