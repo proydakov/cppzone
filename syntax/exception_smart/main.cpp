@@ -56,11 +56,13 @@ int main(int argc, char *argv[])
     (void) argv;
 
     try {
-        throw smart_error(1);
-    }
-    catch(smart_error error) {
-        error.set_val(3);
-        throw error;
+        try {
+            throw smart_error(1);
+        }
+        catch (smart_error error) {
+            error.set_val(3);
+            throw error;
+        }
     }
     catch(smart_error error) {
     }
