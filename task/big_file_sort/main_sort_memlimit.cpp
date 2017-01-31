@@ -1,5 +1,7 @@
 #include <map>
 #include <deque>
+#include <mutex>
+#include <thread>
 #include <vector>
 #include <string>
 #include <fstream>
@@ -8,7 +10,7 @@
 #include <algorithm>
 #include <functional>
 
-size_t allocated_total = 0;
+size_t g_allocated_total = 0;
 size_t obj_size = 0;
 size_t allocated_size = 0;
 
@@ -34,7 +36,7 @@ void* operator new(size_t sz) throw (std::bad_alloc)
     const size_t allocated_step = *ptr;
 #endif
 
-    allocated_total += allocated_step;
+    g_allocated_total += allocated_step;
 
     /*
     if(allocated_step != allocated_size) {
@@ -85,11 +87,11 @@ std::string sort_blob(container& vec, const std::string& opath, size_t blob_inde
     sstream << opath << ".blob" << blob_index;
 
     const std::string blob_path(sstream.str());
-    std::cout << "sort: " << blob_path << std::endl;
+    std::cout << "sort: " + blob_path << std::endl;
 
     std::sort(vec.begin(), vec.end());
 
-    std::cout << "dump: " << blob_path << std::endl;
+    std::cout << "dump: " + blob_path << std::endl;
     std::ofstream output(blob_path);
     std::for_each(vec.begin(), vec.end(), [&output](const data& obj) {
         write_data(output, obj);
@@ -110,7 +112,7 @@ void merge_blob(const std::vector<std::string>& blobs, const std::string& opath)
         read_data(inputs.back(), buffer);
         sources.insert( std::make_pair( buffer, i ) );
     }
-    std::cout << "merge: " << opath << std::endl;
+    std::cout << "merge: " + opath << std::endl;
 
     std::ofstream output(opath);
     while(!sources.empty()) {
@@ -125,6 +127,64 @@ void merge_blob(const std::vector<std::string>& blobs, const std::string& opath)
     }
 }
 
+class csource
+{
+public:
+    csource(const std::string& ifile, size_t limit) : input_(ifile), limit_(limit)
+    {
+    }
+
+    std::deque<data> read()
+    {
+        std::deque<data> vec;
+
+        std::lock_guard<std::mutex> guard(mutex_);
+
+        data buffer;
+        g_allocated_total = 0;
+        while (true) {
+            read_data(input_, buffer);
+
+            if( input_.eof( ) ) {
+                break;
+            }
+
+            vec.push_back( std::move(buffer) );
+
+            if(g_allocated_total > limit_) {
+                break;
+            }
+        }
+        return vec;
+    }
+
+private:
+    std::mutex mutex_;
+    std::ifstream input_;
+
+    const size_t limit_;
+};
+
+class cblobs
+{
+public:
+    void add_blob(const std::string& blob)
+    {
+        std::lock_guard<std::mutex> guard(mutex_);
+        blobs_.push_back(blob);
+    }
+
+    std::vector<std::string> get_blobs()
+    {
+        std::lock_guard<std::mutex> guard(mutex_);
+        return blobs_;
+    }
+
+private:
+    std::mutex mutex_;
+    std::vector<std::string> blobs_;
+};
+
 int main(int argc, char* argv[])
 {
     if (argc < 4) {
@@ -136,45 +196,53 @@ int main(int argc, char* argv[])
     const std::string ofile(argv[2]);
     const std::string ssize(argv[3]);
 
-    data buffer;
-    std::ifstream input(ifile);
-    if(!input.is_open()) {
-        std::cout << "file not found: " << argv[0] << std::endl;
-        return 1;
+    {
+        std::ifstream input(ifile);
+        if(!input.is_open()) {
+            std::cout << "file not found: " << argv[0] << std::endl;
+            return 1;
+        }
     }
+
+    const size_t hardware_concurrency = std::thread::hardware_concurrency();
 
     const size_t GB_SIZE = 1024 * 1024 * 1024;
-
     std::string::size_type sz;
     double limit_gb = std::stod(ssize, &sz);
-    const size_t MEMORY_LIMIT = 0.975 * limit_gb * GB_SIZE;
+    const size_t MEMORY_LIMIT = 0.975 * limit_gb * GB_SIZE / hardware_concurrency;
 
-    std::vector<std::string> blobs;
-    {
-        size_t blob_counter = 0;
+    size_t blob_counter = 0;
+    cblobs blobs;
+    csource source(ifile, MEMORY_LIMIT);
 
-        std::deque<data> vec;
-        allocated_total = 0;
-        while (true) {
-            read_data(input, buffer);
+    std::vector<std::thread> threads;
+    for(size_t i = 0; i < hardware_concurrency; i++) {
+        threads.push_back(std::move(std::thread([&source, &blobs, &ifile, &blob_counter]() {
+            while(true) {
+                std::deque<data> vec = source.read();
 
-            if( input.eof( ) ) break;
-            vec.push_back( std::move(buffer) );
+                if(vec.empty()) {
+                    break;
+                }
 
-            if(allocated_total > MEMORY_LIMIT) {
-                auto str = sort_blob(vec, ifile, blob_counter);
-                blob_counter++;
-                blobs.push_back( std::move(str) );
-                vec.resize(0);
-                vec.shrink_to_fit();
-                allocated_total = 0;
+                size_t counter = blob_counter++;
+                auto str = sort_blob(vec, ifile, counter);
+                blobs.add_blob( std::move(str) );
             }
-        }
-        auto str = sort_blob(vec, ifile, blob_counter);
-        blobs.push_back( std::move(str) );
+        })));
     }
 
-    merge_blob(blobs, ofile);
+    for(size_t i = 0; i < threads.size(); i++)
+    {
+        threads[i].join();
+    }
+
+    auto vec = blobs.get_blobs();
+    merge_blob(vec, ofile);
+
+    for(size_t i = 0; i < vec.size(); i++) {
+        std::remove(vec[i].c_str());
+    }
 
     return 0;
 }
