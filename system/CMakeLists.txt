@@ -14,5 +14,6 @@ ADD_SUBDIRECTORY(cpu_cache)
 ADD_SUBDIRECTORY(memory_leak)
 ADD_SUBDIRECTORY(stack_size)
 ADD_SUBDIRECTORY(stack_size_recursion)
+ADD_SUBDIRECTORY(thread_stack_size)
 
 MESSAGE("")
