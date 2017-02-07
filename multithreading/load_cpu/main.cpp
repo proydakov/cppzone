@@ -31,7 +31,7 @@ void load_stream()
 
 int main()
 {
-    int thread_col = std::thread::hardware_concurrency();
+    const int thread_col = std::thread::hardware_concurrency();
 
     std::vector<std::thread> group;
     for(int i = 0; i < thread_col; ++i) {

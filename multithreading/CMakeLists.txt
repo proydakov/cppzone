@@ -18,7 +18,5 @@ ENDIF()
 
 ADD_SUBDIRECTORY(global_variable)
 ADD_SUBDIRECTORY(load_cpu)
-ADD_SUBDIRECTORY(mutex_bad)
 
 MESSAGE("")
-

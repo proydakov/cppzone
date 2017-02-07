@@ -30,23 +30,24 @@ int main(int argc, char *argv[])
 {
     UNUSED(argc);
     UNUSED(argv);
-    
+
     if(argc == 3) {
         while(true);
     }
-    
+
     srand(time(NULL));
     pid_t pid;
     posix_spawnattr_t attr;
     posix_spawn_file_actions_t action;
-    
+
     while(true) {
         int *p = new int [36];
         UNUSED(p);
+
         char *const param_load[] = {(char*)"load", (char*)"cpu"};
         char *const param_create[] = {(char*)"create"};
         int condition = rand() % 2;
-        
+
         if(condition == 0) {
             posix_spawn(&pid, "./system_pest", &action, &attr, param_load, NULL);
         }

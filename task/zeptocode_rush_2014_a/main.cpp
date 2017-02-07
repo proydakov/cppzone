@@ -131,9 +131,6 @@ int eat(const std::vector<data>& candies, size_t tindex, int jump)
         return jump >= candies[0].height ? 1 : 0;
     }
 
-    int h0 = candies[0].height;
-    int h1 = candies[tindex].height;
-
     size_t from1_t1 = 0;
     size_t to1_t1 = tindex;
     size_t from2_t1 = tindex;
@@ -209,4 +206,3 @@ int main()
 
     return 0;
 }
-

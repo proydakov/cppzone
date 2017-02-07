@@ -15,7 +15,7 @@ void functor(yield_t& yield)
 
 int main(int argc, char* argv[])
 {
-    int coroutine_count = 1000000;
+    size_t coroutine_count = 1000000;
     if (argc == 2) {
         coroutine_count = atoi(argv[1]);
     }

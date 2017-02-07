@@ -112,9 +112,9 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 maze::maze(std::size_t width, std::size_t height) :
-    m_heuristic_type(heuristic_type::euclidean),
     m_width(width),
     m_height(height),
+    m_heuristic_type(heuristic_type::euclidean),
     m_barriers(width * height, vertex_hash(m_grid)),
     m_barrier_grid(create_barrier_grid())
 {

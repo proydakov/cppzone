@@ -26,18 +26,18 @@ int main()
 {
     int a = 'a';
     int b = 'b';
-    
+
     int& pa = a;
     int* pb = &b;
-    
+
     int a1 = --pa;
     int b1 = pa++;
-    
+
     int a2 = *(--pb);
     int b2 = *(pb--);
 
     std::cout << "A1 " << a1 << " B1 " << b1 << std::endl;
     std::cout << "A2 " << a2 << " B2 " << b2 << std::endl;
-    
+
     return 0;
 }
