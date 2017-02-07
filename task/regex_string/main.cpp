@@ -51,8 +51,6 @@ void generate_step(const std::string& origin, size_t opos, std::string& buffer)
 
 void generate(const std::string& origin)
 {
-    std::cout << "generate:" << std::endl;
-
     if(origin.empty()) {
         return;
     }
@@ -88,7 +86,6 @@ bool validate(const std::string& origin)
                 break;
         }
     }
-
     return validator.empty();
 }
 
@@ -101,8 +98,9 @@ int main( int argc, char* argv[] )
 
     const std::string regex( argv[1] );
     const bool valid = validate(regex);
-    std::cout << "regex: " << regex << " valid: " << valid <<  std::endl;
-
+    if(!valid) {
+        std::cout << "regex: " << regex << " valid: " << valid <<  std::endl;
+    }
     generate(regex);
 
     return 0;
