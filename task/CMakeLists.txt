@@ -15,6 +15,7 @@ ADD_SUBDIRECTORY(output_number_in_base)
 ADD_SUBDIRECTORY(output_number_as_text)
 ADD_SUBDIRECTORY(unique_ip)
 ADD_SUBDIRECTORY(word_game)
+ADD_SUBDIRECTORY(regex_string)
 
 ADD_SUBDIRECTORY(zeptocode_rush_2014_a)
 ADD_SUBDIRECTORY(zeptocode_rush_2014_b)
