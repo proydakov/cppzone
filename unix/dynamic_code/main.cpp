@@ -33,8 +33,7 @@ int make_memory_executable(void* m, size_t size) {
 
 void emit_code_into_memory(void* m) {
     unsigned char code[] = {
-        0x48, 0x89, 0xf8,                   // mov %rdi, %rax
-        0x48, 0x83, 0xc0, 0x07,             // add $7, %rax
+        0x48, 0x8d, 0x47, 0x04,             // lea    rax,[rdi+0x4]
         0xc3                                // ret
     };
     memcpy(m, code, sizeof(code));
