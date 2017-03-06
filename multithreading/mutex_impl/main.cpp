@@ -51,14 +51,14 @@ public:
     void lock()
     {
         int exp = 0;
-        while(!locked.compare_exchange_weak(exp, 1)) {
+        while(!locked.compare_exchange_weak(exp, 1, std::memory_order_acquire)) {
             exp = 0;
         }
     }
 
     void unlock()
     {
-        locked.store(0);
+        locked.store(0, std::memory_order_release);
     }
 
 private:
@@ -78,9 +78,9 @@ public:
 
     void lock()
     {
-        counter.fetch_add(1);
+        counter.fetch_add(1, std::memory_order_release);
         int exp = 0;
-        while(!locked.compare_exchange_weak(exp, 1)) {
+        while(!locked.compare_exchange_weak(exp, 1, std::memory_order_acquire)) {
             exp = 0;
             futex( (int*)(&locked), FUTEX_WAIT, 1 );
         }
@@ -88,8 +88,8 @@ public:
 
     void unlock()
     {
-        const int left = counter.fetch_add(-1);
-        locked.store(0);
+        const int left = counter.fetch_add(-1, std::memory_order_release);
+        locked.store(0, std::memory_order_release);
         if(left) {
             futex( (int*)(&locked), FUTEX_WAKE, 1 );
         }

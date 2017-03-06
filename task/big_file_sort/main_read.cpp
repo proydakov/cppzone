@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
         std::cout << "usage: " << argv[0] << " path/to/file" << std::endl;
         return 1;
     }
-    std::string file(argv[1]);
+    const std::string file(argv[1]);
     std::ifstream input(file);
 
     size_t counter = 0;
