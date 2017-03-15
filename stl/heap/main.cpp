@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
+ *  Copyright (c) 2017 Evgeny Proydakov <lord.tiran@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -27,17 +27,16 @@
 template<typename T>
 std::ostream& operator<<(std::ostream& ostr, const std::vector<T>& vector)
 {
-    long size = vector.size();
+    const size_t size = vector.size();
     ostr << "vector[" << size << "] ";
-    for(int i = 0; i < size; ++i)
+    for(size_t i = 0; i < size; ++i)
         ostr << vector[i] << " ";
     return ostr;
 }
 
-int main(int argc, char *argv[])
+void heap_1()
 {
-    (void)argc;
-    (void)argv;
+    std::cout << "heap_1" << std::endl;
 
     int myints[] = {10, 20, 30, 5, 15, 50, 35, 25};
     std::vector<int> v(myints,myints + 7);
@@ -53,6 +52,35 @@ int main(int argc, char *argv[])
     std::sort_heap(v.begin(),v.end());
     std::cout << "sort" << std::endl;
     std::cout << v << std::endl;
+}
+
+void heap_2()
+{
+    std::cout << "heap_2" << std::endl;
+
+    std::vector<int> v { 3, 1, 4, 1, 5, 9 };
+    std::cout << v << std::endl;
+
+    std::cout << "make" << std::endl;
+    std::make_heap(v.begin(), v.end());
+    std::cout << v << std::endl;
+
+    int i = 0;
+    for(auto it = v.end(), bit = v.begin(); it != bit; --it, ++i) {
+        std::cout << "step " << i << std::endl;
+        std::pop_heap(v.begin(), it);
+        std::cout << v << std::endl;
+    }
+
+    std::cout << "result" << std::endl;
+    std::cout << v << std::endl;
+}
+
+int main()
+{
+    heap_1();
+
+    heap_2();
 
     return 0;
 }
