@@ -17,7 +17,4 @@ ADD_SUBDIRECTORY(unique_ip)
 ADD_SUBDIRECTORY(word_game)
 ADD_SUBDIRECTORY(regex_string)
 
-ADD_SUBDIRECTORY(zeptocode_rush_2014_a)
-ADD_SUBDIRECTORY(zeptocode_rush_2014_b)
-
 MESSAGE("")
