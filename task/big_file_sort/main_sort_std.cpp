@@ -29,6 +29,8 @@ void write_data(cstream& stream, data& obj)
 
 int main(int argc, char* argv[])
 {
+    std::ios::sync_with_stdio(false);
+
     if (argc < 3) {
         std::cout << "usage: " << argv[0] << " path/to/input/file path/to/output/file" << std::endl;
         return 1;

@@ -90,6 +90,8 @@ void consumer(const std::string& file, cstorage<std::vector<std::string>>& stora
 
 int main(int argc, char* argv[])
 {
+    std::ios::sync_with_stdio(false);
+
     if (argc < 3) {
         std::cout << "usage: " << argv[0] << " path/to/file size (GB)" << std::endl;
         return 1;

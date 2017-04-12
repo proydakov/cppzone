@@ -187,8 +187,10 @@ private:
 
 int main(int argc, char* argv[])
 {
+    std::ios::sync_with_stdio(false);
+
     if (argc < 4) {
-        std::cout << "usage: " << argv[0] << " path/to/input/file path/to/output/file memlimit (GB)" << std::endl;
+        std::cout << "usage: " << argv[0] << " <path/input/file> <path/output/file> <memlimit (GB)>" << std::endl;
         return 1;
     }
 
@@ -209,7 +211,8 @@ int main(int argc, char* argv[])
     const size_t GB_SIZE = 1024 * 1024 * 1024;
     std::string::size_type sz;
     double limit_gb = std::stod(ssize, &sz);
-    const size_t MEMORY_LIMIT = 0.975 * limit_gb * GB_SIZE / hardware_concurrency;
+    double k_safe = 0.975;
+    const size_t MEMORY_LIMIT = k_safe * limit_gb * GB_SIZE / hardware_concurrency;
 
     size_t blob_counter = 0;
     cblobs blobs;

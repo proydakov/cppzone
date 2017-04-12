@@ -18,6 +18,8 @@ void parse(cstream& sstream, data& obj)
 
 int main(int argc, char* argv[])
 {
+    std::ios::sync_with_stdio(false);
+
     if (argc < 2) {
         std::cout << "usage: " << argv[0] << " path/to/file" << std::endl;
         return 1;
@@ -33,7 +35,7 @@ int main(int argc, char* argv[])
     data obj2;
     while (true) {
         parse(input, obj2);
-        if( input.eof() ) break;
+        if(input.eof()) break;
         if(obj2.email < obj1.email) {
             std::cerr << "file: " << file << " is unsorted" << std::endl;
             return 1;

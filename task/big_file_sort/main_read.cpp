@@ -7,9 +7,10 @@
 int main(int argc, char* argv[])
 {
     if (argc < 2) {
-        std::cout << "usage: " << argv[0] << " path/to/file" << std::endl;
+        std::cout << "usage: " << argv[0] << " <path/to/file>" << std::endl;
         return 1;
     }
+
     const std::string file(argv[1]);
     std::ifstream input(file);
 
