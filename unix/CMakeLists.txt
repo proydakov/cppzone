@@ -13,5 +13,6 @@ ADD_SUBDIRECTORY(fork_memory)
 ADD_SUBDIRECTORY(pest)
 ADD_SUBDIRECTORY(dynamic_code)
 ADD_SUBDIRECTORY(dynamic_loading)
+ADD_SUBDIRECTORY(hugepages)
 
 MESSAGE("")
