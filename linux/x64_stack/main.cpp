@@ -16,6 +16,7 @@ volatile uint64_t g_stack_trap = 0;
     register uint64_t rbp asm ("rbp");                          \
     register uint64_t rsp asm ("rsp");                          \
                                                                 \
+    std::cout << "TRACE_STACK_REGS" << std::endl;               \
     std::cout << "rbp:  " << std::hex << rbp << std::endl;      \
     std::cout << "rsp:  " << std::hex << rsp << std::endl;      \
 
@@ -23,6 +24,7 @@ volatile uint64_t g_stack_trap = 0;
     register uint64_t rbp asm ("rbp");                          \
     register uint64_t rsp asm ("rsp");                          \
                                                                 \
+    std::cout << "TRACE_STACK_VALS" << std::endl;               \
     std::cout << "rbp:  " << std::hex << rbp << std::endl;      \
     std::cout << "rsp:  " << std::hex << rsp << std::endl;      \
                                                                 \
@@ -45,7 +47,7 @@ int make_work()
 {
     std::array<char, 28> array;
     array.fill('0');
-    for(int i = 1; i < array.size() - 1; i++) {
+    for(size_t i = 1; i < array.size() - 1; i++) {
         array[i] = char('a' + i - 1);
     }
     array.front() = '*';
@@ -62,13 +64,15 @@ int main()
 
     PUT_TRAP();
 
+    int code = make_work();
+
+    std::cout << std::endl;
+
+    TRACE_STACK_REGS();
+
     std::cout << "TRAP: " << std::hex << g_stack_trap << ' '
               << "VAL: " << std::dec << (*(uint64_t*)g_stack_trap)
               << std::endl;
-
-    int code = make_work();
-
-    TRACE_STACK_REGS();
 
     return code + (int)(head);
 }

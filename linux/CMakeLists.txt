@@ -12,6 +12,6 @@ ADD_SUBDIRECTORY(pest)
 ADD_SUBDIRECTORY(dynamic_code)
 ADD_SUBDIRECTORY(dynamic_loading)
 ADD_SUBDIRECTORY(hugepages)
-ADD_SUBDIRECTORY(system_stack)
+ADD_SUBDIRECTORY(x64_stack)
 
 MESSAGE("")
