@@ -13,11 +13,11 @@ SET(LIBRARY_FILES
     object.cpp
     )
 
-I_ADD_SHARED_LIBRARY(unix_object ${LIBRARY_FILES})
+I_ADD_SHARED_LIBRARY(linux_object ${LIBRARY_FILES})
 
 SET(SOURCE_FILES
     main.cpp
     )
 
-I_ADD_EXECUTABLE(unix_dynamic_loading ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(unix_dynamic_loading ${DL_LIBRARY})
+I_ADD_EXECUTABLE(linux_dynamic_loading ${SOURCE_FILES})
+TARGET_LINK_LIBRARIES(linux_dynamic_loading ${DL_LIBRARY})

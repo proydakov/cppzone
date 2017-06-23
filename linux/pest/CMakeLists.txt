@@ -8,4 +8,4 @@ SET(SOURCE_FILES
     main.cpp
     )
 
-I_ADD_EXECUTABLE(unix_pest ${SOURCE_FILES})
+I_ADD_EXECUTABLE(linux_pest ${SOURCE_FILES})
