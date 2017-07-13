@@ -23,6 +23,7 @@ int main(int argc, char* argv[])
     std::chrono::high_resolution_clock clock;
     auto start = clock.now();
     std::vector<coroutine_t> coroutines;
+    coroutines.reserve(coroutine_count);
     for(size_t i = 0; i < coroutine_count; i++) {
         coroutine_t coroutine(functor);
         coroutines.push_back(std::move(coroutine));
@@ -33,4 +34,4 @@ int main(int argc, char* argv[])
     int res;
     std::cin >> res;
     return res;
-};
+}
