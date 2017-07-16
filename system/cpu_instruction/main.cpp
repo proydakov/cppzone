@@ -1,4 +1,5 @@
 #include <cmath>
+#include <string>
 #include <chrono>
 #include <vector>
 #include <iomanip>
@@ -6,6 +7,7 @@
 
 [[clang::optnone]]
 [[gnu::optimize("-O0")]]
+#pragma optimize( "", off )
 int test(size_t iters, int step)
 {
     int val = 0;
@@ -14,6 +16,7 @@ int test(size_t iters, int step)
     }
     return val;
 }
+#pragma optimize( "", on )
 
 int main(int argc, char* argv[])
 {
