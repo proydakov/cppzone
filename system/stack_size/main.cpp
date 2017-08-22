@@ -25,11 +25,10 @@
 
 int main()
 {
-    constexpr size_t size = 1024 * 1024 * 2;
+    constexpr size_t size = 1024 * 1024 * 4;
     std::array<int, size> data;
     std::cout << "sizeof int:  " << sizeof(int) << std::endl;
     std::cout << "size:        " << data.size() << std::endl;
     std::cout << "sizeof data: " << sizeof(data) << std::endl;
     return 0;
 }
-

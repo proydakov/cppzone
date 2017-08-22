@@ -26,14 +26,14 @@ int main(int argc, char* argv[])
 
     int val = 0;
     for(const auto power : powers) {
-        size_t item = std::pow(10, power);
+        const size_t item = std::pow(10, power);
 
         std::chrono::high_resolution_clock clock;
-        auto start = clock.now();
+        const auto start = clock.now();
         {
             val += test(item, 7);
         }
-        auto end = clock.now();
+        const auto end = clock.now();
         const size_t time = static_cast<size_t>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
 
         std::cout << "iters: " << std::setw(5) << (std::string("10^") + std::to_string(power))
