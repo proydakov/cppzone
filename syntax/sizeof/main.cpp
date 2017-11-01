@@ -85,10 +85,46 @@ public:
     virtual ~F();
 };
 
+struct S1
+{
+    char  c1;
+    short s1;
+    char  c2;
+    int   i1;
+};
+
+struct alignas(4) S2
+{
+    char  c1;
+    short s1;
+    char  c2;
+    int   i1;
+};
+
+struct alignas(8) S3
+{
+    char  c1;
+    short s1;
+    char  c2;
+    int   i1;
+};
+
+struct S4
+{
+    unsigned code:20;
+};
+
 int main(int argc, char *argv[])
 {
     (void) argc;
     (void) argv;
+
+    std::cout << "sizeof struct" << std::endl;
+    std::cout << "sizeof S1:            " << sizeof(S1) << std::endl;
+    std::cout << "sizeof S2 alignas(4): " << sizeof(S2) << std::endl;
+    std::cout << "sizeof S3 alignas(8): " << sizeof(S3) << std::endl;
+    std::cout << "sizeof S4:            " << sizeof(S4) << std::endl;
+    std::cout << std::endl;
 
     std::cout << "sizeof class:" << std::endl;
     std::cout << "sizeof O:  " << sizeof(O) << std::endl;
@@ -112,6 +148,8 @@ int main(int argc, char *argv[])
 #endif
 
     std::cout << "sizeof types:" << std::endl;
+    std::cout << "sizeof char:     " << sizeof(char) << std::endl;
+    std::cout << "sizeof short:    " << sizeof(short) << std::endl;
     std::cout << "sizeof int:      " << sizeof(int) << std::endl;
     std::cout << "sizeof long:     " << sizeof(long) << std::endl;
     std::cout << "sizeof size_t:   " << sizeof(size_t) << std::endl;
@@ -142,8 +180,9 @@ int main(int argc, char *argv[])
     std::unordered_map<type, type> umap;
     std::unordered_multiset<type> umset;
     std::unordered_multimap<type, type> ummap;
-    
+
     std::cout << "sizeof containers:" << std::endl;
+    std::cout << "sizeof std::string:        " << sizeof(std::string) << std::endl;
     std::cout << "sizeof array<int, 10>:     " << sizeof(std::array<int, 10>) << std::endl;
     std::cout << "sizeof list:               " << sizeof(list) << std::endl;
     std::cout << "sizeof vector:             " << sizeof(vector) << std::endl;
