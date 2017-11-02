@@ -16,6 +16,7 @@ IF(UNIX AND NOT APPLE)
     ADD_SUBDIRECTORY(mutex_impl)
 ENDIF()
 
+ADD_SUBDIRECTORY(storage)
 ADD_SUBDIRECTORY(global_variable)
 ADD_SUBDIRECTORY(load_cpu)
 
