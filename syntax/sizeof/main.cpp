@@ -169,6 +169,7 @@ int main(int argc, char *argv[])
     typedef int type;
     std::list<type> list;
     std::vector<type> vector;
+    std::deque<type> deque;
     std::stack<type> stack;
     std::queue<type> queue;
     std::priority_queue<type> priority_queue;
@@ -186,6 +187,7 @@ int main(int argc, char *argv[])
     std::cout << "sizeof array<int, 10>:     " << sizeof(std::array<int, 10>) << std::endl;
     std::cout << "sizeof list:               " << sizeof(list) << std::endl;
     std::cout << "sizeof vector:             " << sizeof(vector) << std::endl;
+    std::cout << "sizeof deque:              " << sizeof(deque) << std::endl;
     std::cout << "sizeof stack:              " << sizeof(stack) << std::endl;
     std::cout << "sizeof queue:              " << sizeof(queue) << std::endl;
     std::cout << "sizeof priority_queue:     " << sizeof(priority_queue) << std::endl;
