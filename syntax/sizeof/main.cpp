@@ -114,6 +114,11 @@ struct S4
     unsigned code:20;
 };
 
+struct S5
+{
+    std::array<short, 5> array;
+};
+
 int main(int argc, char *argv[])
 {
     (void) argc;
@@ -124,6 +129,7 @@ int main(int argc, char *argv[])
     std::cout << "sizeof S2 alignas(4): " << sizeof(S2) << std::endl;
     std::cout << "sizeof S3 alignas(8): " << sizeof(S3) << std::endl;
     std::cout << "sizeof S4:            " << sizeof(S4) << std::endl;
+    std::cout << "sizeof S5:            " << sizeof(S5) << std::endl;
     std::cout << std::endl;
 
     std::cout << "sizeof class:" << std::endl;
