@@ -14,6 +14,9 @@ int main()
         { 5, 5 }
     };
 
+    std::cout << "max_size:         " << map.max_size() << std::endl;
+    std::cout << "max_bucket_count: " << map.max_bucket_count() << std::endl;
+
     std::vector<map_t::const_iterator> vec;
     vec.push_back(map.find(1));
     vec.push_back(map.find(2));

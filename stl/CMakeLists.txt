@@ -13,5 +13,6 @@ ADD_SUBDIRECTORY(heap)
 ADD_SUBDIRECTORY(eq_range)
 ADD_SUBDIRECTORY(std_for_each)
 ADD_SUBDIRECTORY(unordered_map)
+ADD_SUBDIRECTORY(unordered_map2)
 
 MESSAGE("")
