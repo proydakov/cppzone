@@ -119,6 +119,20 @@ struct S5
     std::array<short, 5> array;
 };
 
+struct S6
+{
+    std::array<char, 3> array;
+    char c;
+};
+
+#pragma pack(push, 1)
+struct IpHeader
+{
+    uint8_t header_length : 4;
+    uint8_t version : 4;
+};
+#pragma pack(pop)
+
 int main(int argc, char *argv[])
 {
     (void) argc;
@@ -130,6 +144,8 @@ int main(int argc, char *argv[])
     std::cout << "sizeof S3 alignas(8): " << sizeof(S3) << std::endl;
     std::cout << "sizeof S4:            " << sizeof(S4) << std::endl;
     std::cout << "sizeof S5:            " << sizeof(S5) << std::endl;
+    std::cout << "sizeof S6:            " << sizeof(S6) << std::endl;
+    std::cout << "sizeof IpHeader:      " << sizeof(IpHeader) << std::endl;
     std::cout << std::endl;
 
     std::cout << "sizeof class:" << std::endl;

@@ -3,23 +3,6 @@
 #include <vector>
 #include <iostream>
 
-#if _MSC_VER
-
-#include <Windows.h>
-
-int getpagesize()
-{
-    SYSTEM_INFO systemInfo;
-    GetSystemInfo(&systemInfo);
-    return systemInfo.dwPageSize;
-}
-
-#else
-
-#include <unistd.h>
-
-#endif
-
 const int KB = 1024;
 const int MB = 1024 * KB;
 const int data_size = 128 * MB / sizeof(int);
@@ -81,7 +64,6 @@ int main()
         current = labs[i].second;
     }
     printf("calc   cache: %d\n", calc_cache);
-    printf("system cache: %d\n", getpagesize());
 
     delete[] data;
     return 0;

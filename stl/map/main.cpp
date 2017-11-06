@@ -1,17 +1,18 @@
 #include <map>
+#include <string>
 #include <vector>
 #include <iostream>
 
-typedef std::map<int, int> map_t;
-
 int main()
 {
+    using map_t = std::map<int, std::string>;
+
     map_t map{
-        { 1, 1 },
-        { 2, 2 },
-        { 3, 3 },
-        { 4, 4 },
-        { 5, 5 }
+        { 1, "v1" },
+        { 2, "v2" },
+        { 3, "v3" },
+        { 4, "v4" },
+        { 5, "v5" }
     };
 
     std::vector<map_t::const_iterator> vec;
@@ -25,11 +26,15 @@ int main()
     }
 
     for(int i = -10; i < 0; i++) {
-        map.emplace(i, i);
+        std::string str("v");
+        str += std::to_string(i);
+        map.emplace(i, str);
     }
 
     for(int i = 9; i < 20; i++) {
-        map.emplace(i, i);
+        std::string str("v");
+        str += std::to_string(i);
+        map.emplace(i, str);
     }
 
     std::cout << "b2" << std::endl;
