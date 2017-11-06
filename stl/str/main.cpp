@@ -17,6 +17,11 @@ int main()
 {
     std::string str;
 
+    std::cout << "size: " << str.size() << std::endl;
+    std::cout << "capacity: " << str.capacity() << std::endl;
+
+    std::cout << "push" << std::endl;
+
     for(int i = 0; i < 31; i++) {
         str.push_back('0' + i);
     }

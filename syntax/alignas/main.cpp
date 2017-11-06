@@ -3,11 +3,21 @@
 
 struct alignas(32) s32
 {
+    s32()
+    {
+        std::cout << "align s32 ok: " << ((intptr_t)this % 32 == 0) << std::endl;
+    }
+
     int val;
 };
 
 struct alignas(64) s64
 {
+    s64()
+    {
+        std::cout << "align s64 ok: " << ((intptr_t)this % 64 == 0) << std::endl;
+    }
+
     int val;
 };
 
@@ -74,6 +84,12 @@ int main()
     std::cout << "s1: " << (void*)&data.s1 << std::endl;
     std::cout << "i1: " << (void*)&data.i1 << std::endl;
     std::cout << "c2: " << (void*)&data.c2 << std::endl;
+
+    std::cout << std::endl;
+
+    std::cout << "instance test" << std::endl;
+    s32 data32;
+    s64 data64;
 
     return 0;
 }

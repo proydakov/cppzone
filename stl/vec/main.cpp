@@ -18,6 +18,11 @@ int main()
     std::vector<int> vec;
     std::cout << "created" << std::endl;
 
+    std::cout << "size: " << vec.size() << std::endl;
+    std::cout << "capacity: " << vec.capacity() << std::endl;
+
+    std::cout << "push" << std::endl;
+
     vec.push_back(1);
     vec.push_back(2);
     vec.push_back(3);
