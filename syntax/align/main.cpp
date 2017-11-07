@@ -27,6 +27,20 @@ struct alignas(N) IAllocator
     std::size_t sz;
 };
 
+void test_in_stack2()
+{
+    IAllocator<64> a;
+    std::cout << "in stack2: " << a.sz << std::endl;
+}
+
+void test_in_stack()
+{
+    IAllocator<64> a;
+    std::cout << "in stack: " << a.sz << std::endl;
+
+    test_in_stack2();
+}
+
 int main()
 {
     IAllocator<64> a;
@@ -54,6 +68,8 @@ int main()
 
     // create must 28
     std::cout << "sz: " << a.sz << std::endl;
+
+    test_in_stack();
 
     return 0;
 }
