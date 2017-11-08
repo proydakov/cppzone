@@ -38,12 +38,12 @@ void thread_fun()
 int main()
 {
     int thread_col = 30;
-    
+
     std::vector<std::thread> group;
     for(int i = 0; i < thread_col; ++i) {
         group.push_back(std::thread(thread_fun));
     }
-    
+
     while(true) {
         if(counter > MAX_COUNTER_VALUE) {
             break;
@@ -51,6 +51,6 @@ int main()
     }
 
     std::cout << "COUNTER VALUE: " << counter << std::endl;
-    
+
     return 0;
 }

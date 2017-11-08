@@ -18,6 +18,7 @@ ENDIF()
 
 ADD_SUBDIRECTORY(storage)
 ADD_SUBDIRECTORY(global_variable)
+ADD_SUBDIRECTORY(global_shared)
 ADD_SUBDIRECTORY(load_cpu)
 
 MESSAGE("")
