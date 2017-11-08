@@ -8,4 +8,4 @@ SET(SOURCE_FILES
     main.cpp
     )
 
-I_ADD_EXECUTABLE(syntax_alignas ${SOURCE_FILES})
+I_ADD_EXECUTABLE(syntax_virtual ${SOURCE_FILES})

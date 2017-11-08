@@ -38,6 +38,7 @@ ADD_SUBDIRECTORY(return_const_ref)
 ADD_SUBDIRECTORY(template_fun)
 ADD_SUBDIRECTORY(template_explicit_specialization_function)
 ADD_SUBDIRECTORY(variadic_templates)
+ADD_SUBDIRECTORY(virtual)
 ADD_SUBDIRECTORY(unique_ptr)
 ADD_SUBDIRECTORY(union)
 
