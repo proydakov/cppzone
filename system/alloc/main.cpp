@@ -6,7 +6,7 @@ size_t allocated = 0;
 size_t obj_size = 0;
 size_t allocated_size = 0;
 
-void* operator new(size_t sz) throw (std::bad_alloc)
+void* operator new(size_t sz)
 {
     if(sz != obj_size) {
         obj_size = sz;
@@ -35,7 +35,7 @@ void* operator new(size_t sz) throw (std::bad_alloc)
     return mem;
 }
 
-void operator delete(void* ptr) throw()
+void operator delete(void* ptr) noexcept
 {
     free(ptr);
 }

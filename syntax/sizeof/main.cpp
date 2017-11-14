@@ -26,10 +26,15 @@
 #include <array>
 #include <queue>
 #include <stack>
-#include <mutex>
 #include <vector>
 #include <unordered_set>
 #include <unordered_map>
+
+#include <thread>
+
+#include <mutex>
+#include <shared_mutex>
+#include <condition_variable>
 
 #include <iostream>
 
@@ -170,11 +175,15 @@ int main(int argc, char *argv[])
 #endif
 
     std::cout << "sizeof types:" << std::endl;
-    std::cout << "sizeof char:     " << sizeof(char) << std::endl;
-    std::cout << "sizeof short:    " << sizeof(short) << std::endl;
-    std::cout << "sizeof int:      " << sizeof(int) << std::endl;
-    std::cout << "sizeof long:     " << sizeof(long) << std::endl;
-    std::cout << "sizeof size_t:   " << sizeof(size_t) << std::endl;
+    std::cout << "sizeof bool:        " << sizeof(bool)   << std::endl;
+    std::cout << "sizeof char:        " << sizeof(char)   << std::endl;
+    std::cout << "sizeof short:       " << sizeof(short)  << std::endl;
+    std::cout << "sizeof int:         " << sizeof(int)    << std::endl;
+    std::cout << "sizeof long:        " << sizeof(long)   << std::endl;
+    std::cout << "sizeof size_t:      " << sizeof(size_t) << std::endl;
+    std::cout << "sizeof float:       " << sizeof(float ) << std::endl;
+    std::cout << "sizeof double:      " << sizeof(double) << std::endl;
+    std::cout << "sizeof long double: " << sizeof(long double) << std::endl;
     std::cout << std::endl;
 
     std::cout << "sizeof ptr types:" << std::endl;
@@ -236,7 +245,17 @@ int main(int argc, char *argv[])
     std::cout << std::endl;
 
     std::cout << "sizeof sync type:" << std::endl;
-    std::cout << "sizeof std::mutex:  " << sizeof(std::mutex) << std::endl;
+
+    std::cout << "sizeof std::thread:                " << sizeof(std::thread) << std::endl;
+
+    std::cout << "sizeof std::mutex:                 " << sizeof(std::mutex) << std::endl;
+    std::cout << "sizeof std::timed_mutex:           " << sizeof(std::timed_mutex) << std::endl;
+    std::cout << "sizeof std::recursive_mutex:       " << sizeof(std::recursive_mutex) << std::endl;
+    std::cout << "sizeof std::recursive_timed_mutex: " << sizeof(std::recursive_timed_mutex) << std::endl;
+    //std::cout << "sizeof std::shared_mutex:          " << sizeof(std::shared_mutex) << std::endl;
+    std::cout << "sizeof std::shared_timed_mutex:    " << sizeof(std::shared_timed_mutex) << std::endl;
+
+    std::cout << "sizeof std::condition_variable:    " << sizeof(std::condition_variable) << std::endl;
 
     return 0;
 }
