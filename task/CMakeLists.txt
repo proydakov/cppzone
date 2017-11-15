@@ -15,5 +15,6 @@ ADD_SUBDIRECTORY(output_number_as_text)
 ADD_SUBDIRECTORY(unique_ip)
 ADD_SUBDIRECTORY(word_game)
 ADD_SUBDIRECTORY(regex_string)
+ADD_SUBDIRECTORY(zigzag)
 
 MESSAGE("")
