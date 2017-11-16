@@ -1,3 +1,4 @@
+#include <memory>
 #include <cstdint>
 #include <iostream>
 
@@ -90,6 +91,9 @@ int main()
     std::cout << "instance test" << std::endl;
     s32 data32;
     s64 data64;
+
+    auto ptr32 = std::unique_ptr<s32>(new s32());
+    auto ptr64 = std::unique_ptr<s64>(new s64());
 
     return 0;
 }
