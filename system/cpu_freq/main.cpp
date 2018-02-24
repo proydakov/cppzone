@@ -5,9 +5,32 @@
 #include <iomanip>
 #include <iostream>
 
+#if defined(__APPLE__)
+
+#include <pthread.h>
+#include <mach/mach.h>
+#include <mach/mach_init.h>
+#include <mach/thread_policy.h>
+
+uint64_t rdtsc()
+{
+    unsigned int lo, hi;
+    __asm__ __volatile__("rdtsc" : "=a" (lo), "=d" (hi));
+    return ((uint64_t)hi << 32) | lo;
+}
+
+void bind_core(size_t core_id)
+{
+    thread_affinity_policy_data_t policy_data = { (int)core_id };
+    thread_port_t threadport = pthread_mach_thread_np(pthread_self());
+    thread_policy_set(threadport, THREAD_AFFINITY_POLICY, (thread_policy_t)&policy_data, THREAD_AFFINITY_POLICY_COUNT);
+}
+
+#elif defined(__linux__) // any linux distribution
 #include <sched.h>
 
 uint64_t rdtsc()
+
 {
     unsigned int lo,hi;
     __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
@@ -23,10 +46,27 @@ void bind_core(size_t core_id)
     sched_setaffinity(0, sizeof(cpu_set_t), &cpuset);
 }
 
+#elif defined(_WIN32) // any windows system
 
-#pragma GCC push_options
-#pragma GCC optimize ("O0")
+#include <windows.h>
+#include <intrin.h>
+#pragma intrinsic(__rdtsc)
 
+uint64_t rdtsc()
+{
+    return static_cast<uint64_t>(__rdtsc());
+}
+
+void bind_core(size_t core_id)
+{
+    SetThreadAffinityMask(GetCurrentThread(), (1 << core_id));
+}
+
+#endif
+
+[[clang::optnone]]
+[[gnu::optimize("-O0")]]
+#pragma optimize( "", off )
 void cycle(size_t num)
 {
     size_t counter1 = 0;
@@ -37,8 +77,7 @@ void cycle(size_t num)
         counter2 *= 1;
     }
 }
-
-#pragma GCC pop_options
+#pragma optimize( "", on )
 
 uint64_t milliseconds()
 {
@@ -87,12 +126,12 @@ int main()
     size_t const cores = std::thread::hardware_concurrency();
     for(size_t core = 1; core <= cores; core++)
     {
-	bind_core(core - 1);
+        bind_core(core - 1);
 
-        cycle(1);
+        cycle(5);
 
         uint64_t const t1 = milliseconds();
-	uint64_t const r1 = rdtsc();
+        uint64_t const r1 = rdtsc();
 
         cycle(2);
 
