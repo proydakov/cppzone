@@ -94,7 +94,6 @@ void cycle();
 void reshape(int w, int h);
 void keyboard(unsigned char key, int x, int y);
 
-
 int main( int argc, char **argv )
 {
     info();
