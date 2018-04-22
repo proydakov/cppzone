@@ -131,7 +131,6 @@ int application::run()
         }
 
         auto now = std::chrono::high_resolution_clock::now();
-
         auto const delta = std::chrono::duration_cast<std::chrono::microseconds>(now - m_last);
 
         update(delta);
