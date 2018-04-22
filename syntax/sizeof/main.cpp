@@ -151,6 +151,7 @@ int main(int argc, char *argv[])
     std::cout << "sizeof S5:            " << sizeof(S5) << std::endl;
     std::cout << "sizeof S6:            " << sizeof(S6) << std::endl;
     std::cout << "sizeof IpHeader:      " << sizeof(IpHeader) << std::endl;
+
     std::cout << std::endl;
 
     std::cout << "sizeof class:" << std::endl;
@@ -161,17 +162,30 @@ int main(int argc, char *argv[])
     std::cout << "sizeof D:  " << sizeof(D) << std::endl;
     std::cout << "sizeof E:  " << sizeof(E) << std::endl;
     std::cout << "sizeof F:  " << sizeof(F) << std::endl;
+
     std::cout << std::endl;
 
 #ifndef _MSC_VER
-    std::cout << "sizeof null: "<< sizeof(N) << std::endl;
-    N* p = new N[10];
-    N* pi = p;
-    for(size_t i = 0; i < sizeof(p); ++i, ++pi) {
+    std::cout << "sizeof N: "<< sizeof(N) << std::endl;
+
+    N* n1 = new N;
+    N* n2 = new N;
+
+    std::cout << "n1: " << n1 << std::endl;
+    std::cout << "n2: " << n2 << std::endl;
+
+    N parray[10];
+    N* pi = parray;
+
+    for(size_t i = 0; i < 10; ++i, ++pi) {
         std::cout << "adress pi:   " << &pi << std::endl;
     }
+
+    for(auto& item : parray) {
+        std::cout << "step: " << &item << std::endl;
+    }
+
     std::cout << std::endl;
-    delete [] p;
 #endif
 
     std::cout << "sizeof types:" << std::endl;
@@ -184,6 +198,7 @@ int main(int argc, char *argv[])
     std::cout << "sizeof float:       " << sizeof(float ) << std::endl;
     std::cout << "sizeof double:      " << sizeof(double) << std::endl;
     std::cout << "sizeof long double: " << sizeof(long double) << std::endl;
+
     std::cout << std::endl;
 
     std::cout << "sizeof ptr types:" << std::endl;
@@ -195,8 +210,9 @@ int main(int argc, char *argv[])
     std::cout << "sizeof B*:       " << sizeof(B*) << std::endl;
     std::cout << "sizeof C*:       " << sizeof(C*) << std::endl;
     std::cout << "sizeof D*:       " << sizeof(D*) << std::endl;
+
     std::cout << std::endl;
-    
+
     typedef int type;
     std::list<type> list;
     std::vector<type> vector;
@@ -230,6 +246,7 @@ int main(int argc, char *argv[])
     std::cout << "sizeof unordered_map:      " << sizeof(umap) << std::endl;
     std::cout << "sizeof unordered_multiset: " << sizeof(umset) << std::endl;
     std::cout << "sizeof unordered_multimap: " << sizeof(ummap) << std::endl;
+
     std::cout << std::endl;
 
     int* i_ptr = new int[10];
@@ -242,6 +259,7 @@ int main(int argc, char *argv[])
     std::cout << "sizeof int[10]:     " << sizeof(int_array_10) << std::endl;
     std::cout << "sizeof int[16]:     " << sizeof(int_array_16) << std::endl;
     std::cout << "sizeof int[64]:     " << sizeof(int_array_64) << std::endl;
+
     std::cout << std::endl;
 
     std::cout << "sizeof sync type:" << std::endl;
@@ -256,6 +274,8 @@ int main(int argc, char *argv[])
     std::cout << "sizeof std::shared_timed_mutex:    " << sizeof(std::shared_timed_mutex) << std::endl;
 
     std::cout << "sizeof std::condition_variable:    " << sizeof(std::condition_variable) << std::endl;
+
+    std::cout << std::endl;
 
     return 0;
 }

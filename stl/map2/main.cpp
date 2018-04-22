@@ -1,4 +1,5 @@
 #include <map>
+#include <cstdlib>
 #include <string>
 #include <vector>
 #include <iostream>
@@ -9,7 +10,7 @@ void* operator new(std::size_t sz)
     return std::malloc(sz);
 }
 
-void operator delete(void* ptr) noexcept
+void operator delete(void* ptr)
 {
     std::cout << "free" << std::endl;
     std::free(ptr);
