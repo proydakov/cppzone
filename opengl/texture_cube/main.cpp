@@ -24,106 +24,79 @@
 #include <string>
 #include <iostream>
 
-#include <common/iglut.h>
-
 #include <texture/texture_loader.h>
+#include <application/application.h>
 
-#include <calc_fps.h>
 #include <config_opengl_texture_cube.h>
-
-#ifdef _MSC_VER
-#   define GL_BGR 0x80E0
-#endif // _MSC_VER
 
 #define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
 #define GL_TEXTURE_MAX_ANISOTROPY_EXT     0x84FE
 
-calc_fps g_fps;
-unsigned g_last_fps = 0;
-
-const std::string COMMENT = "Press ESC for exit.";
-
-const int SCREEN_WIDTH  = 640;
-const int SCREEN_HEIGHT = 480;
-
-const int CYCLE_TIME = 25;
-const int ESCAPE     = 27;
-
-const unsigned TEXTURE_NUM = 4;
-
-GLdouble g_xrot = 0;
-GLdouble g_yrot = 0;
-GLdouble g_zrot = 0;
-
-GLuint g_texture[TEXTURE_NUM];
-unsigned g_textureIndex = 0;
-
-bool g_blending = false;
-
-bool loadGLTexture(const std::string& file, size_t num)
+class tcapplication : public application
 {
-    bool status = false;
+public:
+    tcapplication(int argc, char* argv[], std::size_t w, std::size_t h);
 
-    texture::loader loader;
-    loader.load(file.c_str());
+    void init() override;
+    void resize(std::size_t w, std::size_t h) override;
+    void update(std::chrono::microseconds delta) override;
+    void draw() override;
 
-    if(loader.isLoaded()) {
-	    status = true;
+    void info() override;
+    void keyboard(SDL_Event const& e);
 
-        glGenTextures(1, &g_texture[num]);
-	    glBindTexture(GL_TEXTURE_2D, g_texture[num]);
+private:
+    bool load_texture(const std::string& file, size_t num);
 
-	    glTexImage2D(GL_TEXTURE_2D, 0, 3, loader.getWidth(), loader.getHeight(), 
-            0, GL_BGR, GL_UNSIGNED_BYTE, loader.getData());
+private:
+    GLuint m_texture[7];
+    std::size_t m_textureIndex;
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    GLdouble g_xrot;
+    GLdouble g_yrot;
+    GLdouble g_zrot;
 
-        gluBuild2DMipmaps(GL_TEXTURE_2D, 3, loader.getWidth(), loader.getHeight(),
-            GL_BGR, GL_UNSIGNED_BYTE, loader.getData());
+    bool m_blending;
+    keyboard_press_guard m_bl_functor;
+};
 
-        int g_nMaxAnisotropy;
-        glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &g_nMaxAnisotropy);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, g_nMaxAnisotropy);
-    }
-
-    return status;
+tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t h) :
+    application(argc, argv, w, h),
+    m_textureIndex(0),
+    g_xrot(0),
+    g_yrot(0),
+    g_zrot(0),
+    m_blending(false),
+    m_bl_functor(SDLK_b, [this](){
+        if(m_blending) {
+            glEnable(GL_DEPTH_TEST);
+            glDisable(GL_BLEND);
+        }
+        else {
+            glEnable(GL_BLEND);
+            glDisable(GL_DEPTH_TEST);
+        }
+        m_blending = !m_blending;
+    })
+{
 }
 
-void info()
+void tcapplication::init()
 {
-    std::cout << COMMENT << "\n" << std::endl;
-}
+    std::vector<std::string> const textureNameContainer{
+        "opengl.bmp",
+        "gamedev.bmp",
+        "goblet.bmp",
+        "box.bmp",
+        "fire.bmp",
+        "stone.bmp",
+        "steel.bmp"
+    };
 
-void fps()
-{
-    g_fps.calc();
-    unsigned fps = g_fps.get_fps();
-    if(fps != g_last_fps) {
-        std::cout << "FPS : " << fps << std::endl;
-        g_last_fps = fps;
-    }
-}
+    std::string const textureFile(PARENT_DIRECTORY + std::string("data/"));
 
-void init()
-{
-    std::string textureOpenGL("opengl.bmp");
-    std::string textureGamedev("gamedev.bmp");
-    std::string textureBox("box.bmp");
-    std::string textureGobletBox("goblet.bmp");
-    
-    std::vector<std::string> textureNameContainer;
-    textureNameContainer.push_back(textureOpenGL);
-    textureNameContainer.push_back(textureGamedev);
-    textureNameContainer.push_back(textureBox);
-    textureNameContainer.push_back(textureGobletBox);
-
-    std::string textureFile(PARENT_DIRECTORY + std::string("data/"));
-    
-    for(size_t i = 0; i < textureNameContainer.size(); ++i) {
-        if(!loadGLTexture(textureFile + textureNameContainer[i], i)) {
+    for(size_t i = 0; i < textureNameContainer.size(); i++) {
+        if(!load_texture(textureFile + textureNameContainer[i], i)) {
             std::cerr << "Error loading texture" << std::endl;
             exit(1);
         }
@@ -146,7 +119,25 @@ void init()
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 }
 
-void display()
+void tcapplication::resize(std::size_t w, std::size_t h)
+{
+    glViewport(0, 0, w, h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0, (GLdouble) w / (GLdouble) h, 0.1, 100.0);
+}
+
+void tcapplication::update(std::chrono::microseconds delta)
+{
+    double const count = static_cast<double>(delta.count());
+    double constexpr timestep = 16000;
+
+    g_xrot += 0.3 * count / timestep;
+    g_yrot += 0.2 * count / timestep;
+    g_zrot += 0.4 * count / timestep;
+}
+
+void tcapplication::draw()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -158,10 +149,10 @@ void display()
     glRotated(g_yrot, 0.0, 1.0, 0.0);
     glRotated(g_zrot, 0.0, 0.0, 1.0);
 
-    glBindTexture(GL_TEXTURE_2D, g_texture[g_textureIndex]);
+    glBindTexture(GL_TEXTURE_2D, m_texture[m_textureIndex]);
 
-    GLdouble verticesSquare[8][3] = { 
-        { 1.0, -1.0, -1.0}, { 1.0, 1.0, -1.0}, { 1.0, -1.0, 1.0}, { 1.0, 1.0, 1.0}, 
+    GLdouble verticesSquare[8][3] = {
+        { 1.0, -1.0, -1.0}, { 1.0, 1.0, -1.0}, { 1.0, -1.0, 1.0}, { 1.0, 1.0, 1.0},
         {-1.0, -1.0, -1.0}, {-1.0, 1.0, -1.0}, {-1.0, -1.0, 1.0}, {-1.0, 1.0, 1.0}
     };
 
@@ -204,71 +195,30 @@ void display()
         glTexCoord2d(1.0, 0.0); glVertex3dv(verticesSquare[4]);
     }
     glEnd();
-
-    glFlush();
-    glutSwapBuffers();
-
-    fps();
 }
 
-void reshape(int w, int h)
+void tcapplication::info()
 {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0, (GLdouble) w / (GLdouble) h, 0.1, 100.0);
+    std::cout << "Press 'B' to change the blending\n";
+    std::cout << "Press '1', '2', '3', '4' to change textuire\n";
 }
 
-void renderCycle()
+void tcapplication::keyboard(SDL_Event const& e)
 {
-    glutPostRedisplay();
-}
-
-void updateDataCycle(int value)
-{
-    g_xrot += 0.3;
-    g_yrot += 0.2;
-    g_zrot += 0.4;
-    
-    glutTimerFunc(CYCLE_TIME, updateDataCycle, value);
-}
-
-void keyboard(unsigned char key, int x, int y)
-{
-    (void)x;
-    (void)y;
-
-    switch(key) {
-        case ESCAPE:
-            exit(0);
+    switch (e.key.keysym.sym)
+    {
+        case SDLK_1:
+        case SDLK_2:
+        case SDLK_3:
+        case SDLK_4:
+        case SDLK_5:
+        case SDLK_6:
+        case SDLK_7:
+            m_textureIndex = static_cast<std::size_t>(e.key.keysym.sym - '1');
             break;
 
-        case '1':
-            g_textureIndex = 0;
-            break;
-
-        case '2':
-            g_textureIndex = 1;
-            break;
-
-        case '3':
-            g_textureIndex = 2;
-            break;
-
-        case '4':
-            g_textureIndex = 3;
-            break;
-
-        case 'b':
-            if(g_blending) {
-                glEnable(GL_DEPTH_TEST);
-                glDisable(GL_BLEND);
-            }
-            else {
-                glEnable(GL_BLEND);
-                glDisable(GL_DEPTH_TEST);
-            }
-            g_blending = !g_blending;
+        case SDLK_b:
+            m_bl_functor.process(e);
             break;
 
         default:
@@ -276,22 +226,41 @@ void keyboard(unsigned char key, int x, int y)
     }
 }
 
-int main( int argc, char **argv )
+bool tcapplication::load_texture(const std::string& file, size_t num)
 {
-    info();
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-    glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow(argv[0]);
+    bool status = false;
 
-    init();
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutKeyboardFunc(keyboard);
-    glutIdleFunc(renderCycle);
-    glutTimerFunc(CYCLE_TIME, updateDataCycle, 0);
-    glutMainLoop();
+    texture::loader loader;
+    loader.load(file.c_str());
 
-    return 0;
+    if(loader.isLoaded()) {
+        status = true;
+
+        glGenTextures(1, &m_texture[num]);
+        glBindTexture(GL_TEXTURE_2D, m_texture[num]);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, 3, loader.getWidth(), loader.getHeight(),
+            0, GL_BGR, GL_UNSIGNED_BYTE, loader.getData());
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+        gluBuild2DMipmaps(GL_TEXTURE_2D, 3, loader.getWidth(), loader.getHeight(),
+            GL_BGR, GL_UNSIGNED_BYTE, loader.getData());
+
+        int g_nMaxAnisotropy;
+        glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &g_nMaxAnisotropy);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, g_nMaxAnisotropy);
+    }
+
+    return status;
+}
+
+int main( int argc, char* argv[] )
+{
+    tcapplication app(argc, argv, 640, 480);
+
+    return app.run();
 }

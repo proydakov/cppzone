@@ -20,9 +20,9 @@
  *  THE SOFTWARE.
  */
 
-#ifndef I_TEXTURE_LOADER_H
-#define I_TEXTURE_LOADER_H
+#pragma once
 
+#include <memory>
 #include <string>
 
 namespace texture
@@ -33,18 +33,22 @@ public:
     loader();
     ~loader();
 
-    bool load(const std::string& file_name);
+    bool load(std::string const& file_name);
     bool isLoaded() const;
 
     int getWidth() const;
     int getHeight() const;
     void* getData() const;
 
+    // unused
+    loader(loader const&) = delete;
+    loader(loader &&) = delete;
+    loader& operator=(loader const&) = delete;
+    loader& operator=(loader &&) = delete;
+
 private:
     struct d;
-    d* m_d;
+    std::unique_ptr<d> m_d;
 };
 
 } // texture
-
-#endif // I_TEXTURE_LOADER_H

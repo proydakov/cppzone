@@ -20,7 +20,7 @@
  *  THE SOFTWARE.
  */
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #include "texture_loader.h"
 
@@ -57,14 +57,13 @@ struct loader::d
     SDL_Surface* m_surface;
 };
 
-loader::loader()
+loader::loader() :
+    m_d(new d)
 {
-    m_d = new d;
 }
 
 loader::~loader()
 {
-    delete m_d;
 }
 
 bool loader::load(const std::string& file_name)

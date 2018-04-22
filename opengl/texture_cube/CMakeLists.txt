@@ -14,15 +14,11 @@ FIND_PACKAGE(OpenGL)
 INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 
 SET(HEADER_FILES
-    calc_fps.h
+    config_opengl_texture_cube.h
     )
 
 SET(SOURCE_FILES
     main.cpp
-    )
-
-SET(CONFIG_FILES
-    config_opengl_texture_cube.h
     )
 
 SET(IMAGE_FILES
@@ -32,9 +28,12 @@ SET(IMAGE_FILES
     data/gamedev.bmp
     )
 
-I_ADD_EXECUTABLE(opengl_texture_cube ${HEADER_FILES} ${SOURCE_FILES} ${CONFIG_FILES} ${IMAGE_FILES})
+I_ADD_EXECUTABLE(opengl_texture_cube ${HEADER_FILES} ${SOURCE_FILES} ${IMAGE_FILES})
+ADD_DEPENDENCIES(opengl_texture_cube application)
+ADD_DEPENDENCIES(opengl_texture_cube texture_loader)
+
 TARGET_LINK_LIBRARIES(opengl_texture_cube ${OPENGL_LIBRARIES})
-TARGET_LINK_LIBRARIES(opengl_texture_cube ${GLUT_LIBRARIES})
+TARGET_LINK_LIBRARIES(opengl_texture_cube application)
 TARGET_LINK_LIBRARIES(opengl_texture_cube texture_loader)
 
 SOURCE_GROUP(images FILES ${IMAGE_FILES})

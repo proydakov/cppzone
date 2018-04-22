@@ -30,9 +30,20 @@ const GLdouble ROTATION_DELTA  = 0.5;
 const int CYCLE_TIME = 20;
 GLdouble g_rotationAngle = 0;
 
-bool g_AntiAliasing = true;
+bool g_AntiAliasing = false;
 
 const std::string COMMENT = "Press 'a' for enable / disable AntiAliasing. Press ESC for exit.";
+
+void switchAntiAliasing()
+{
+    g_AntiAliasing = !g_AntiAliasing;
+
+    std::cout << "AntiAliasing: " << g_AntiAliasing << std::endl;
+    if(g_AntiAliasing)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    else
+        glBlendFunc(GL_ONE, GL_ONE);
+}
 
 void init()
 {
@@ -50,14 +61,9 @@ void init()
     glLineWidth(1.5);
 
     glClearColor(0.0, 0.0, 0.0, 0.0);
-}
 
-void initAntiAliasing()
-{   
-    if(g_AntiAliasing)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    else
-        glBlendFunc(GL_ONE, GL_ONE);
+    std::cout << std::endl;
+    switchAntiAliasing();
 }
 
 void info()
@@ -68,8 +74,6 @@ void info()
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    
-    initAntiAliasing();
 
     glColor3d(0.0, 1.0, 0.0);
     glPushMatrix();
@@ -118,7 +122,7 @@ void keyboard(unsigned char key, int x, int y)
     switch(key) {
         case 'A':
         case 'a':
-            g_AntiAliasing = !g_AntiAliasing;
+            switchAntiAliasing();
             break;
 
         case 27:
@@ -148,7 +152,7 @@ int main(int argc, char** argv)
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(100, 100);
     glutCreateWindow(argv[0]);
-    
+
     init();
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
