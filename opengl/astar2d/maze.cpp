@@ -24,7 +24,20 @@
 #include <fstream>
 #include <boost/graph/graphviz.hpp>
 
-boost::mt19937 random_generator = boost::mt19937();
+///////////////////////////////////////////////////////////////////////////////
+
+vertex_hash::vertex_hash(const grid& graph) :
+    m_graph(graph)
+{
+}
+
+std::size_t vertex_hash::operator()(const vertex_descriptor& v) const
+{
+    std::size_t seed = 0;
+    boost::hash_combine(seed, m_graph[v].x);
+    boost::hash_combine(seed, m_graph[v].y);
+    return seed;
+}
 
 // Exception thrown when the goal vertex is found
 struct found_goal {};
@@ -112,12 +125,15 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 maze::maze(std::size_t width, std::size_t height) :
+    m_random_generator(boost::mt19937()),
     m_width(width),
     m_height(height),
     m_heuristic_type(heuristic_type::euclidean),
     m_barriers(width * height, vertex_hash(m_grid)),
     m_barrier_grid(create_barrier_grid())
 {
+    m_random_generator.seed(std::time(0));
+
     const size_t size = width * height;
     m_name.resize(size);
 
@@ -400,22 +416,22 @@ std::string maze::heuristic_type_2_string(heuristic_type h) const
 }
 
 // Return a random integer in the interval [a, b].
-std::size_t random_int(std::size_t a, std::size_t b)
+std::size_t maze::random_int(std::size_t a, std::size_t b)
 {
     if (b < a) {
         b = a;
     }
     boost::uniform_int<> dist(a, b);
     boost::variate_generator<boost::mt19937&, boost::uniform_int<> >
-    generate(random_generator, dist);
+    generate(m_random_generator, dist);
     return generate();
 }
 
 // Generate a maze with a random assignment of barriers.
-boost::shared_ptr<maze> random_maze(std::size_t x, std::size_t y)
+std::shared_ptr<maze> random_maze(std::size_t x, std::size_t y)
 {
-    boost::shared_ptr<maze> m = boost::shared_ptr<maze>(new maze(x, y));
-    
+    auto m = std::make_shared<maze>(x, y);
+
     vertex_descriptor s = m->calc_vertex_index( 0, 0 );
     vertex_descriptor g = m->calc_vertex_index( x - 1, y -1 );
     m->m_soure = s;
@@ -427,11 +443,11 @@ boost::shared_ptr<maze> random_maze(std::size_t x, std::size_t y)
     int barriers = pow(n, 0.75);
     while (barriers > 0) {
         // Choose horizontal or vertical direction.
-        std::size_t direction = random_int(0, 1);
+        std::size_t direction = m->random_int(0, 1);
         // Walls range up to one quarter the dimension length in this direction.
-        vertices_size_type wall = random_int(1, m->length(direction) / 4);
+        vertices_size_type wall = m->random_int(1, m->length(direction) / 4);
         // Create the wall while decrementing the total barrier count.
-        vertex_descriptor u = vertex(random_int(0, n - 1), m->m_grid);
+        vertex_descriptor u = vertex(m->random_int(0, n - 1), m->m_grid);
         while (wall) {
             // Start and goal spaces should never be barriers.
             if (u != s && u != g) {
@@ -452,27 +468,27 @@ boost::shared_ptr<maze> random_maze(std::size_t x, std::size_t y)
     return m;
 }
 
-boost::shared_ptr<maze> empty_maze(std::size_t width, std::size_t height)
+std::shared_ptr<maze> empty_maze(std::size_t width, std::size_t height)
 {
-    boost::shared_ptr<maze> m = boost::shared_ptr<maze>(new maze(width, height));
-    
+    auto m = std::make_shared<maze>(width, height);
+
     vertex_descriptor s = m->calc_vertex_index( 0, 0 );
     vertex_descriptor g = m->calc_vertex_index( width - 1, height -1 );
     m->m_soure = s;
     m->m_goal  = g;
-    
+
     return m;
 }
 
-boost::shared_ptr<maze> fixed()
+std::shared_ptr<maze> fixed()
 {
-    boost::shared_ptr<maze> m = boost::shared_ptr<maze>(new maze(9, 9));
-    
+    auto m = std::make_shared<maze>(9, 9);
+
     vertex_descriptor u1 = m->calc_vertex_index(4, 2);
     vertex_descriptor u2 = m->calc_vertex_index(4, 3);
     vertex_descriptor u3 = m->calc_vertex_index(4, 4);
     vertex_descriptor u4 = m->calc_vertex_index(4, 5);
-    
+
     m->m_barriers.insert(u1);
     m->m_barriers.insert(u2);
     m->m_barriers.insert(u3);

@@ -74,47 +74,47 @@ int application::run()
     bool running = true;
     while (running)
     {
-        SDL_Event Event;
-        while (SDL_PollEvent(&Event))
+        SDL_Event e;
+        while (SDL_PollEvent(&e))
         {
-            switch (Event.type)
+            switch (e.type)
             {
             case SDL_KEYDOWN:
-                switch (Event.key.keysym.sym)
+                switch (e.key.keysym.sym)
                 {
                 case SDLK_ESCAPE:
                     running = false;
                     break;
 
                 case SDLK_F11:
-                    m_fs_functor.process(Event);
+                    m_fs_functor(e);
                     break;
 
                 default:
-                    keyboard(Event);
+                    keyboard(e);
                     break;
                 }
                 break;
 
             case SDL_KEYUP:
-                switch (Event.key.keysym.sym)
+                switch (e.key.keysym.sym)
                 {
                 case SDLK_F11:
-                    m_fs_functor.process(Event);
+                    m_fs_functor(e);
                     break;
 
                 default:
-                    keyboard(Event);
+                    keyboard(e);
                     break;
                 }
                 break;
 
             case SDL_WINDOWEVENT:
-                    switch (Event.window.event) {
+                    switch (e.window.event) {
                     case SDL_WINDOWEVENT_RESIZED:
                     {
-                        m_width = Event.window.data1;
-                        m_height = Event.window.data2;
+                        m_width = e.window.data1;
+                        m_height = e.window.data2;
                         resize(m_width, m_height);
                     }
                         break;
@@ -153,7 +153,7 @@ keyboard_press_guard::keyboard_press_guard(SDL_Keycode code, std::function<void(
 {
 }
 
-void keyboard_press_guard::process(SDL_Event const& Event)
+void keyboard_press_guard::operator ()(SDL_Event const& Event)
 {
     switch (Event.type) {
     case SDL_KEYDOWN:

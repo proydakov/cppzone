@@ -21,86 +21,128 @@
  */
 
 #include <ctime>
+#include <memory>
 #include <iostream>
 
-#include <boost/shared_ptr.hpp>
 #include <boost/lexical_cast.hpp>
-
-#include <common/iglut.h>
 
 #include <maze.h>
 
-struct application_t
+#include <application/application.h>
+
+constexpr GLdouble OBJECT_SIDE = 1.0;
+
+class tcapplication : public application
 {
-    int window_width;
-    int window_height;
+public:
+    tcapplication(int argc, char* argv[], std::size_t w, std::size_t h);
 
-    int maze_width;
-    int maze_height;
+    void init() override;
+    void resize(std::size_t w, std::size_t h) override;
+    void update(std::chrono::microseconds delta) override;
+    void draw() override;
 
-    bool animate;
+    void info() override;
+    void keyboard(SDL_Event const& e);
 
-    boost::shared_ptr<maze> sp_maze;
-    maze::maze_type type;
+    void new_maze();
+    void set_heuristic(maze::heuristic_type h);
+
+public:
+    int m_window_width;
+    int m_window_height;
+
+    int m_maze_width;
+    int m_maze_height;
+
+    std::shared_ptr<maze> m_sp_maze;
+    maze::maze_type m_type;
+
+private:
+    keyboard_press_guard m_functor_fixed;
+    keyboard_press_guard m_functor_empty;
+    keyboard_press_guard m_functor_random;
+    keyboard_press_guard m_functor_generate;
+    keyboard_press_guard m_functor_euclidean;
+    keyboard_press_guard m_functor_euclidean_squared;
+    keyboard_press_guard m_functor_manhattan;
+    keyboard_press_guard m_functor_diagonal;
 };
 
-application_t g_app;
-
-const std::string COMMENT = "Press 'g' or 'G' for generate new maze.\nPress '1', '2', '3' for select maze type;\nPress Esc for exit...";
-
-void info()
+tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t h) :
+    application(argc, argv, w, h),
+    m_window_width(w),
+    m_window_height(h),
+    m_maze_width(100),
+    m_maze_height(100),
+    m_functor_fixed(SDLK_1, [this](){
+        m_type = maze::maze_type::fixed;
+        new_maze();
+    }),
+    m_functor_empty(SDLK_2, [this](){
+        m_type = maze::maze_type::empty;
+        new_maze();
+    }),
+    m_functor_random(SDLK_3, [this](){
+        m_type = maze::maze_type::random;
+        new_maze();
+    }),
+    m_functor_generate(SDLK_g, [this](){
+        new_maze();
+    }),
+    m_functor_euclidean(SDLK_e, [this](){
+        set_heuristic(maze::heuristic_type::euclidean);
+    }),
+    m_functor_euclidean_squared(SDLK_s, [this](){
+        set_heuristic(maze::heuristic_type::euclidean_squared);
+    }),
+    m_functor_manhattan(SDLK_m, [this](){
+        set_heuristic(maze::heuristic_type::manhattan);
+    }),
+    m_functor_diagonal(SDLK_d, [this](){
+        set_heuristic(maze::heuristic_type::diagonal);
+    })
 {
-    std::cout << COMMENT << std::endl;
 }
 
-void new_maze()
-{
-    std::cout << "-------------------------------------------------------------------------------" << std::endl;
-    g_app.sp_maze.reset();
-    if(g_app.type == maze::maze_type::fixed) {
-        g_app.sp_maze = fixed();
-    }
-    else if(g_app.type == maze::maze_type::empty) {
-        g_app.sp_maze = empty_maze(g_app.maze_width, g_app.maze_height);
-    }
-    else if(g_app.type == maze::maze_type::random) {
-        g_app.sp_maze = random_maze(g_app.maze_width, g_app.maze_height);
-    }
-    g_app.sp_maze->solve();
-}
-
-void set_heuristic(maze::heuristic_type h)
-{
-    g_app.sp_maze->set_heuristic(h);
-    g_app.sp_maze->solve();
-}
-
-void animate()
-{
-    g_app.animate = ! g_app.animate;
-}
-
-void init()
+void tcapplication::init()
 {
     glShadeModel(GL_FLAT);
     glClearColor(0.0, 0.0, 0.0, 0.0);
 }
 
-void display()
+void tcapplication::resize(std::size_t w, std::size_t h)
+{
+    m_window_width = w;
+    m_window_height = h;
+
+    glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0, w, h, 0);
+    glMatrixMode(GL_MODELVIEW);
+}
+
+void tcapplication::update(std::chrono::microseconds delta)
+{
+    (void)(delta);
+}
+
+void tcapplication::draw()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    vertices_size_type nx = g_app.sp_maze->length(0);
-    vertices_size_type ny = g_app.sp_maze->length(1);
+    vertices_size_type nx = m_sp_maze->length(0);
+    vertices_size_type ny = m_sp_maze->length(1);
 
-    const double size = std::min(g_app.window_width / nx, g_app.window_height / ny);
+    const double size = std::min(m_window_width / nx, m_window_height / ny);
 
     // barrier
     {
         glColor3d(0.0, 0.5, 1);
-        auto way = g_app.sp_maze->get_barriers();
+        auto way = m_sp_maze->get_barriers();
         for(const auto& el : way) {
-            auto property = g_app.sp_maze->get_vertex_property(el);
+            auto property = m_sp_maze->get_vertex_property(el);
             int x = property.x;
             int y = property.y;
 
@@ -121,9 +163,9 @@ void display()
     // way
     {
         glColor3d(0.8, 0.75, 0.75);
-        auto vector = g_app.sp_maze->get_heuristic_tested();
+        auto vector = m_sp_maze->get_heuristic_tested();
         for(const auto& el : vector) {
-            auto property = g_app.sp_maze->get_vertex_property(el);
+            auto property = m_sp_maze->get_vertex_property(el);
             int x = property.x;
             int y = property.y;
 
@@ -140,13 +182,13 @@ void display()
             glEnd();
         }
     }
-    
+
     // solution
     {
         glColor3d(1, 0.5, 0);
-        auto solution = g_app.sp_maze->get_solution();
+        auto solution = m_sp_maze->get_solution();
         for(const auto& el : solution) {
-            auto property = g_app.sp_maze->get_vertex_property(el);
+            auto property = m_sp_maze->get_vertex_property(el);
             int x = property.x;
             int y = property.y;
 
@@ -163,12 +205,12 @@ void display()
             glEnd();
         }
     }
-    
+
     // start
     {
-        vertex_descriptor s = g_app.sp_maze->source_vertex();
+        vertex_descriptor s = m_sp_maze->source_vertex();
 
-        auto property = g_app.sp_maze->get_vertex_property(s);
+        auto property = m_sp_maze->get_vertex_property(s);
         int x = property.x;
         int y = property.y;
 
@@ -189,9 +231,9 @@ void display()
 
     // end
     {
-        vertex_descriptor g = g_app.sp_maze->goal_vertex();
+        vertex_descriptor g = m_sp_maze->goal_vertex();
 
-        auto property = g_app.sp_maze->get_vertex_property(g);
+        auto property = m_sp_maze->get_vertex_property(g);
         int x = property.x;
         int y = property.y;
 
@@ -239,89 +281,87 @@ void display()
             glEnd();
         }
     }
-    
-    glFlush();
-    glutSwapBuffers();
 }
 
-void keyboard(unsigned char key, int x, int y)
+void tcapplication::info()
 {
-    (void)x;
-    (void)y;
+    std::cout << "Press 'g' or 'G' for generate new maze.\nPress '1', '2', '3' for select maze type\n";
+}
 
-    switch(key) {
-    case 27:
-        exit(0);
+void tcapplication::keyboard(SDL_Event const& e)
+{
+    switch (e.key.keysym.sym)
+    {
+    case SDLK_1:
+        m_functor_fixed(e);
         break;
 
-    case '1':
-        g_app.type = maze::maze_type::fixed;
-        new_maze();
+    case SDLK_2:
+        m_functor_empty(e);
         break;
 
-    case '2':
-        g_app.type = maze::maze_type::empty;
-        new_maze();
+    case SDLK_3:
+        m_functor_random(e);
         break;
 
-    case '3':
-        g_app.type = maze::maze_type::random;
-        new_maze();
+    case SDLK_g:
+        m_functor_generate(e);
         break;
 
-    case 'G':
-    case 'g':
-        new_maze();
+    case SDLK_e:
+        m_functor_euclidean(e);
         break;
 
-    case 'E':
-    case 'e':
-        set_heuristic(maze::heuristic_type::euclidean);
+    case SDLK_s:
+        m_functor_euclidean_squared(e);
         break;
 
-    case 'S':
-    case 's':
-        set_heuristic(maze::heuristic_type::euclidean_squared);
+    case SDLK_m:
+        m_functor_manhattan(e);
         break;
 
-    case 'M':
-    case 'm':
-        set_heuristic(maze::heuristic_type::manhattan);
+    case SDLK_d:
+        m_functor_diagonal(e);
         break;
-
-    case 'D':
-    case 'd':
-        set_heuristic(maze::heuristic_type::diagonal);
-        break;
-
-//    case 'A':
-//    case 'a':
-//        animate();
-//        break;
 
     default:
         break;
     }
-    glutPostRedisplay();
 }
 
-void reshape(int w, int h)
+void tcapplication::new_maze()
 {
-    g_app.window_width = w;
-    g_app.window_height = h;
+    m_sp_maze.reset();
 
-    glViewport(0, 0, (GLsizei) w, (GLsizei) h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(0, w, h, 0);
-    glMatrixMode(GL_MODELVIEW);
+    switch (m_type) {
+    case maze::maze_type::fixed:
+        m_sp_maze = fixed();
+        break;
+
+    case maze::maze_type::empty:
+        m_sp_maze = empty_maze(m_maze_width, m_maze_height);
+        break;
+
+    case maze::maze_type::random:
+        m_sp_maze = random_maze(m_maze_width, m_maze_height);
+        break;
+
+    default:
+        break;
+    }
+
+    m_sp_maze->solve();
 }
 
-int main(int argc, char** argv)
+void tcapplication::set_heuristic(maze::heuristic_type h)
 {
-    info();
+    m_sp_maze->set_heuristic(h);
+    m_sp_maze->solve();
+}
 
-    std::size_t size = 1000;
+int main(int argc, char* argv[])
+{
+    constexpr std::size_t size = 75;
 
     std::size_t x = size;
     std::size_t y = size;
@@ -331,28 +371,14 @@ int main(int argc, char** argv)
         y = boost::lexical_cast<std::size_t>(argv[2]);
     }
 
-    g_app.window_width = 0;
-    g_app.window_height = 0;
-    g_app.maze_width = x;
-    g_app.maze_height = y;
-    g_app.animate = false;
-    g_app.type = maze::maze_type::fixed;
+    tcapplication app(argc, argv, 600, 600);
 
-    random_generator.seed(std::time(0));
+    app.m_window_width = 0;
+    app.m_window_height = 0;
+    app.m_maze_width = x;
+    app.m_maze_height = y;
+    app.m_type = maze::maze_type::fixed;
+    app.new_maze();
 
-    new_maze();
-
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowSize(600, 600);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow(argv[0]);
-
-    init();
-
-    glutDisplayFunc(display);
-    glutKeyboardFunc(keyboard);
-    glutReshapeFunc(reshape);
-    glutMainLoop();
-    return 0;
+    return app.run();
 }

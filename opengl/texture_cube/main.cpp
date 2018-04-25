@@ -218,7 +218,7 @@ void tcapplication::keyboard(SDL_Event const& e)
             break;
 
         case SDLK_b:
-            m_bl_functor.process(e);
+            m_bl_functor(e);
             break;
 
         default:

@@ -20,11 +20,11 @@
  *  THE SOFTWARE.
  */
 
+#include <memory>
 #include <chrono>
 #include <iostream>
 #include <functional>
 
-#include <boost/shared_ptr.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/unordered_set.hpp>
 #include <boost/graph/astar_search.hpp>
@@ -34,8 +34,6 @@
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/variate_generator.hpp>
-
-extern boost::mt19937 random_generator;
 
 typedef int distance_t;
 
@@ -66,16 +64,9 @@ typedef std::vector<std::string> name_vector;
 class vertex_hash : std::unary_function<vertex_descriptor, std::size_t>
 {
 public:
-    vertex_hash(const grid& graph) : m_graph(graph) {}
-    
-    std::size_t operator()(const vertex_descriptor& v) const
-    {
-        std::size_t seed = 0;
-        boost::hash_combine(seed, m_graph[v].x);
-        boost::hash_combine(seed, m_graph[v].y);
-        return seed;
-    }
-    
+    vertex_hash(const grid& graph);
+    std::size_t operator()(const vertex_descriptor& v) const;
+
 private:
     const grid& m_graph;
 };
@@ -116,9 +107,9 @@ public:
     };
 
 public:
-    friend boost::shared_ptr<maze> random_maze(std::size_t x, std::size_t y);
-    friend boost::shared_ptr<maze> empty_maze (std::size_t x, std::size_t y);
-    friend boost::shared_ptr<maze> fixed();
+    friend std::shared_ptr<maze> random_maze(std::size_t x, std::size_t y);
+    friend std::shared_ptr<maze> empty_maze (std::size_t x, std::size_t y);
+    friend std::shared_ptr<maze> fixed();
 
     maze(std::size_t width, std::size_t height);
 
@@ -144,12 +135,15 @@ public:
     void dump_to_dot();
 
 private:
+    std::size_t random_int(std::size_t a, std::size_t b);
     filtered_grid create_barrier_grid();
     size_t calc_vertex_index(size_t x, size_t y);
     std::string heuristic_type_2_string(heuristic_type h) const;
 
 private:
     typedef std::function<distance_t(distance_t, distance_t)> heuristic_t;
+
+    boost::mt19937 m_random_generator;
 
     size_t m_width;
     size_t m_height;
@@ -168,6 +162,6 @@ private:
 };
 
 // Generate a maze with a random assignment of barriers.
-boost::shared_ptr<maze> random_maze(std::size_t x, std::size_t y);
-boost::shared_ptr<maze> empty_maze(std::size_t x, std::size_t y);
-boost::shared_ptr<maze> fixed();
+std::shared_ptr<maze> random_maze(std::size_t x, std::size_t y);
+std::shared_ptr<maze> empty_maze(std::size_t x, std::size_t y);
+std::shared_ptr<maze> fixed();

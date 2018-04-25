@@ -14,7 +14,7 @@ class keyboard_press_guard
 {
 public:
     keyboard_press_guard(SDL_Keycode code, std::function<void()>&& lambda);
-    void process(SDL_Event const& Event);
+    void operator()(SDL_Event const& Event);
 
 private:
     SDL_Keycode const m_code;
