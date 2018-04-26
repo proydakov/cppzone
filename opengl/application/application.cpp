@@ -80,25 +80,13 @@ int application::run()
             switch (e.type)
             {
             case SDL_KEYDOWN:
+            case SDL_KEYUP:
                 switch (e.key.keysym.sym)
                 {
                 case SDLK_ESCAPE:
                     running = false;
                     break;
 
-                case SDLK_F11:
-                    m_fs_functor(e);
-                    break;
-
-                default:
-                    keyboard(e);
-                    break;
-                }
-                break;
-
-            case SDL_KEYUP:
-                switch (e.key.keysym.sym)
-                {
                 case SDLK_F11:
                     m_fs_functor(e);
                     break;
