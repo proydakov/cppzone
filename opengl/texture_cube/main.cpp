@@ -32,6 +32,10 @@
 #define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
 #define GL_TEXTURE_MAX_ANISOTROPY_EXT     0x84FE
 
+#ifdef _MSC_VER
+#   define GL_BGR 0x80E0
+#endif // _MSC_VER
+
 class tcapplication : public application
 {
 public:
@@ -200,7 +204,7 @@ void tcapplication::draw()
 void tcapplication::info()
 {
     std::cout << "Press 'B' to change the blending\n";
-    std::cout << "Press '1', '2', '3', '4' to change textuire\n";
+    std::cout << "Press '1', '2', '3', '4', '5', '6', '7' to change textuire\n";
 }
 
 void tcapplication::keyboard(SDL_Event const& e)

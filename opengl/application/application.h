@@ -4,6 +4,10 @@
 #include <cstdint>
 #include <functional>
 
+#ifdef _MSC_VER
+#include <windows.h>
+#endif // _MSC_VER
+
 #include <GL/gl.h>
 #include <GL/glu.h>
 

@@ -23,6 +23,7 @@
 #include <ctime>
 #include <memory>
 #include <iostream>
+#include <algorithm>
 
 #include <boost/lexical_cast.hpp>
 
@@ -132,10 +133,10 @@ void tcapplication::draw()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    vertices_size_type nx = m_sp_maze->length(0);
-    vertices_size_type ny = m_sp_maze->length(1);
+    vertices_size_type const nx = m_sp_maze->length(0);
+    vertices_size_type const ny = m_sp_maze->length(1);
 
-    const double size = std::min(m_window_width / nx, m_window_height / ny);
+    auto const size = std::fmin(GLdouble(m_window_width) / nx, GLdouble(m_window_height) / ny);
 
     // barrier
     {
