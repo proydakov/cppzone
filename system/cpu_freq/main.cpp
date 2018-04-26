@@ -27,6 +27,7 @@ void bind_core(size_t core_id)
 }
 
 #elif defined(__linux__) // any linux distribution
+
 #include <sched.h>
 
 uint64_t rdtsc()
@@ -50,6 +51,7 @@ void bind_core(size_t core_id)
 
 #include <windows.h>
 #include <intrin.h>
+
 #pragma intrinsic(__rdtsc)
 
 uint64_t rdtsc()
