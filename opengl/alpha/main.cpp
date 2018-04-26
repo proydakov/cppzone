@@ -23,43 +23,19 @@
 #include <string>
 #include <iostream>
 
-#include <application/application.h>
+#include <common/iglut.h>
 
-constexpr GLdouble OBJECT_SIDE = 1.0;
+const std::string COMMENT = "Press any key to change the order of drawing objects.\nPress Esc for exit...";
+const GLdouble OBJECT_SIDE = 1;
 
-class tcapplication : public application
+static int g_leftFirst = GL_TRUE;
+
+void info()
 {
-public:
-    tcapplication(int argc, char* argv[], std::size_t w, std::size_t h);
-
-    void init() override;
-    void resize(std::size_t w, std::size_t h) override;
-    void update(std::chrono::microseconds delta) override;
-    void draw() override;
-
-    void info() override;
-    void keyboard(SDL_Event const& e);
-
-private:
-    void drawTriangle(GLdouble side, GLdouble red, GLdouble green, GLdouble blue, GLdouble alpha);
-    void drawLeftTriangle();
-    void drawRightTriangle();
-
-private:
-    bool m_left_first;
-    keyboard_press_guard m_functor;
-};
-
-tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t h) :
-    application(argc, argv, w, h),
-    m_left_first(true),
-    m_functor(SDLK_a, [this](){
-        m_left_first = !m_left_first;
-    })
-{
+    std::cout << COMMENT << std::endl;
 }
 
-void tcapplication::init()
+void init()
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -67,35 +43,7 @@ void tcapplication::init()
     glClearColor(0.0, 0.0, 0.0, 0.0);
 }
 
-void tcapplication::resize(std::size_t w, std::size_t h)
-{
-    glViewport(0, 0, (GLsizei) w, (GLsizei) h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(-OBJECT_SIDE / 2, OBJECT_SIDE * 3 / 2, -OBJECT_SIDE / 2, OBJECT_SIDE * 3 / 2);
-}
-
-void tcapplication::update(std::chrono::microseconds delta)
-{
-    (void)(delta);
-}
-
-void tcapplication::draw()
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-
-    if(m_left_first) {
-        drawLeftTriangle();
-        drawRightTriangle();
-    }
-    else {
-        drawRightTriangle();
-        drawLeftTriangle();
-    }
-}
-
-void tcapplication::drawTriangle(GLdouble side, GLdouble red, GLdouble green, GLdouble blue, GLdouble alpha)
+void drawTriangle(GLdouble side, GLdouble red, GLdouble green, GLdouble blue, GLdouble alpha)
 {
     glBegin(GL_POLYGON);
     {
@@ -107,7 +55,7 @@ void tcapplication::drawTriangle(GLdouble side, GLdouble red, GLdouble green, GL
     glEnd();
 }
 
-void tcapplication::drawLeftTriangle()
+void drawLeftTriangle()
 {
     glPushMatrix();
     glTranslated(-OBJECT_SIDE / 4, 0, 0);
@@ -115,7 +63,7 @@ void tcapplication::drawLeftTriangle()
     glPopMatrix();
 }
 
-void tcapplication::drawRightTriangle()
+void drawRightTriangle()
 {
     glPushMatrix();
     glTranslated(OBJECT_SIDE / 4, 0, 0);
@@ -123,27 +71,64 @@ void tcapplication::drawRightTriangle()
     glPopMatrix();
 }
 
-void tcapplication::info()
+void display()
 {
-    std::cout << "Press any key to change the order of drawing objects.\n";
+    glClear(GL_COLOR_BUFFER_BIT);
+    glMatrixMode(GL_MODELVIEW);
+
+    if(g_leftFirst) {
+        drawLeftTriangle();
+        drawRightTriangle();
+    }
+    else {
+        drawRightTriangle();
+        drawLeftTriangle();
+    }
+
+    glFlush();
+
+    glutSwapBuffers();
 }
 
-void tcapplication::keyboard(SDL_Event const& e)
+void keyboard(unsigned char key, int x, int y)
 {
-    switch (e.key.keysym.sym)
-    {
-        case SDLK_a:
-            m_functor(e);
+    (void)x;
+    (void)y;
+
+    switch(key) {
+        case 27:
+            exit(0);
             break;
 
         default:
+            g_leftFirst = !g_leftFirst;
+            glutPostRedisplay();
             break;
     }
+    glutPostRedisplay();
+}
+
+void reshape(int w, int h)
+{
+    glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(-OBJECT_SIDE / 2, OBJECT_SIDE * 3 / 2, -OBJECT_SIDE / 2, OBJECT_SIDE * 3 / 2);
 }
 
 int main(int argc, char** argv)
 {
-    tcapplication app(argc, argv, 640, 480);
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+    glutInitWindowSize(500, 500);
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow(argv[0]);
 
-    return app.run();
+    info();
+    init();
+    glutDisplayFunc(display);
+    glutKeyboardFunc(keyboard);
+    glutReshapeFunc(reshape);
+    glutMainLoop();
+    return 0;
 }
