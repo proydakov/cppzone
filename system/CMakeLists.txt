@@ -23,5 +23,6 @@ ADD_SUBDIRECTORY(str_storage)
 ADD_SUBDIRECTORY(stack_size)
 ADD_SUBDIRECTORY(stack_size_recursion)
 ADD_SUBDIRECTORY(thread_stack_size)
+ADD_SUBDIRECTORY(yield)
 
 MESSAGE("")

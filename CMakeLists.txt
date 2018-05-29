@@ -75,7 +75,7 @@ IF(MSVC)
     SET(Boost_USE_STATIC_LIBS    ON)
     SET(Boost_USE_MULTITHREADED  ON)
 ENDIF()
-FIND_PACKAGE(Boost COMPONENTS thread system date_time regex chrono coroutine context)
+FIND_PACKAGE(Boost COMPONENTS thread system date_time regex chrono coroutine context graph)
 
 ADD_SUBDIRECTORY(asm)
 ADD_SUBDIRECTORY(algorithms)
