@@ -1,5 +1,5 @@
 #==============================================================================
-# Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
+# Copyright (c) 2018 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
@@ -8,4 +8,4 @@ SET(SOURCE_FILES
     main.cpp
     )
 
-I_ADD_EXECUTABLE(linux_pest ${SOURCE_FILES})
+I_ADD_EXECUTABLE(linux_yield ${SOURCE_FILES})
