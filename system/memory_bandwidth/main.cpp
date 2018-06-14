@@ -1,18 +1,36 @@
 #include <string>
 #include <chrono>
 #include <vector>
+#include <numeric>
 #include <cstdint>
 #include <iostream>
 
 std::int64_t constexpr giga = 1024l * 1024l * 1024l;
 
-template<class T>
-void print_stat(T start, T end, std::size_t bytes)
+class experiment
 {
-    auto const delta = end - start;
-    std::cout << "fill size: " << bytes * 1.0 / giga << " Gb time: " << std::chrono::duration_cast<std::chrono::milliseconds>(delta).count() << " milliseconds" << std::endl;
-    std::cout << "memory_bandwidth: " << bytes * 1.0 / giga / std::chrono::duration_cast<std::chrono::milliseconds>(delta).count() * 1000 << " GB/s" << std::endl;
-}
+public:
+    template<class T>
+    experiment(std::vector<T> const& data)
+        : m_bytes(data.size() * sizeof(decltype(data)::value_type))
+        , m_start(std::chrono::high_resolution_clock::now())
+    {
+    }
+
+    ~experiment()
+    {
+        auto end = std::chrono::high_resolution_clock::now();
+
+        auto const delta = end - m_start;
+        std::cout << "fill size: " << m_bytes * 1.0 / giga << " Gb time: " << std::chrono::duration_cast<std::chrono::milliseconds>(delta).count() << " milliseconds" << std::endl;
+        std::cout << "memory_bandwidth: " << m_bytes * 1.0 / giga / std::chrono::duration_cast<std::chrono::milliseconds>(delta).count() * 1000 << " GB/s" << std::endl;
+    }
+
+private:
+    std::size_t const m_bytes;
+    std::chrono::time_point<std::chrono::high_resolution_clock> const m_start;
+};
+
 
 int main(int argc, char* argv[])
 {
@@ -24,29 +42,31 @@ int main(int argc, char* argv[])
     std::int64_t const gb = std::stol(argv[1]);
     std::cout << "memory size: " << gb << " Gb" << std::endl;
 
-    using vec_t = std::vector<char>;
+    using vec_t = std::vector<std::int64_t>;
     vec_t data;
 
-    std::int64_t const alloc_size = gb * giga;
+    std::int64_t const alloc_size = gb * giga / sizeof(vec_t::value_type);
 
     {
-        std::cout << "\nallocation..." << std::endl;
-        auto start = std::chrono::high_resolution_clock::now();
+        std::cout << "\nallocating..." << std::endl;
+        experiment e(data);
         data.resize(alloc_size, 0);
-        auto end = std::chrono::high_resolution_clock::now();
-
-        print_stat(start, end, data.size());
     }
 
     vec_t copy;
 
     {
         std::cout << "\ncopying..." << std::endl;
-        auto start = std::chrono::high_resolution_clock::now();
+        experiment e(data);
         copy = data;
-        auto end = std::chrono::high_resolution_clock::now();
+    }
 
-        print_stat(start, end, data.size());
+    std::int64_t summ = 0;
+
+    {
+        std::cout << "\naccumulating..." << std::endl;
+        experiment e(data);
+        summ = std::accumulate(data.begin(), data.end(), std::int64_t(0));
     }
 
     {
@@ -55,5 +75,5 @@ int main(int argc, char* argv[])
         std::cin >> n;
     }
 
-    return 0;
+    return summ;
 }
