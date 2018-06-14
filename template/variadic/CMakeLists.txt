@@ -1,5 +1,5 @@
 #==============================================================================
-# Copyright (c) 2014 Evgeny Proydakov <lord.tiran@gmail.com>
+# Copyright (c) 2018 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
@@ -8,4 +8,4 @@ SET(SOURCE_FILES
     main.cpp
     )
 
-I_ADD_EXECUTABLE(syntax_variadic_templates ${SOURCE_FILES})
+I_ADD_EXECUTABLE(template_variadic ${SOURCE_FILES})

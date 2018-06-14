@@ -2,10 +2,12 @@
 #include <iostream>
 
 template<class T>
-struct Ptr {
+struct Ptr
+{
     T* pad; // add pad to show difference between 'this' and 'data'
     T* data;
-    Ptr(T* arg) : pad(nullptr), data(arg) 
+
+    Ptr(T* arg) : pad(nullptr), data(arg)
     {
         std::cout << "ptr this = " << this << std::endl;
     }
