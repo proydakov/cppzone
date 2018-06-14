@@ -10,9 +10,8 @@ std::int64_t constexpr giga = 1024l * 1024l * 1024l;
 class experiment
 {
 public:
-    template<class T>
-    experiment(std::vector<T> const& data)
-        : m_bytes(data.size() * sizeof(T))
+    experiment(std::size_t alloc_bytes)
+        : m_bytes(alloc_bytes)
         , m_start(std::chrono::high_resolution_clock::now())
     {
     }
@@ -45,11 +44,12 @@ int main(int argc, char* argv[])
     using vec_t = std::vector<std::int64_t>;
     vec_t data;
 
-    std::int64_t const alloc_size = gb * giga / sizeof(vec_t::value_type);
+    std::size_t const alloc_bytes = gb * giga;
+    std::size_t const alloc_size = alloc_bytes / sizeof(vec_t::value_type);
 
     {
         std::cout << "\nallocating..." << std::endl;
-        experiment e(data);
+        experiment e(alloc_bytes);
         data.resize(alloc_size, 0);
     }
 
@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 
     {
         std::cout << "\ncopying..." << std::endl;
-        experiment e(data);
+        experiment e(alloc_bytes);
         copy = data;
     }
 
@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
 
     {
         std::cout << "\naccumulating..." << std::endl;
-        experiment e(data);
+        experiment e(alloc_bytes);
         summ = std::accumulate(data.begin(), data.end(), std::int64_t(0));
     }
 
