@@ -24,7 +24,7 @@ ELSE()
     FIND_LIBRARY(GLUT_LIBRARIES NAMES freeglut
         HINTS
         PATHS
-        ${PROJECT_SOURCE_DIR}/thirdparty/windows/freeglut/lib/${SEARCH_PATH}
+        ${PROJECT_SOURCE_DIR}/thirdparty/windows/freeglut/lib/${GLOBAL_SEARCH_SUFFIX}
 	)
 
     SET(GLUT_FOUND TRUE)

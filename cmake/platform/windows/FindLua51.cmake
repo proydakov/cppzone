@@ -57,7 +57,7 @@ find_library(LUA_LIBRARY
     ENV LUA_DIR
   PATH_SUFFIXES lib
   PATHS
-  ${PROJECT_SOURCE_DIR}/thirdparty/windows/Lua5.1/lib/${SEARCH_PATH}
+  ${PROJECT_SOURCE_DIR}/thirdparty/windows/Lua5.1/lib/${GLOBAL_SEARCH_SUFFIX}
 )
 
 if(LUA_LIBRARY)
