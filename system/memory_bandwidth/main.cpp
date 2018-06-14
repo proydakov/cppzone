@@ -12,7 +12,7 @@ class experiment
 public:
     template<class T>
     experiment(std::vector<T> const& data)
-        : m_bytes(data.size() * sizeof(decltype(data)::value_type))
+        : m_bytes(data.size() * sizeof(T))
         , m_start(std::chrono::high_resolution_clock::now())
     {
     }
