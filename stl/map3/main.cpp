@@ -18,7 +18,7 @@ using map_t = std::map<std::int64_t, std::int64_t>;
 
 #ifdef _MSC_VER
 
-static_assert(sizeof(map_t::_Node) == 48, "Require fixed node size");
+static_assert(sizeof(map_t::_Node) == (sizeof(map_t::value_type) + sizeof(void*) * 4), "Require fixed node size");
 
 #endif // _MSC_VER
 
