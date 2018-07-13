@@ -220,7 +220,7 @@ int main(int argc, char* argv[])
 
     std::vector<std::thread> threads;
     for(size_t i = 0; i < hardware_concurrency; i++) {
-        threads.push_back(std::move(std::thread([&source, &blobs, &ifile, &blob_counter]() {
+        threads.push_back(std::thread([&source, &blobs, &ifile, &blob_counter]() {
             while(true) {
                 std::deque<data> vec = source.read();
 
@@ -232,7 +232,7 @@ int main(int argc, char* argv[])
                 auto str = sort_blob(vec, ifile, counter);
                 blobs.add_blob( std::move(str) );
             }
-        })));
+        }));
     }
 
     for(size_t i = 0; i < threads.size(); i++)

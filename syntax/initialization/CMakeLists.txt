@@ -1,4 +1,0 @@
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-
-I_ADD_EXECUTABLE(syntax_init1 main1.cpp)
-I_ADD_EXECUTABLE(syntax_init2 main2.cpp)

@@ -22,8 +22,6 @@
 
 #include <iostream>
 
-const int CONST = 1000;
-
 int main( int argc, char *argv[] )
 {
     (void)argc;

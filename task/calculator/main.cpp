@@ -203,7 +203,7 @@ std::list<token> to_tokens(const std::string& input)
         }
             break;
         default:
-			if (std::isdigit(symbol, loc) || '.' == symbol) {
+	    if (std::isdigit(symbol, loc) || '.' == symbol) {
                 value.push_back(symbol);
                 operation = false;
             }
@@ -264,22 +264,22 @@ std::list<token> to_rpn(const std::list<token>& tokens)
                 throw std::runtime_error("Invalid token type");
             }
             auto priority = token::get_operator_priority(t.get_type());
-			while (!temp_stack.empty()) {
-				auto temp_t = temp_stack.back();
-				if (temp_t.is_operator()) {
-					auto temp_priority = token::get_operator_priority(temp_t.get_type());
-					if (priority <= temp_priority) {
-						rpn_tokens.push_back(temp_t);
-						temp_stack.pop_back();
-					}
-					else {
-						break;
-					}
-				}
-				else {
-					break;
-				}
-			}
+	    while (!temp_stack.empty()) {
+		auto temp_t = temp_stack.back();
+		if (temp_t.is_operator()) {
+		    auto temp_priority = token::get_operator_priority(temp_t.get_type());
+		    if (priority <= temp_priority) {
+		        rpn_tokens.push_back(temp_t);
+			temp_stack.pop_back();
+		    }
+		    else {
+			break;
+		    }
+		}
+		else {
+		    break;
+	        }
+	    }
             temp_stack.push_back(t);
             break;
         }
@@ -303,7 +303,7 @@ T calculate(const std::list<token>& rpn, string2T fun)
 {
     std::list<T> calc_stack;
     std::cout << "calculate:" << std::endl;
-    std::for_each(rpn.begin(), rpn.end(), [&](const token& t) {
+    std::for_each(rpn.begin(), rpn.end(), [fun, &calc_stack](const token& t) {
         if(t.is_number()) {
             T element = static_cast<T>(fun(t.get_value().c_str()));
             calc_stack.push_back(element);
@@ -340,7 +340,7 @@ T calculate(const std::list<token>& rpn, string2T fun)
             calc_stack.push_back(calc_result);
         }
         std::cout << "calc stack: ";
-        std::for_each(calc_stack.begin(), calc_stack.end(), [&](const T& value) {
+        std::for_each(calc_stack.begin(), calc_stack.end(), [](const T& value) {
             std::cout << value << " ";
         });
         std::cout << std::endl;
@@ -370,7 +370,7 @@ int main( int argc, char *argv[] )
     try {
         const auto& tokens = to_tokens(input);
         std::cout << "tokens:" << std::endl;
-        std::for_each(tokens.begin(), tokens.end(), [&tokens](const token& t) {
+        std::for_each(tokens.begin(), tokens.end(), [](const token& t) {
             std::cout << "value: " << t.get_value() << " type: " << t.get_type() << std::endl;
         });
         std::cout << std::endl;
@@ -381,7 +381,7 @@ int main( int argc, char *argv[] )
 
         const auto& rpn = to_rpn(tokens);
         std::cout << "RPN:" << std::endl;
-        std::for_each(rpn.begin(), rpn.end(), [&tokens](const token& t) {
+        std::for_each(rpn.begin(), rpn.end(), [](const token& t) {
             std::cout << "value: " << t.get_value() << " type: " << t.get_type() << std::endl;
         });
         std::cout << std::endl;

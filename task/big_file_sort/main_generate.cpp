@@ -114,9 +114,9 @@ int main(int argc, char* argv[])
     cstorage<std::vector<std::string>> storage;
 
     for(size_t i = 0; i < hardware_concurrency; i++) {
-        threads.push_back(std::move(std::thread([&storage, segment_size](){
+        threads.push_back(std::thread([&storage, segment_size](){
             producer(storage, segment_size);
-        })));
+        }));
     }
 
     bool done = false;

@@ -25,29 +25,29 @@
 class smart_error
 {
 public:
-    smart_error(int val) : val(val)
+    smart_error(int val) : m_val(val)
     {
-        std::cout << "smart_error(create): " << val << std::endl;
+        std::cout << "smart_error(create): " << m_val << std::endl;
     }
 
     smart_error(const smart_error& error)
     {
-        val = error.val;
-        std::cout << "smart_error(copy): " << val << std::endl;
+        m_val = error.m_val;
+        std::cout << "smart_error(copy): " << m_val << std::endl;
     }
 
     ~smart_error()
     {
-        std::cout << "smart_error(destroy): " << val << std::endl;
+        std::cout << "smart_error(destroy): " << m_val << std::endl;
     }
 
     void set_val(int val)
     {
-        val = val;
+        m_val = val;
     }
 
 private:
-    int val;
+    int m_val;
 };
 
 int main(int argc, char *argv[])

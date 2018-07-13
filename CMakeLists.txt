@@ -26,9 +26,23 @@ SET(GLOBAL_PROJECT_FOLDER "null")
 INCLUDE(ios)
 INCLUDE(imacro)
 INCLUDE(icompiler)
+INCLUDE(ilinker)
 
-# setup cxx
+# setup build
 SETUP_CXX_FLAGS()
+
+SETUP_LINKER()
+
+# colors =)
+set (CMAKE_BUILD_COLOR_MAKEFILE ON)
+
+if (CMAKE_GENERATOR STREQUAL "Ninja")
+    # Turn on colored output. https://github.com/ninja-build/ninja/wiki/FAQ
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fdiagnostics-color=always")
+endif ()
+
+# end setup build
 
 # @todo. try to found good place for this code
 IF( CMAKE_SIZEOF_VOID_P EQUAL 8 )
@@ -75,11 +89,11 @@ ENDIF()
 IF(PROJECT_OS_LINUX)
     ADD_SUBDIRECTORY(linux)
 
-    FIND_PACKAGE(ALUT)
-    FIND_PACKAGE(OpenAL)
-    IF(ALUT_FOUND AND OPENAL_FOUND)
-        ADD_SUBDIRECTORY(openal)
-    ENDIF()
+#    FIND_PACKAGE(ALUT)
+#    FIND_PACKAGE(OpenAL)
+#    IF(ALUT_FOUND AND OPENAL_FOUND)
+#        ADD_SUBDIRECTORY(openal)
+#    ENDIF()
 ENDIF()
 
 FIND_PACKAGE(GLUT)

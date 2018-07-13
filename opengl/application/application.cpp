@@ -44,6 +44,10 @@ application::application(int argc, char* argv[], size_t width, size_t height) :
     m_context = SDL_GL_CreateContext(m_window);
 }
 
+application::~application()
+{
+}
+
 void application::info()
 {
 }

@@ -1,17 +1,23 @@
+macro(COMPILER_SET_MAX_WARNING_LEVEL)
+
+if(MSVC)
+    string(REGEX REPLACE /W[0-4] /W4 CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+else()
+    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -Wall -Werror")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-attributes -Wno-unknown-pragmas -Wno-noexcept-type")
+    endif()
+
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-attributes -Wno-unknown-pragmas")
+    endif()
+endif()
+
+endmacro(COMPILER_SET_MAX_WARNING_LEVEL)
+
 ###############################################################################
-# Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
-###############################################################################
-
-MACRO(COMPILER_SET_MAX_WARNING_LEVEL)
-
-IF(MSVC)
-    STRING(REGEX REPLACE /W[0-4] /W4 CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-ELSE()
-    SET(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -Wall")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-ENDIF(MSVC)
-
-ENDMACRO(COMPILER_SET_MAX_WARNING_LEVEL)
 
 MACRO(COMPILER_MSVC_SET_STATIC_RUNTIME)
 
@@ -31,27 +37,42 @@ ENDFOREACH(flag_var)
 
 ENDMACRO(COMPILER_MSVC_SET_STATIC_RUNTIME)
 
+###############################################################################
+
 MACRO(SETUP_CXX_FLAGS)
 
-IF(PROJECT_OS_LINUX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread")
-ENDIF()
+#set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_EXTENSIONS 1) # https://cmake.org/cmake/help/latest/prop_tgt/CXX_EXTENSIONS.html#prop_tgt:CXX_EXTENSIONS
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-IF(PROJECT_OS_OSX)
-    SET(CMAKE_MACOSX_RPATH 1)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++")
-    SET(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvm.clang.1_0")
-    SET(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++14")
-    SET(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY           "libc++")
+if(PROJECT_OS_LINUX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+endif()
 
-    SET(CMAKE_MACOSX_RPATH 1)
-ENDIF()
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -faligned-new")
+endif()
 
-IF(MSVC)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++")
+endif()
+
+if(PROJECT_OS_OSX)
+    set(CMAKE_MACOSX_RPATH 1)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++")
+    set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvm.clang.1_0")
+    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++14")
+    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY           "libc++")
+endif()
+
+if(MSVC)
     ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
     ADD_DEFINITIONS(-D_WIN32_WINNT=0x0501)
-ENDIF()
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -Wnon-virtual-dtor")
+endif()
 
 COMPILER_SET_MAX_WARNING_LEVEL()
+#COMPILER_MSVC_SET_STATIC_RUNTIME()
 
 ENDMACRO(SETUP_CXX_FLAGS)

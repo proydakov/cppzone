@@ -31,8 +31,6 @@
 
 #include <application/application.h>
 
-constexpr GLdouble OBJECT_SIDE = 1.0;
-
 class tcapplication : public application
 {
 public:
@@ -44,7 +42,7 @@ public:
     void draw() override;
 
     void info() override;
-    void keyboard(SDL_Event const& e);
+    void keyboard(SDL_Event const& e) override;
 
     void new_maze();
     void set_heuristic(maze::heuristic_type h);

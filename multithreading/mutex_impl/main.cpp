@@ -111,7 +111,7 @@ void test()
 
     std::vector<std::thread> threads;
     for(size_t t = 0; t < std::thread::hardware_concurrency(); t++) {
-        std::thread thread([&data, &mutex, t]() {
+        std::thread thread([&data, &mutex]() {
             for(size_t i = 0; i < 10000; i++) {
                 std::lock_guard<mutex_t> guard(mutex);
                 data.push_back(i);

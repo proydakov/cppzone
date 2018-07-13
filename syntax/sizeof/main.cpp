@@ -40,7 +40,7 @@
 
 
 #ifndef _MSC_VER
-class N
+struct N
 {
     int k[0];
 };
@@ -167,6 +167,7 @@ int main(int argc, char *argv[])
 
 #ifndef _MSC_VER
     std::cout << "sizeof N: "<< sizeof(N) << std::endl;
+    std::cout << "sizeof N::k: "<< sizeof(N::k) << std::endl;
 
     N* n1 = new N;
     N* n2 = new N;

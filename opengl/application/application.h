@@ -30,7 +30,7 @@ class application
 {
 public:
     application(int argc, char* argv[], std::size_t width, std::size_t height);
-    ~application() = default;
+    virtual ~application();
 
     virtual void init() = 0;
     virtual void resize(std::size_t width, std::size_t height) = 0;

@@ -9,6 +9,10 @@ public:
         call();
     }
 
+    virtual ~A()
+    {
+    }
+
     virtual void call()
     {
         std::cout << "A::call" << std::endl;

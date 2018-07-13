@@ -44,16 +44,9 @@ object make_object_normal()
     return object();
 }
 
-const object& make_object_error()
-{
-    const object& ref = make_object_normal();
-    std::cout << ref << std::endl;
-    return ref;
-}
-
 int main()
 {
-    const object& ref = make_object_error();
+    const object& ref = make_object_normal();
     std::cout << ref << std::endl;
     return 0;
 }
