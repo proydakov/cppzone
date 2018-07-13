@@ -8,4 +8,4 @@ SET(SOURCE_FILES
     main.cpp
     )
 
-I_ADD_EXECUTABLE(system_endian ${SOURCE_FILES})
+I_ADD_EXECUTABLE(system_endian1 ${SOURCE_FILES})

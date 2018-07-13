@@ -1,3 +1,4 @@
+#include <cstring>
 #include <cstdint>
 #include <iostream>
 
@@ -10,6 +11,7 @@ union data_t
 int main()
 {
     data_t data;
+    memset(&data, 0, sizeof(data_t));
     data.arr[0] = 1;
 
     std::cout << "num: " << data.num << std::endl;

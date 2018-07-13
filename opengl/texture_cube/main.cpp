@@ -47,7 +47,7 @@ public:
     void draw() override;
 
     void info() override;
-    void keyboard(SDL_Event const& e);
+    void keyboard(SDL_Event const& e) override;
 
 private:
     bool load_texture(const std::string& file, size_t num);
