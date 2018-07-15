@@ -47,17 +47,17 @@ set(CMAKE_CXX_EXTENSIONS 1) # https://cmake.org/cmake/help/latest/prop_tgt/CXX_E
 
 if(PROJECT_OS_LINUX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-endif()
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -faligned-new")
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -faligned-new")
+        endif()
     endif()
-endif()
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+    endif()
 endif()
 
 if(PROJECT_OS_OSX)
