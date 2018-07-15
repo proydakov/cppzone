@@ -13,10 +13,10 @@ public:
     session(tcp::socket socket) :
         socket_(std::move(socket)),
         max_iter_{ 1024 * 1024 * 32 },
-        data_{ 0 },
         iter_{ 0 },
         accumulator_{ 0 }
     {
+        data_.fill(0);
         std::clog << "-> session: " << &socket_ << std::endl;
     }
 
