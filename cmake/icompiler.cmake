@@ -50,7 +50,10 @@ if(PROJECT_OS_LINUX)
 endif()
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -faligned-new")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -faligned-new")
+    endif()
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
