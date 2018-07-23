@@ -10,6 +10,7 @@ ADD_SUBDIRECTORY(fork_stdout)
 ADD_SUBDIRECTORY(fork_memory)
 ADD_SUBDIRECTORY(dynamic_code)
 ADD_SUBDIRECTORY(dynamic_loading)
+ADD_SUBDIRECTORY(udp_benchmark)
 ADD_SUBDIRECTORY(hugepages)
 ADD_SUBDIRECTORY(yield)
 
