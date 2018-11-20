@@ -21,7 +21,7 @@ if (LINKER_NAME)
     message(STATUS "Using linker: ${LINKER_NAME} (selected from: LLD_PATH=${LLD_PATH}; GOLD_PATH=${GOLD_PATH}; COMPILER_POSTFIX=${COMPILER_POSTFIX})")
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=${LINKER_NAME}")
 else ()
-    message("Use default linker")
+	message(STATUS "Use default linker")
 endif ()
 
 endmacro(SETUP_LINKER)
