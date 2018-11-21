@@ -1,4 +1,4 @@
-#include "performance.h"
+#include "test_main.h"
 
 // main test code
 
@@ -69,5 +69,5 @@ struct perf_plain_test
 int main(int argc, char* argv[])
 {
     perf_plain_test test;
-    return performance_main<data_t, perf_plain_test>(test, argc, argv);
+    return test_main<data_t, perf_plain_test>(test, argc, argv);
 }

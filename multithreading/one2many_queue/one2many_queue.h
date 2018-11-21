@@ -1,18 +1,17 @@
-#include <atomic>
 #include <cmath>
-#include <vector>
+#include <atomic>
 #include <memory>
-#include <iso646.h>
+#include <type_traits>
 
 #include <iostream>
 
 enum : std::uint64_t { CPU_CACHE_LINE_SIZE = 64 };
 enum : std::uint64_t { MIN_READER_ID = 0 };
-enum : std::uint64_t { MAX_READER_ID = 63 };
+enum : std::uint64_t { MAX_READER_ID = 62 };
 enum : std::uint64_t { MIN_EVENT_SEQ_NUM = 1 };
 enum : std::uint64_t { DUMMY_EVENT_SEQ_NUM = 0 };
 enum : std::uint64_t { EMPTY_DATA_MASK = std::uint64_t(0) };
-enum : std::uint64_t { CONSTRUCTED_MASK = std::uint64_t(1) << MAX_READER_ID };
+enum : std::uint64_t { CONSTRUCTED_MASK = std::uint64_t(1) << MAX_READER_ID + 1 };
 
 // predeclaration
 
@@ -75,7 +74,7 @@ public:
 
             if (before == release_etalon)
             {
-                m_bucket->m_event.~event_t();
+                m_bucket->get_event().~event_t();
                 m_bucket->m_mask.store(EMPTY_DATA_MASK, std::memory_order_release);
             }
         }
@@ -91,14 +90,36 @@ private:
     std::uint64_t m_mask;
 };
 
+// bucket
+template<class event_t>
+struct alignas(CPU_CACHE_LINE_SIZE) one2many_bucket_t
+{
+    using storage_t = typename std::aligned_storage<sizeof(event_t), alignof(event_t)>::type;
+
+    one2many_bucket_t() : m_seqn(DUMMY_EVENT_SEQ_NUM), m_mask(EMPTY_DATA_MASK)
+    {
+    }
+
+    event_t& get_event()
+    {
+        return reinterpret_cast<event_t&>(m_storage);
+    }
+
+    std::atomic<std::uint64_t> m_seqn;
+    std::atomic<std::uint64_t> m_mask;
+    storage_t m_storage;
+};
+
+static_assert(sizeof(one2many_bucket_t<void*>) == CPU_CACHE_LINE_SIZE, "Performance optimization");
+
 // reader
 template<class event_t>
-class one2many_reader
+class alignas(CPU_CACHE_LINE_SIZE) one2many_reader
 {
 public:
     // ctor
-    one2many_reader(std::shared_ptr<one2many_queue<event_t>> queue, std::vector<one2many_bucket_t<event_t>>& storage, std::uint64_t read_from, std::uint64_t mask) :
-        m_next_read_index(read_from), m_storage(storage), m_mask(mask), m_queue(std::move(queue))
+    one2many_reader(std::shared_ptr<one2many_queue<event_t>> queue, one2many_bucket_t<event_t>* storage, std::uint64_t storage_size, std::uint64_t read_from, std::uint64_t mask) :
+        m_next_read_index(read_from), m_storage_size(storage_size), m_storage(storage), m_mask(mask), m_queue(std::move(queue))
     {
         std::clog << "one2many_reader() id: [" + std::to_string(get_id()) + "]\n";
     }
@@ -117,7 +138,7 @@ public:
         std::clog << "~one2many_reader() id: [" + std::to_string(get_id()) + "]\n";
     }
 
-    std::pair<bool, one2many_guard<event_t>> try_read()
+    std::pair<bool, one2many_guard<event_t>> try_read() noexcept
     {
         bool result = false;
         auto& bucket = m_storage[get_bounded_index(m_next_read_index)];
@@ -129,38 +150,39 @@ public:
         return std::make_pair(result, one2many_guard<event_t>(bucket, result ? m_mask : EMPTY_DATA_MASK));
     }
 
-    std::size_t get_id() const
+    one2many_guard<event_t> read() noexcept
+    {
+        read_mark:
+
+        auto pair = try_read();
+        if (pair.first)
+        {
+            return std::move(pair.second);
+        }
+
+        goto read_mark;
+    }
+
+    std::size_t get_id() const noexcept
     {
         return std::log2(m_mask);
     }
 
 private:
-    std::uint64_t get_bounded_index(std::uint64_t seqn) const
+    std::uint64_t get_bounded_index(std::uint64_t seqn) const noexcept
     {
-        return seqn % m_storage.size();
+        return seqn % m_storage_size;
     }
 
 private:
     std::uint64_t m_next_read_index;
-    std::vector<one2many_bucket_t<event_t>>& m_storage;
-    std::uint64_t m_mask;
-    std::shared_ptr<one2many_queue<event_t>> m_queue;
+    std::uint64_t const m_storage_size;
+    one2many_bucket_t<event_t>* const m_storage;
+    std::uint64_t const m_mask;
+    std::shared_ptr<one2many_queue<event_t>> const m_queue;
 };
 
-// bucket
-template<class event_t>
-struct alignas(CPU_CACHE_LINE_SIZE) one2many_bucket_t
-{
-    one2many_bucket_t() : m_seqn(DUMMY_EVENT_SEQ_NUM), m_mask(EMPTY_DATA_MASK)
-    {
-    }
-
-    std::atomic<std::uint64_t> m_seqn;
-    std::atomic<std::uint64_t> m_mask;
-    event_t m_event;
-};
-
-static_assert(sizeof(one2many_bucket_t<void*>) == CPU_CACHE_LINE_SIZE, "Performance optimization");
+static_assert(sizeof(one2many_reader<void*>) == CPU_CACHE_LINE_SIZE, "Performance optimization");
 
 // queue
 template<class event_t>
@@ -207,22 +229,20 @@ public:
 
         std::uint64_t const mask(std::uint64_t(1) << next_id);
 
-        //m_local.m_alive_mask |= mask;
         m_local.m_alive_mask.fetch_or(mask, std::memory_order_seq_cst);
 
-        std::unique_ptr<one2many_reader<event_t>> reader(new one2many_reader<event_t>(shared_from_this(), m_local.m_storage, read_from, mask));
+        std::unique_ptr<one2many_reader<event_t>> reader(new one2many_reader<event_t>(shared_from_this(), m_local.m_storage.get(), m_local.m_storage_size, read_from, mask));
         return reader;
     }
 
-    bool try_write(event_t&& event)
+    bool try_write(event_t&& event) noexcept
     {
         auto& bucket = m_local.m_storage[get_bounded_index(m_local.m_next_seq_num)];
         if (bucket.m_mask.load(std::memory_order_acquire) == EMPTY_DATA_MASK)
         {
-            //auto const alive_mask = m_local.m_alive_mask;
             auto const alive_mask = m_local.m_alive_mask.load(std::memory_order_acquire);
 
-            bucket.m_event = std::move(event);
+            new (&bucket.m_storage) event_t(std::move(event));
             bucket.m_mask.store(alive_mask, std::memory_order_release);
             bucket.m_seqn.store(m_local.m_next_seq_num++, std::memory_order_release);
 
@@ -234,20 +254,19 @@ public:
         }
     }
 
-    void write(event_t&& obj)
+    void write(event_t&& obj) noexcept
     {
-        while (not try_write(std::move(obj)));
+        while (! try_write(std::move(obj)));
     }
 
-    std::uint64_t size() const
+    std::uint64_t size() const noexcept
     {
         return m_local.m_storage.size();
     }
 
-    std::uint64_t get_alive_mask() const
+    std::uint64_t get_alive_mask() const noexcept
     {
-        //return m_local.m_alive_mask;
-        return m_local.m_alive_mask.load(std::memory_order_acquire);
+        return m_local.m_alive_mask.load(std::memory_order_acquire) & 0x7FFFFFFFFFFFFFFF;
     }
 
 private:
@@ -256,22 +275,24 @@ private:
         std::clog << "one2many_queue() capacity: [" + std::to_string(n) + "]\n";
     }
 
-    std::uint64_t get_bounded_index(std::uint64_t seqn) const
+    std::uint64_t get_bounded_index(std::uint64_t seqn) const noexcept
     {
-        return seqn % m_local.m_storage.size();
+        return seqn % m_local.m_storage_size;
     }
 
 private:
     // data used in writer thread
     struct alignas(CPU_CACHE_LINE_SIZE) local_t
     {
-        local_t(std::size_t n) : m_next_seq_num(MIN_EVENT_SEQ_NUM), m_storage(n), m_alive_mask(CONSTRUCTED_MASK), m_next_reader_id(MIN_READER_ID)
+        using storage_t = std::unique_ptr<one2many_bucket_t<event_t>[]>;
+
+        local_t(std::size_t n) : m_next_seq_num(MIN_EVENT_SEQ_NUM), m_storage_size(n), m_storage(new typename storage_t::element_type[n]), m_alive_mask(CONSTRUCTED_MASK), m_next_reader_id(MIN_READER_ID)
         {
         }
 
         std::uint64_t m_next_seq_num;
-        std::vector<one2many_bucket_t<event_t>> m_storage;
-        //std::uint64_t m_alive_mask;
+        std::uint64_t const m_storage_size;
+        storage_t const m_storage;
         std::atomic<std::uint64_t> m_alive_mask;
         std::atomic<std::uint64_t> m_next_reader_id;
     };

@@ -3,21 +3,23 @@
 #include <bitset>
 #include <chrono>
 #include <thread>
+#include <vector>
 #include <iostream>
 
 #include <one2many_queue.h>
 
 template<class E, class T>
-int performance_main(T perf, int argc, char* argv[])
+int test_main(T controller, int argc, char* argv[],
+    std::uint64_t total_events = 64, std::uint64_t num_readers = (std::thread::hardware_concurrency() - 1), std::uint64_t queue_size = 1024)
 {
-    std::cout << "usage: app <num readers> <events> * 10^6" << std::endl;
+    std::cout << "usage: app <num readers> <events> * 10^6 <queue_size>" << std::endl;
 
-    perf.before_test();
+    controller.before_test();
 
     // TEST details
-    std::uint64_t const NUM_READERS = argc > 1 ? std::stoi(argv[1]) : (std::thread::hardware_concurrency() - 1);
-    std::uint64_t const QUEUE_SIZE = 4096;
-    std::uint64_t const TOTAL_EVENTS = std::uint64_t(argc > 2 ? std::stoi(argv[2]) : 256) * std::mega::num;
+    std::uint64_t const NUM_READERS = argc > 1 ? std::stoi(argv[1]) : num_readers;
+    std::uint64_t const TOTAL_EVENTS = std::uint64_t(argc > 2 ? std::stoi(argv[2]) : total_events) * std::mega::num;
+    std::uint64_t const QUEUE_SIZE = argc > 3 ? std::stoul(argv[3]) : queue_size;
 
     std::cout << "TEST: 1 writer, " + std::to_string(NUM_READERS) + " readers, " + std::to_string(TOTAL_EVENTS) + " total events" << std::endl;
 
@@ -35,17 +37,17 @@ int performance_main(T perf, int argc, char* argv[])
             readers.push_back(std::move(queue->create_reader()));
         }
 
-        auto const count = queue.use_count();
         auto const mask = queue->get_alive_mask();
-        std::cout << "queue shared_ptr.use_count(): " + std::to_string(count) << std::endl;;
-        std::cout << "alive mask: " + std::bitset<sizeof(mask) * 8>(mask).to_string() + " [" + std::to_string(mask) << std::endl;;
+        std::cout << "queue shared_ptr.use_count() [before]: " + std::to_string(queue.use_count()) << std::endl;;
+        std::cout << "alive mask: " + std::bitset<sizeof(mask) * 8>(mask).to_string() + " [" + std::to_string(mask) + "]" << std::endl;;
 
         start = std::chrono::high_resolution_clock::now();
 
         std::vector<std::thread> threads;
+
         for (std::size_t i = 0; i < NUM_READERS; i++)
         {
-            threads.push_back(std::thread([reader = std::move(readers[i]), &waitinig_readers_counter, TOTAL_EVENTS, &perf](){
+            threads.push_back(std::thread([reader = std::move(readers[i]), &waitinig_readers_counter, TOTAL_EVENTS, &controller](){
                 waitinig_readers_counter--;
 
                 for (std::uint64_t i = 0; i < TOTAL_EVENTS;)
@@ -57,23 +59,25 @@ int performance_main(T perf, int argc, char* argv[])
                     }
                 }
 
-                perf.reader_done();
+                controller.reader_done();
             }));
         }
 
-        threads.push_back(std::thread([queue = std::move(queue), &waitinig_readers_counter, TOTAL_EVENTS, &perf]() {
+        threads.push_back(std::thread([queue = std::move(queue), &waitinig_readers_counter, TOTAL_EVENTS, &controller]() {
             while (waitinig_readers_counter > 0);
 
             for (std::uint64_t i = 0; i < TOTAL_EVENTS; i++)
             {
-                E data(perf.create_data(i));
+                E data(controller.create_data(i));
                 queue->write(std::move(data));
             }
 
-            perf.writer_done();
+            controller.writer_done();
         }));
 
         for (auto& t : threads) t.join();
+
+        std::cout << "queue shared_ptr.use_count() [after]: " + std::to_string(queue.use_count()) << " (must be zero)" << std::endl;;
     }
 
     stop = std::chrono::high_resolution_clock::now();
@@ -82,8 +86,7 @@ int performance_main(T perf, int argc, char* argv[])
     std::cout << "TIME: " + std::to_string(milliseconds) + " milliseconds\n";
     std::cout << "PERF: " + std::to_string(double(TOTAL_EVENTS) / milliseconds) + " events/millisecond\n";
 
-    perf.after_test();
+    controller.after_test();
 
     return 0;
 }
-

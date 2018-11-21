@@ -1,4 +1,4 @@
-#include "performance.h"
+#include "test_main.h"
 
 // main test code
 
@@ -33,7 +33,7 @@ struct data_t
     // move ctor and assign
     data_t(data_t&& data) : m_ptr(data.m_ptr)
     {
-        m_ptr = nullptr;
+        data.m_ptr = nullptr;
     }
 
     data_t& operator=(data_t&& data)
@@ -103,5 +103,5 @@ struct perf_allocated_test
 int main(int argc, char* argv[])
 {
     perf_allocated_test test;
-    return performance_main<data_t, perf_allocated_test>(test, argc, argv);
+    return test_main<data_t, perf_allocated_test>(test, argc, argv);
 }
