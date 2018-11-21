@@ -4,8 +4,15 @@
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-SET(SOURCE_FILES
-    main.cpp
-    )
 
-I_ADD_EXECUTABLE(multithreading_one2many_queue ${SOURCE_FILES})
+I_ADD_EXECUTABLE(multithreading_one2many_perf_plain
+    one2many_queue.h
+    performance.h
+    performance_plain_data.cpp
+)
+
+I_ADD_EXECUTABLE(multithreading_one2many_perf_allocated
+    one2many_queue.h
+    performance.h
+    performance_allocated_data.cpp
+)

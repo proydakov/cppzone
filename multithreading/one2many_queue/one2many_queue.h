@@ -4,11 +4,6 @@
 #include <memory>
 #include <iso646.h>
 
-#include <ratio>
-#include <string>
-#include <bitset>
-#include <chrono>
-#include <thread>
 #include <iostream>
 
 enum : std::uint64_t { CPU_CACHE_LINE_SIZE = 64 };
@@ -201,7 +196,7 @@ public:
     {
         /// @todo : think about the ability to dynamically create readers
 
-        auto const next_id = m_shared.m_next_reader_id.fetch_add(1, std::memory_order_seq_cst);;
+        auto const next_id = m_local.m_next_reader_id.fetch_add(1, std::memory_order_seq_cst);;
         if (next_id > MAX_READER_ID)
         {
             throw std::runtime_error("Next reader id overflow: " + std::to_string(next_id) + " > " + std::to_string(MAX_READER_ID));
@@ -212,8 +207,6 @@ public:
 
         std::uint64_t const mask(std::uint64_t(1) << next_id);
 
-        //m_shared.m_alive_mask |= mask;
-        //m_shared.m_alive_mask.fetch_or(mask, std::memory_order_seq_cst);
         //m_local.m_alive_mask |= mask;
         m_local.m_alive_mask.fetch_or(mask, std::memory_order_seq_cst);
 
@@ -226,8 +219,6 @@ public:
         auto& bucket = m_local.m_storage[get_bounded_index(m_local.m_next_seq_num)];
         if (bucket.m_mask.load(std::memory_order_acquire) == EMPTY_DATA_MASK)
         {
-            //auto const alive_mask = m_shared.m_alive_mask;
-            //auto const alive_mask = m_shared.m_alive_mask.load(std::memory_order_acquire);
             //auto const alive_mask = m_local.m_alive_mask;
             auto const alive_mask = m_local.m_alive_mask.load(std::memory_order_acquire);
 
@@ -255,8 +246,6 @@ public:
 
     std::uint64_t get_alive_mask() const
     {
-        //return m_shared.m_alive_mask;
-        //return m_shared.m_alive_mask.load(std::memory_order_acquire);
         //return m_local.m_alive_mask;
         return m_local.m_alive_mask.load(std::memory_order_acquire);
     }
@@ -273,22 +262,10 @@ private:
     }
 
 private:
-    // object shared between writer and readers threads
-    struct shared_t
-    {
-        shared_t() : m_next_reader_id(MIN_READER_ID)//, m_alive_mask(CONSTRUCTED_MASK)
-        {
-        }
-
-        std::atomic<std::uint64_t> m_next_reader_id;
-        //std::uint64_t m_alive_mask;
-        //std::atomic<std::uint64_t> m_alive_mask;
-    };
-
-    // object used only in local writer thread
+    // data used in writer thread
     struct alignas(CPU_CACHE_LINE_SIZE) local_t
     {
-        local_t(std::size_t n) : m_next_seq_num(MIN_EVENT_SEQ_NUM), m_storage(n), m_alive_mask(CONSTRUCTED_MASK)
+        local_t(std::size_t n) : m_next_seq_num(MIN_EVENT_SEQ_NUM), m_storage(n), m_alive_mask(CONSTRUCTED_MASK), m_next_reader_id(MIN_READER_ID)
         {
         }
 
@@ -296,166 +273,12 @@ private:
         std::vector<one2many_bucket_t<event_t>> m_storage;
         //std::uint64_t m_alive_mask;
         std::atomic<std::uint64_t> m_alive_mask;
+        std::atomic<std::uint64_t> m_next_reader_id;
     };
 
     // enable_shared_from_this data here
-
-    shared_t m_shared;
-
-    // aligned empty space
-
+    // aligned empty space here
     local_t  m_local;
 };
 
 static_assert(sizeof(one2many_queue<void*>) == CPU_CACHE_LINE_SIZE * 2, "Performance optimization");
-
-// main test code
-
-struct alignas(CPU_CACHE_LINE_SIZE) stat_local_t
-{
-    std::int64_t counter = 0;
-};
-
-struct alignas(CPU_CACHE_LINE_SIZE) stat_global_t
-{
-    std::atomic<std::int64_t> counter = 0;
-};
-
-thread_local stat_local_t g_local_allocated;
-thread_local stat_local_t g_local_released;
-
-stat_global_t g_global_allocated;
-stat_global_t g_global_released;
-
-struct data_t
-{
-    // ctor
-    data_t() : m_ptr(nullptr)
-    {
-    }
-
-    data_t(std::uint64_t* ptr) : m_ptr(ptr)
-    {
-        g_local_allocated.counter++;
-    }
-
-    // move ctor and assign
-    data_t(data_t&& data) : m_ptr(data.m_ptr)
-    {
-        m_ptr = nullptr;
-    }
-
-    data_t& operator=(data_t&& data)
-    {
-        if (&data != this)
-        {
-            release();
-            m_ptr = data.m_ptr;
-            data.m_ptr = nullptr;
-        }
-        return *this;
-    }
-
-    // copy ctor and assign
-    data_t(const data_t&) = delete;
-    void operator=(const data_t&) = delete;
-
-    // dtor
-    ~data_t()
-    {
-        release();
-    }
-
-private:
-    void release()
-    {
-        if (m_ptr != nullptr)
-        {
-            delete m_ptr;
-            m_ptr = nullptr;
-            g_local_released.counter++;
-        }
-    }
-
-private:
-    std::uint64_t* m_ptr;
-};
-
-int main(int argc, char* argv[])
-{
-    std::cout << "usage: app <num readers> <events> * 10^6" << std::endl;
-
-    std::cout << "g_counter before: " << (g_global_allocated.counter - g_global_released.counter) << " (must be zero)" << std::endl;
-
-    std::clog.setstate(std::ios_base::failbit);
-
-    // TEST detailsg_global_allocated
-    std::uint64_t const NUM_READERS = argc > 1 ? std::stoi(argv[1]) : (std::thread::hardware_concurrency() - 1);
-    std::uint64_t const QUEUE_SIZE = 4096;
-    std::uint64_t const TOTAL_EVENTS = std::uint64_t(argc > 2 ? std::stoi(argv[2]) : 256) * std::mega::num;
-
-    std::cout << "TEST: 1 writer, " + std::to_string(NUM_READERS) + " readers, " + std::to_string(TOTAL_EVENTS) + " total events" << std::endl;
-
-    std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
-    start = std::chrono::high_resolution_clock::now();
-
-    {
-        auto queue = one2many_queue<data_t>::make(QUEUE_SIZE);
-
-        std::atomic<std::uint64_t> counter{ NUM_READERS };
-
-        std::vector<std::thread> threads;
-        for (std::size_t i = 0; i < NUM_READERS; i++)
-        {
-            auto reader = queue->create_reader();
-
-            threads.push_back(std::thread([reader = std::move(reader), &counter, TOTAL_EVENTS](){
-                std::clog << "started reader thread: [" + std::to_string(reader->get_id()) + "]\n";
-                counter--;
-
-                for (std::uint64_t i = 0; i < TOTAL_EVENTS;)
-                {
-                    auto pair = reader->try_read();
-                    if (pair.first)
-                    {
-                        i++;
-                    }
-                }
-
-                g_global_released.counter += g_local_released.counter;
-                std::clog << "completed reader thread: [" + std::to_string(reader->get_id()) + "]\n";
-            }));
-        }
-
-        threads.push_back(std::thread([queue = std::move(queue), &counter, TOTAL_EVENTS]() {
-            while (counter > 0);
-
-            auto const count = queue.use_count();
-            auto const mask = queue->get_alive_mask();
-
-            std::clog << "started writer thread\n";
-            std::clog << "queue shared_ptr.use_count(): " + std::to_string(count) + "\n";
-            std::clog << "mask: " + std::bitset<64>(mask).to_string() + " [" + std::to_string(mask) + "]\n";
-
-            for (std::uint64_t i = 0; i < TOTAL_EVENTS; i++)
-            {
-                data_t data(new std::uint64_t(i));
-                queue->write(std::move(data));
-            }
-
-            g_global_allocated.counter += g_local_allocated.counter;
-            std::clog << "done writer thread\n";
-        }));
-
-        for (auto& t : threads) t.join();
-    }
-
-    stop = std::chrono::high_resolution_clock::now();
-    auto const milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
-
-    std::cout << "TIME: " + std::to_string(milliseconds) + " milliseconds\n";
-    std::cout << "PERF: " + std::to_string( double(TOTAL_EVENTS) / milliseconds ) + " events/millisecond\n";
-    std::cout << "g_counter after: " << (g_global_allocated.counter - g_global_released.counter) << " (must be zero)" << std::endl;
-
-    return 0;
-}
