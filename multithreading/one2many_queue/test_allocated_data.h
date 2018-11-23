@@ -1,6 +1,10 @@
-#include "test_main.h"
+#pragma once
 
-// main test code
+#include <atomic>
+#include <cstdint>
+#include <iostream>
+
+enum : std::uint64_t { CPU_CACHE_LINE_SIZE = 64 };
 
 struct alignas(CPU_CACHE_LINE_SIZE)stat_local_t
 {
@@ -99,9 +103,3 @@ struct perf_allocated_test
         std::cout << "g_counter after: " << (g_global_allocated.counter - g_global_released.counter) << " (must be zero)" << std::endl;
     }
 };
-
-int main(int argc, char* argv[])
-{
-    perf_allocated_test test;
-    return test_main<data_t, perf_allocated_test>(test, argc, argv);
-}

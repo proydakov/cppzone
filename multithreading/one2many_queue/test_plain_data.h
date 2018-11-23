@@ -1,4 +1,4 @@
-#include "test_main.h"
+#pragma once
 
 // main test code
 
@@ -65,9 +65,3 @@ struct perf_plain_test
     {
     }
 };
-
-int main(int argc, char* argv[])
-{
-    perf_plain_test test;
-    return test_main<data_t, perf_plain_test>(test, argc, argv);
-}
