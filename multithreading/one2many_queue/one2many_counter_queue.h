@@ -11,7 +11,7 @@ namespace one2many_counter_queue_impl
     enum : std::uint64_t { CPU_CACHE_LINE_SIZE = 64 };
     enum : std::uint64_t { MIN_EVENT_SEQ_NUM = 1 };
     enum : std::uint64_t { DUMMY_EVENT_SEQ_NUM = 0 };
-    enum : std::uint64_t { MIN_READER_ID= 0 };
+    enum : std::uint64_t { MIN_READER_ID = 0 };
     enum : std::uint64_t { DUMMY_READER_ID = std::numeric_limits<std::uint64_t>::max() };
     enum : std::uint64_t { EMPTY_DATA_MARK = 0 };
     enum : std::uint64_t { CONSTRUCTED_DATA_MARK = 1 };
@@ -58,7 +58,7 @@ public:
         if (&data != this)
         {
             m_bucket = data.m_bucket;
-            m_mask = data.m_mask;
+            m_owner  = data.m_owner;
             data.m_owner = one2many_counter_queue_impl::DUMMY_READER_ID;
         }
         return *this;
@@ -86,7 +86,7 @@ public:
 
     event_t const& get_event() const
     {
-        return m_bucket->m_event;
+        return m_bucket->get_event();
     }
 
 private:
@@ -256,7 +256,7 @@ public:
         // read next_seq_num before updating alive mask
         auto const read_from = m_local.m_next_seq_num;
 
-        reader_ptr reader(new one2many_counter_reader<event_t>(shared_from_this(), m_local.m_storage.get(), m_local.m_storage_size, read_from, next_id));
+        reader_ptr reader(new one2many_counter_reader<event_t>(this->shared_from_this(), m_local.m_storage.get(), m_local.m_storage_size, read_from, next_id));
         return reader;
     }
 

@@ -12,8 +12,8 @@ namespace one2many_bitmask_queue_impl
     enum : std::uint64_t { MAX_READER_ID = 62 };
     enum : std::uint64_t { MIN_EVENT_SEQ_NUM = 1 };
     enum : std::uint64_t { DUMMY_EVENT_SEQ_NUM = 0 };
-    enum : std::uint64_t { EMPTY_DATA_MASK = std::uint64_t(0) };
-    enum : std::uint64_t { CONSTRUCTED_MASK = std::uint64_t(1) << MAX_READER_ID + 1 };
+    enum : std::uint64_t { EMPTY_DATA_MASK = 0 };
+    enum : std::uint64_t { CONSTRUCTED_MASK = std::uint64_t(1) << (MAX_READER_ID + 1) };
 }
 
 // predeclaration
@@ -85,7 +85,7 @@ public:
 
     event_t const& get_event() const
     {
-        return m_bucket->m_event;
+        return m_bucket->get_event();
     }
 
 private:
@@ -259,7 +259,7 @@ public:
 
         m_local.m_alive_mask.fetch_or(mask, std::memory_order_seq_cst);
 
-        reader_ptr reader(new one2many_bitmask_reader<event_t>(shared_from_this(), m_local.m_storage.get(), m_local.m_storage_size, read_from, mask));
+        reader_ptr reader(new one2many_bitmask_reader<event_t>(this->shared_from_this(), m_local.m_storage.get(), m_local.m_storage_size, read_from, mask));
         return reader;
     }
 

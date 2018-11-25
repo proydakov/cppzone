@@ -1,4 +1,5 @@
 #include <ratio>
+#include <atomic>
 #include <string>
 #include <bitset>
 #include <chrono>
@@ -6,13 +7,18 @@
 #include <vector>
 #include <iostream>
 
+#include <sys/prctl.h>
+
+void set_thread_name(std::string const& name)
+{
+    prctl(PR_SET_NAME, name.c_str(), 0, 0, 0);
+}
+
 template<class Q, class T>
 int test_main(T controller, int argc, char* argv[],
     std::uint64_t total_events = 64, std::uint64_t num_readers = (std::thread::hardware_concurrency() - 1), std::uint64_t queue_size = 4096)
 {
     std::cout << "usage: app <num readers> <events> * 10^6 <queue_size>" << std::endl;
-
-    controller.before_test();
 
     // TEST details
     std::uint64_t const NUM_READERS = argc > 1 ? std::stoi(argv[1]) : num_readers;
@@ -25,6 +31,8 @@ int test_main(T controller, int argc, char* argv[],
         << QUEUE_SIZE << " queue size"
         << std::endl;
 
+    controller.before_test(NUM_READERS, TOTAL_EVENTS);
+
     std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
 
     {
@@ -33,7 +41,7 @@ int test_main(T controller, int argc, char* argv[],
         auto queue = Q::make(QUEUE_SIZE);
         std::atomic<std::uint64_t> waitinig_readers_counter{ NUM_READERS };
 
-        std::vector<Q::reader_ptr> readers;
+        std::vector<typename Q::reader_ptr> readers;
         for (std::size_t i = 0; i < NUM_READERS; i++)
         {
             readers.push_back(std::move(queue->create_reader()));
@@ -49,14 +57,18 @@ int test_main(T controller, int argc, char* argv[],
         for (std::size_t i = 0; i < NUM_READERS; i++)
         {
             threads.push_back(std::thread([reader = std::move(readers[i]), &waitinig_readers_counter, TOTAL_EVENTS, &controller](){
+                auto const rid = reader->get_id();
+                set_thread_name("reader_" + std::to_string(rid));
+
                 waitinig_readers_counter--;
 
-                for (std::uint64_t i = 0; i < TOTAL_EVENTS;)
+                for (std::uint64_t j = 0; j < TOTAL_EVENTS;)
                 {
                     auto pair = reader->try_read();
                     if (pair.first)
                     {
-                        i++;
+                       controller.check_data(rid, pair.second.get_event());
+                        j++;
                     }
                 }
 
@@ -65,11 +77,13 @@ int test_main(T controller, int argc, char* argv[],
         }
 
         threads.push_back(std::thread([queue = std::move(queue), &waitinig_readers_counter, TOTAL_EVENTS, &controller]() {
+            set_thread_name("writer");
+
             while (waitinig_readers_counter > 0);
 
-            for (std::uint64_t i = 0; i < TOTAL_EVENTS; i++)
+            for (std::uint64_t j = 0; j < TOTAL_EVENTS; j++)
             {
-                Q::event_type data(controller.create_data(i));
+                typename Q::event_type data(controller.create_data(j));
                 queue->write(std::move(data));
             }
 

@@ -6,14 +6,14 @@
 
 enum : std::uint64_t { CPU_CACHE_LINE_SIZE = 64 };
 
-struct alignas(CPU_CACHE_LINE_SIZE)stat_local_t
+struct alignas(CPU_CACHE_LINE_SIZE) stat_local_t
 {
-    std::int64_t counter = 0;
+    std::int64_t counter{0};
 };
 
-struct alignas(CPU_CACHE_LINE_SIZE)stat_global_t
+struct alignas(CPU_CACHE_LINE_SIZE) stat_global_t
 {
-    std::atomic<std::int64_t> counter = 0;
+    std::atomic<std::int64_t> counter{0};
 };
 
 thread_local stat_local_t g_local_allocated;
@@ -83,9 +83,18 @@ struct perf_allocated_test
         return data_t(new std::uint64_t(i));
     }
 
-    void before_test()
+    void check_data(std::uint64_t, data_t const&)
+    {
+    }
+
+    void before_test(std::uint64_t, std::uint64_t)
     {
         std::cout << "g_counter before: " << (g_global_allocated.counter - g_global_released.counter) << " (must be zero)" << std::endl;
+    }
+
+    void after_test()
+    {
+        std::cout << "g_counter after: " << (g_global_allocated.counter - g_global_released.counter) << " (must be zero)" << std::endl;
     }
 
     void reader_done()
@@ -96,10 +105,5 @@ struct perf_allocated_test
     void writer_done()
     {
         g_global_allocated.counter += g_local_allocated.counter;
-    }
-
-    void after_test()
-    {
-        std::cout << "g_counter after: " << (g_global_allocated.counter - g_global_released.counter) << " (must be zero)" << std::endl;
     }
 };

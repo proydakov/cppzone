@@ -49,7 +49,15 @@ struct perf_plain_test
         return data_t(i);
     }
 
-    void before_test()
+    void check_data(std::uint64_t, data_t const&)
+    {
+    }
+
+    void before_test(std::uint64_t, std::uint64_t)
+    {
+    }
+
+    void after_test()
     {
     }
 
@@ -58,10 +66,6 @@ struct perf_plain_test
     }
 
     void writer_done()
-    {
-    }
-
-    void after_test()
     {
     }
 };
