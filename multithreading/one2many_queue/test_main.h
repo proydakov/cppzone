@@ -7,12 +7,22 @@
 #include <vector>
 #include <iostream>
 
+#if defined(__linux__) // any linux distribution
+
 #include <sys/prctl.h>
 
 void set_thread_name(std::string const& name)
 {
     prctl(PR_SET_NAME, name.c_str(), 0, 0, 0);
 }
+
+#else
+
+void set_thread_name(std::string const& name)
+{
+}
+
+#endif
 
 template<class Q, class T>
 int test_main(T controller, int argc, char* argv[],
