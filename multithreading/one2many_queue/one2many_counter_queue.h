@@ -73,8 +73,8 @@ public:
     {
         if (m_owner != one2many_counter_queue_impl<counter_t>::DUMMY_READER_ID)
         {
-            auto const before = m_bucket->m_counter.fetch_add(-1, std::memory_order_release);
             auto const release_etalon(one2many_counter_queue_impl<counter_t>::CONSTRUCTED_DATA_MARK + 1);
+            auto const before = m_bucket->m_counter.fetch_add(-1, std::memory_order_consume);
 
             if (before == release_etalon)
             {
@@ -166,7 +166,7 @@ public:
     {
         bool result = false;
         auto& bucket = m_storage.get()[get_bounded_index(m_next_read_index)];
-        if (bucket.m_seqn.load(std::memory_order_acquire) == m_next_read_index)
+        if (bucket.m_seqn.load(std::memory_order_consume) == m_next_read_index)
         {
             m_next_read_index++;
             result = true;
@@ -255,13 +255,13 @@ public:
     bool try_write(event_t&& event) noexcept
     {
         auto& bucket = m_local.m_storage.get()[get_bounded_index(m_local.m_next_seq_num)];
-        if (bucket.m_counter.load(std::memory_order_acquire) == one2many_counter_queue_impl<counter_t>::EMPTY_DATA_MARK)
+        if (bucket.m_counter.load(std::memory_order_consume) == one2many_counter_queue_impl<counter_t>::EMPTY_DATA_MARK)
         {
             auto const num_readers = m_local.m_next_reader_id;
 
             new (&bucket.m_storage) event_t(std::move(event));
-            bucket.m_counter.store(num_readers + one2many_counter_queue_impl <counter_t>::CONSTRUCTED_DATA_MARK, std::memory_order_release);
-            bucket.m_seqn.store(m_local.m_next_seq_num++, std::memory_order_release);
+            bucket.m_counter.store(num_readers + one2many_counter_queue_impl<counter_t>::CONSTRUCTED_DATA_MARK, std::memory_order_release);
+            bucket.m_seqn.store(m_local.m_next_seq_num++, std::memory_order_seq_cst);
 
             return true;
         }

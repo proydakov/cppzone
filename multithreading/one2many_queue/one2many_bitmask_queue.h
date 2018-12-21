@@ -73,8 +73,8 @@ public:
     {
         if (m_mask != one2many_bitmask_queue_impl<bitmask_t>::EMPTY_DATA_MASK)
         {
-            auto const before = m_bucket->m_mask.fetch_and(~m_mask, std::memory_order_release);
             auto const release_etalon(m_mask | one2many_bitmask_queue_impl<bitmask_t>::CONSTRUCTED_MASK);
+            auto const before = m_bucket->m_mask.fetch_and(~m_mask, std::memory_order_consume);
 
             if (before == release_etalon)
             {
@@ -170,12 +170,14 @@ public:
     {
         bool result = false;
         auto& bucket = m_storage.get()[get_bounded_index(m_next_read_index)];
-        if (bucket.m_seqn.load(std::memory_order_acquire) == m_next_read_index)
+        if (bucket.m_seqn.load(std::memory_order_consume) == m_next_read_index)
         {
             m_next_read_index++;
             result = true;
         }
-        return result ? std::optional<guard_type>(guard_type{bucket, m_mask}) : std::optional<guard_type>();
+        return result ?
+		std::optional<guard_type>(guard_type{bucket, m_mask}) :
+		std::optional<guard_type>();
     }
 
     one2many_bitmask_guard<event_t, bitmask_t> read() noexcept
@@ -264,13 +266,13 @@ public:
     bool try_write(event_t&& event) noexcept
     {
         auto& bucket = m_local.m_storage.get()[get_bounded_index(m_local.m_next_seq_num)];
-        if (bucket.m_mask.load(std::memory_order_acquire) == one2many_bitmask_queue_impl<bitmask_t>::EMPTY_DATA_MASK)
+        if (bucket.m_mask.load(std::memory_order_consume) == one2many_bitmask_queue_impl<bitmask_t>::EMPTY_DATA_MASK)
         {
             auto const alive_mask = m_local.m_alive_mask;
 
             new (&bucket.m_storage) event_t(std::move(event));
             bucket.m_mask.store(alive_mask, std::memory_order_release);
-            bucket.m_seqn.store(m_local.m_next_seq_num++, std::memory_order_release);
+            bucket.m_seqn.store(m_local.m_next_seq_num++, std::memory_order_seq_cst);
 
             return true;
         }
