@@ -38,3 +38,11 @@ I_ADD_EXECUTABLE(multithreading_one2many_counter_queue_perf_heap
     one2many_counter_queue.h
     test_counter_queue_heap_data.cpp
 )
+
+I_ADD_EXECUTABLE(multithreading_one2many_counter_queue_latency
+    test_main.h
+    test_latency.h
+    one2many_bitmask_queue.h
+    test_counter_queue_latency.cpp
+)
+

@@ -6,5 +6,5 @@
 int main(int argc, char* argv[])
 {
     perf_allocated_test test;
-    return test_main<one2many_bitmask_queue<data_t>, perf_allocated_test>(test, argc, argv);
+    return test_main<one2many_bitmask_queue<data_t, std::uint64_t>, perf_allocated_test>(test, argc, argv);
 }

@@ -18,7 +18,7 @@ void set_thread_name(std::string const& name)
 
 #else
 
-void set_thread_name(std::string const& name)
+void set_thread_name(std::string const&)
 {
 }
 
@@ -48,17 +48,16 @@ int test_main(T controller, int argc, char* argv[],
     {
         //std::clog.setstate(std::ios_base::failbit);
 
-        auto queue = Q::make(QUEUE_SIZE);
+        Q queue(QUEUE_SIZE);
         std::atomic<std::uint64_t> waitinig_readers_counter{ NUM_READERS };
 
-        std::vector<typename Q::reader_ptr> readers;
+        std::vector<typename Q::reader_type> readers;
         for (std::size_t i = 0; i < NUM_READERS; i++)
         {
-            readers.push_back(std::move(queue->create_reader()));
+            readers.push_back(std::move(queue.create_reader()));
         }
 
-        auto const mask = queue->get_alive_mask();
-        std::cout << "queue shared_ptr.use_count() [before]: " << queue.use_count() << " (must be " << (1 + NUM_READERS) << ")" << std::endl;;
+        auto const mask = queue.get_alive_mask();
         std::cout << "alive mask: " << std::bitset<sizeof(mask) * 8>(mask) << " [" << mask << "]" << std::endl;;
 
         start = std::chrono::high_resolution_clock::now();
@@ -66,18 +65,18 @@ int test_main(T controller, int argc, char* argv[],
         std::vector<std::thread> threads;
         for (std::size_t i = 0; i < NUM_READERS; i++)
         {
-            threads.push_back(std::thread([reader = std::move(readers[i]), &waitinig_readers_counter, TOTAL_EVENTS, &controller](){
-                auto const rid = reader->get_id();
+            threads.push_back(std::thread([reader = std::move(readers[i]), &waitinig_readers_counter, TOTAL_EVENTS, &controller]() mutable {
+                auto const rid = reader.get_id();
                 set_thread_name("reader_" + std::to_string(rid));
 
                 waitinig_readers_counter--;
 
                 for (std::uint64_t j = 0; j < TOTAL_EVENTS;)
                 {
-                    auto pair = reader->try_read();
-                    if (pair.first)
+                    auto opt = reader.try_read();
+                    if (opt)
                     {
-                       controller.check_data(rid, pair.second.get_event());
+                        //controller.check_data(rid, opt.operator*().get_event());
                         j++;
                     }
                 }
@@ -86,7 +85,7 @@ int test_main(T controller, int argc, char* argv[],
             }));
         }
 
-        threads.push_back(std::thread([queue = std::move(queue), &waitinig_readers_counter, TOTAL_EVENTS, &controller]() {
+        threads.push_back(std::thread([queue = std::move(queue), &waitinig_readers_counter, TOTAL_EVENTS, &controller]() mutable {
             set_thread_name("writer");
 
             while (waitinig_readers_counter > 0);
@@ -94,15 +93,13 @@ int test_main(T controller, int argc, char* argv[],
             for (std::uint64_t j = 0; j < TOTAL_EVENTS; j++)
             {
                 typename Q::event_type data(controller.create_data(j));
-                queue->write(std::move(data));
+                queue.write(std::move(data));
             }
 
             controller.writer_done();
         }));
 
         for (auto& t : threads) t.join();
-
-        std::cout << "queue shared_ptr.use_count() [after]: " << queue.use_count() << " (must be zero)" << std::endl;;
     }
 
     stop = std::chrono::high_resolution_clock::now();
