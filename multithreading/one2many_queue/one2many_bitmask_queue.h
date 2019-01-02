@@ -176,8 +176,8 @@ public:
             result = true;
         }
         return result ?
-		std::optional<guard_type>(guard_type{bucket, m_mask}) :
-		std::optional<guard_type>();
+            std::optional<guard_type>(guard_type{bucket, m_mask}) :
+            std::optional<guard_type>();
     }
 
     one2many_bitmask_guard<event_t, bitmask_t> read() noexcept
