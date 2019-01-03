@@ -15,8 +15,8 @@ addons:
       - ubuntu-toolchain-r-test
 
     packages:
-      - g++-5
-      - gcc-5
+      - g++-8
+      - gcc-8
 
 matrix:
   include:
@@ -26,7 +26,7 @@ matrix:
 
     - env: BUILD_TYPE=Release
       os: linux
-      compiler: gcc-5
+      compiler: gcc-8
 
     - env: BUILD_TYPE=Release
       os: osx
@@ -36,7 +36,7 @@ matrix:
 install:
   - |
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+      if [ "$CXX" = "g++" ]; then export CXX="g++-8" CC="gcc-8"; fi
       sudo apt-get update -qq
       sudo bash ./scripts/ubuntu_deps.sh
     fi
