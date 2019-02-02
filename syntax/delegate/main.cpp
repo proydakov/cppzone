@@ -31,28 +31,28 @@ template<typename RETURN, typename ... INPUTS>
 class delegate<RETURN(INPUTS ...)>
 {
 public:
-    template<RETURN(*function)(INPUTS...)>
+    template<RETURN(*func)(INPUTS...)>
     static delegate function()
     {
-        return delegate(&call_function<function>);
+        return delegate(&call_function<func>);
     }
 
-    template<class T, RETURN(T::*method)(INPUTS...)>
+    template<class T, RETURN(T::*meth)(INPUTS...)>
     static delegate method(T* obj)
     {
-        return delegate(obj, &call_method<T, method>);
+        return delegate(obj, &call_method<T, meth>);
     }
 
-    template<class T, RETURN(T::*method)(INPUTS...) const>
+    template<class T, RETURN(T::*meth)(INPUTS...) const>
     static delegate const_method(T* obj)
     {
-        return delegate(obj, &call_const_method<T, method>);
+        return delegate(obj, &call_const_method<T, meth>);
     }
 
-    template<class T, RETURN(T::*method)(INPUTS...) const>
+    template<class T, RETURN(T::*meth)(INPUTS...) const>
     static delegate const_method(T const* obj)
     {
-        return delegate((void*)(obj), &call_const_method<T, method>);
+        return delegate((void*)(obj), &call_const_method<T, meth>);
     }
 
     template<class T>
