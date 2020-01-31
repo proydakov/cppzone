@@ -78,7 +78,7 @@ class server
 {
 public:
     server(boost::asio::io_service& io_service, short port)
-        : m_acceptor(io_service, tcp::endpoint(tcp::v4(), port))
+        : m_io_service(io_service), m_acceptor(io_service, tcp::endpoint(tcp::v4(), port))
     {
         do_accept();
     }
@@ -86,7 +86,7 @@ public:
 private:
     void do_accept()
     {
-        session::pointer session = session::create(m_acceptor.get_io_service());
+        session::pointer session = session::create(m_io_service);
         m_acceptor.async_accept(session->get_socket(), [this, session] (boost::system::error_code ec)
         {
             if (!ec)
@@ -98,6 +98,7 @@ private:
 
     }
 
+    boost::asio::io_service& m_io_service;
     tcp::acceptor m_acceptor;
 };
 

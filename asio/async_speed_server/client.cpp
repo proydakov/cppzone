@@ -61,8 +61,6 @@ public:
 
         auto self(shared_from_this());
 
-        boost::system::error_code err;
-
         tcp::endpoint endpoint( boost::asio::ip::address::from_string(server), port );
 
         std::clog << "<- schedule async_connect" << std::endl;
