@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
+ *  Copyright (c) 2020 Evgeny Proydakov <lord.tiran@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -20,50 +20,58 @@
  *  THE SOFTWARE.
  */
 
-#include <list>
+#include <cmath>
+#include <array>
+#include <sstream>
+#include <cstdint>
 #include <iostream>
 
-typedef int type;
+using type = std::uint64_t;
 
-void recursive_output_number(type num, type base);
 void output_number(type num, type base);
 
-int main( int argc, char *argv[] )
+int main(int argc, char *argv[])
 {
-    (void)argc;
-    (void)argv;
-    
-    type num = 100;
-    type base = 10;
-    
-    recursive_output_number(num, base);
-    std::cout << std::endl;
-    output_number(num, base);
-    std::cout << std::endl;
-    
-    return 0;
+    if (argc != 3)
+    {
+        std::cout << "usage: app <num> <base>" << std::endl;
+        return 1;
+    }
+
+    std::stringstream sstream;
+    sstream << argv[1] << ' ' << argv[2];
+
+    type num, base;
+    sstream >> num >> base;
+
+    if (base >= 2 and base <=16)
+    {
+        output_number(num, base);
+        return 0;
+    }
+    else
+    {
+        std::cout << "only 2 <= base <= 16 supported" << std::endl;
+        return 2;
+    }
 }
 
-void recursive_output_number(type num, type base)
-{
-    if(num < 1) {
-        return;
-    }
-    recursive_output_number(num / base, base);
-}
+constexpr char alphabet[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
 void output_number(type num, type base)
 {
-    typedef std::list<type> container;
-    container list;
-    
-    while(num != 0) {
-        list.push_front(num % base);
+    std::array<std::uint8_t, sizeof(type) * 8> array{};
+
+    int i = 0;
+    for (; num != 0; i++)
+    {
+        array[i] = num % base;
         num /= base;
     }
-    
-    container::const_iterator endIt = list.end();
-    for(container::const_iterator it = list.begin(); it != endIt; ++it) {
-        std::cout << *it;   
+
+    for (int j = std::ceil(sizeof(type) * 8 / std::log2(base)) - 1; j >= 0; j--)
+    {
+        std::cout << alphabet[array[j]];
     }
+    std::cout << std::endl;
 }
