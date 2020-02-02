@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
+ *  Copyright (c) 2020 Evgeny Proydakov <lord.tiran@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -23,18 +23,47 @@
 #include <string>
 #include <iostream>
 
-#include <common/iglut.h>
+#include <application/application.h>
 
-const GLdouble WORLD_SIZE_KOEF = 1.0;
-const GLdouble ROTATION_DELTA  = 0.5;
-const int CYCLE_TIME = 20;
-GLdouble g_rotationAngle = 0;
+#define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
+#define GL_TEXTURE_MAX_ANISOTROPY_EXT     0x84FE
 
-bool g_AntiAliasing = true;
+#ifdef _MSC_VER
+#   define GL_BGR 0x80E0
+#endif // _MSC_VER
 
-const std::string COMMENT = "Press 'a' for enable / disable AntiAliasing. Press ESC for exit.";
+constexpr GLdouble WORLD_SIZE_KOEF = 1.0;
+constexpr GLdouble ROTATION_DELTA  = 0.5;
+constexpr char const* const COMMENT = "Press 'e' for enable or 'd' for disable AntiAliasing. Press ESC for exit.";
 
-void init()
+class tcapplication : public application
+{
+public:
+    tcapplication(int argc, char* argv[], std::size_t w, std::size_t h);
+
+    void init() override;
+    void resize(std::size_t w, std::size_t h) override;
+    void update(std::chrono::microseconds delta) override;
+    void draw() override;
+
+    void info() override;
+    void keyboard(SDL_Event const& e) override;
+
+private:
+    void initAntiAliasing();
+
+private:
+
+    GLdouble m_rotationAngle = 0;
+    bool m_AntiAliasing = true;
+};
+
+tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t h) :
+    application(argc, argv, w, h)
+{
+}
+
+void tcapplication::init()
 {
     GLfloat values[2];
 
@@ -52,52 +81,7 @@ void init()
     glClearColor(0.0, 0.0, 0.0, 0.0);
 }
 
-void initAntiAliasing()
-{
-    if(g_AntiAliasing)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    else
-        glBlendFunc(GL_ONE, GL_ONE);
-}
-
-void info()
-{
-    std::cout << COMMENT << "\n" << std::endl;
-}
-
-void display()
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    initAntiAliasing();
-
-    glColor3d(0.0, 1.0, 0.0);
-    glPushMatrix();
-    glRotated(-g_rotationAngle, 0.0, 0.0, 0.1);
-    glBegin(GL_LINES);
-    {
-        glVertex2d(-0.5, 0.5);
-        glVertex2d(0.5, -0.5);
-    }
-    glEnd();
-    glPopMatrix();
-
-    glColor3d(0.0, 0.0, 1.0);
-    glPushMatrix();
-    glRotated(g_rotationAngle, 0.0, 0.0, 0.1);
-    glBegin(GL_LINES);
-    {
-        glVertex2d(0.5, 0.5);
-        glVertex2d(-0.5, -0.5);
-    }
-    glEnd();
-
-    glFlush();
-
-    glutSwapBuffers();
-}
-
-void reshape(int w, int h)
+void tcapplication::resize(std::size_t w, std::size_t h)
 {
     glViewport(0, 0, (GLsizei) w, (GLsizei) h);
     glMatrixMode(GL_PROJECTION);
@@ -110,19 +94,56 @@ void reshape(int w, int h)
         -WORLD_SIZE_KOEF, WORLD_SIZE_KOEF, -10.0, 10.0);
 }
 
-void keyboard(unsigned char key, int x, int y)
+void tcapplication::update(std::chrono::microseconds)
 {
-    (void)x;
-    (void)y;
+    m_rotationAngle += ROTATION_DELTA;
+    if(m_rotationAngle > 360.0)
+        m_rotationAngle -= 360.0;
+}
 
-    switch(key) {
-        case 'A':
-        case 'a':
-            g_AntiAliasing = !g_AntiAliasing;
+void tcapplication::draw()
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    initAntiAliasing();
+
+    glColor3d(0.0, 1.0, 0.0);
+    glPushMatrix();
+    glRotated(-m_rotationAngle, 0.0, 0.0, 0.1);
+    glBegin(GL_LINES);
+    {
+        glVertex2d(-0.5, 0.5);
+        glVertex2d(0.5, -0.5);
+    }
+    glEnd();
+    glPopMatrix();
+
+    glColor3d(0.0, 0.0, 1.0);
+    glPushMatrix();
+    glRotated(m_rotationAngle, 0.0, 0.0, 0.1);
+    glBegin(GL_LINES);
+    {
+        glVertex2d(0.5, 0.5);
+        glVertex2d(-0.5, -0.5);
+    }
+    glEnd();
+}
+
+void tcapplication::info()
+{
+    std::cout << COMMENT << "\n" << std::endl;
+}
+
+void tcapplication::keyboard(SDL_Event const& e)
+{
+    switch (e.key.keysym.sym)
+    {
+        case SDLK_e:
+            m_AntiAliasing = true;
             break;
 
-        case 27:
-            exit(0);
+        case SDLK_d:
+            m_AntiAliasing = false;
             break;
 
         default:
@@ -130,31 +151,17 @@ void keyboard(unsigned char key, int x, int y)
     }
 }
 
-void cycle(int value)
+void tcapplication::initAntiAliasing()
 {
-    g_rotationAngle += ROTATION_DELTA;
-    if(g_rotationAngle > 360.0)
-        g_rotationAngle -= 360.0;
-    glutPostRedisplay();
-    glutTimerFunc(CYCLE_TIME, cycle, value);
+    if(m_AntiAliasing)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    else
+        glBlendFunc(GL_ONE, GL_ONE);
 }
 
-int main(int argc, char** argv)
+int main( int argc, char* argv[] )
 {
-    info();
+    tcapplication app(argc, argv, 640, 480);
 
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowSize(500, 500);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow(argv[0]);
-
-    init();
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutKeyboardFunc(keyboard);
-    glutTimerFunc(CYCLE_TIME, cycle, 0);
-    glutMainLoop();
-
-    return 0;
+    return app.run();
 }

@@ -25,7 +25,4 @@ SET(SOURCE_FILES
 )
 
 I_ADD_EXECUTABLE(opengl_astar2d ${HEADER_FILES} ${SOURCE_FILES})
-ADD_DEPENDENCIES(opengl_astar2d application)
-
-TARGET_LINK_LIBRARIES(opengl_astar2d ${OPENGL_LIBRARIES})
 TARGET_LINK_LIBRARIES(opengl_astar2d application)

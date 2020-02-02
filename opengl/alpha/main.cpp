@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
+ *  Copyright (c) 2020 Evgeny Proydakov <lord.tiran@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -23,24 +23,52 @@
 #include <string>
 #include <iostream>
 
-#include <common/iglut.h>
+#include <application/application.h>
 
-const std::string COMMENT = "Press any key to change the order of drawing objects.\nPress Esc for exit...";
-const GLdouble OBJECT_SIDE = 1;
+constexpr char const* const COMMENT = "Press 'e' / 'd' to change the order of drawing objects. Press ESC for exit.";
+constexpr GLdouble OBJECT_SIDE = 1;
 
-static int g_leftFirst = GL_TRUE;
-
-void info()
+class tcapplication : public application
 {
-    std::cout << COMMENT << std::endl;
+public:
+    tcapplication(int argc, char* argv[], std::size_t w, std::size_t h);
+
+    void init() override;
+    void resize(std::size_t w, std::size_t h) override;
+    void update(std::chrono::microseconds) override;
+    void draw() override;
+
+    void info() override;
+    void keyboard(SDL_Event const& e) override;
+
+private:
+    int g_leftFirst = GL_TRUE;
+};
+
+tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t h) :
+    application(argc, argv, w, h)
+{
 }
 
-void init()
+void tcapplication::init()
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glShadeModel(GL_FLAT);
     glClearColor(0.0, 0.0, 0.0, 0.0);
+}
+
+void tcapplication::resize(std::size_t w, std::size_t h)
+{
+    glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(-OBJECT_SIDE / 2, OBJECT_SIDE * 3 / 2, -OBJECT_SIDE / 2, OBJECT_SIDE * 3 / 2);
+}
+
+void tcapplication::update(std::chrono::microseconds)
+{
+
 }
 
 void drawTriangle(GLdouble side, GLdouble red, GLdouble green, GLdouble blue, GLdouble alpha)
@@ -71,7 +99,7 @@ void drawRightTriangle()
     glPopMatrix();
 }
 
-void display()
+void tcapplication::draw()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
@@ -84,51 +112,33 @@ void display()
         drawRightTriangle();
         drawLeftTriangle();
     }
-
-    glFlush();
-
-    glutSwapBuffers();
 }
 
-void keyboard(unsigned char key, int x, int y)
+void tcapplication::info()
 {
-    (void)x;
-    (void)y;
+    std::cout << COMMENT << "\n" << std::endl;
+}
 
-    switch(key) {
-        case 27:
-            exit(0);
+void tcapplication::keyboard(SDL_Event const& e)
+{
+    switch (e.key.keysym.sym)
+    {
+        case SDLK_e:
+            g_leftFirst = true;
+            break;
+
+        case SDLK_d:
+            g_leftFirst = false;
             break;
 
         default:
-            g_leftFirst = !g_leftFirst;
-            glutPostRedisplay();
             break;
     }
-    glutPostRedisplay();
 }
 
-void reshape(int w, int h)
+int main( int argc, char* argv[] )
 {
-    glViewport(0, 0, (GLsizei) w, (GLsizei) h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(-OBJECT_SIDE / 2, OBJECT_SIDE * 3 / 2, -OBJECT_SIDE / 2, OBJECT_SIDE * 3 / 2);
-}
+    tcapplication app(argc, argv, 640, 480);
 
-int main(int argc, char** argv)
-{
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowSize(500, 500);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow(argv[0]);
-
-    info();
-    init();
-    glutDisplayFunc(display);
-    glutKeyboardFunc(keyboard);
-    glutReshapeFunc(reshape);
-    glutMainLoop();
-    return 0;
+    return app.run();
 }
