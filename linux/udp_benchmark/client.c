@@ -6,7 +6,8 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
     if(argc != 3) {
         printf("usage: %s '<server_addr>' '<message>'\n", argv[0]);
         return EXIT_FAILURE;
@@ -38,19 +39,27 @@ int main(int argc, char* argv[]) {
 
     struct timespec tp;
     clock_gettime(CLOCK_REALTIME, &tp);
-    unsigned long const start_micro = tp.tv_sec * 1000 * 1000 + tp.tv_nsec / 1000;
+    long const start_micro = tp.tv_sec * 1000 * 1000 + tp.tv_nsec / 1000;
 
     // send data
-    int const len = sendto(sock, data_to_send, strlen(data_to_send), 0,
+    ssize_t const len = sendto(sock, data_to_send, strlen(data_to_send), 0,
             (struct sockaddr*)&server_address, sizeof(server_address));
+
+    if (len < 0)
+    {
+        printf("sendto return zero");
+        return 1;
+    }
+
+    size_t const clen = (size_t)(len);
 
     // received echoed data back
     char buffer[1024];
-    recvfrom(sock, buffer, len, 0, NULL, NULL);
+    recvfrom(sock, buffer, clen, 0, NULL, NULL);
 
     clock_gettime(CLOCK_REALTIME, &tp);
-    unsigned long const end_micro = tp.tv_sec * 1000 * 1000 + tp.tv_nsec / 1000;
-    unsigned long const delta = (end_micro - start_micro) / 1000;
+    long const end_micro = tp.tv_sec * 1000 * 1000 + tp.tv_nsec / 1000;
+    long const delta = (end_micro - start_micro) / 1000;
 
     buffer[len] = '\0';
     printf("time delta: %ld microseconds, recieved: '%s'\n", delta, buffer);

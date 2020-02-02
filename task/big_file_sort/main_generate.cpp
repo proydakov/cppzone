@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
     double target_gb = std::stod(size, &sz);
     double target = target_gb * GB_SIZE;
 
-    srand (time(NULL));
+    srand(static_cast<unsigned>(time(NULL)));
 
     std::vector<std::thread> threads;
 

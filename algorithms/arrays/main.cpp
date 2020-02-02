@@ -45,9 +45,9 @@ void test_remove_duplicates();
 template<typename T>
 std::ostream& operator<<(std::ostream& ostr, const std::vector<T>& vector)
 {
-    long size = vector.size();
+    std::size_t size = vector.size();
     ostr << "vector[" << size << "] ";
-    for(int i = 0; i < size; ++i)
+    for(std::size_t i = 0; i < size; ++i)
         ostr << vector[i] << " ";
     return ostr;
 }
@@ -70,7 +70,7 @@ void test_operation(const std::string& name, prt_operation operation, const std:
     std::cout << std::endl;
 }
 
-long test_remove_duplicate_impl(std::vector<data_type>& data, const std::string& comment)
+long test_remove_duplicate_impl(std::vector<data_type>& data, const std::string&)
 {
     std::chrono::high_resolution_clock clock;
     auto start = clock.now();
@@ -109,9 +109,19 @@ void test_binary_search()
     }
 
     data_type value = 4;
+    auto const it = binary_search(data, value);
+
     std::cout << "input data: " << data << std::endl
-              << "search element: " << value << " "
-              << "position: " << binary_search(data, value) << std::endl;
+              << "search element: " << value << " " << "position: ";
+    if (it != data.end())
+    {
+        std::cout << *it;
+    }
+    else
+    {
+        std::cout << "[not found]";
+    }
+    std::cout << std::endl;
 }
 
 int irand()

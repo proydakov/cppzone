@@ -35,7 +35,7 @@ public:
     {
         size_t hash = 5381;
         for(size_t i = 0; i < k.size(); i++) {
-            hash = ((hash << 5) + hash) + k[i];
+            hash = ((hash << 5) + hash) + static_cast<size_t>(k[i]);
         }
         return hash;
     }

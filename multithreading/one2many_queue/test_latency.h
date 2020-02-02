@@ -41,7 +41,7 @@ struct data_t
 
 struct latency_test
 {
-    data_t create_data(std::uint64_t i)
+    data_t create_data(std::uint64_t)
     {
         return data_t(std::chrono::high_resolution_clock::now());
     }
@@ -86,7 +86,7 @@ struct latency_test
 private:
     struct alignas(CPU_CACHE_LINE) line_t
     {
-        std::vector<std::uint64_t> m_delta;
+        std::vector<long> m_delta;
     };
 
     std::vector<line_t> m_lines;

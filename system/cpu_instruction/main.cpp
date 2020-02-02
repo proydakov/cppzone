@@ -18,7 +18,7 @@ int test(size_t iters, int step)
 }
 #pragma optimize( "", on )
 
-int main(int argc, char* argv[])
+int main(int, char*[])
 {
     const std::vector<size_t> powers{
         6, 7, 8, 9, 10
@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 
     int val = 0;
     for(const auto power : powers) {
-        const size_t item = std::pow(10, power);
+        const auto item = static_cast<size_t>(std::pow(10, power));
 
         std::chrono::high_resolution_clock clock;
         const auto start = clock.now();

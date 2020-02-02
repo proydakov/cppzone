@@ -74,7 +74,7 @@ public:
         if (m_owner != one2many_counter_queue_impl<counter_t>::DUMMY_READER_ID)
         {
             auto const release_etalon(one2many_counter_queue_impl<counter_t>::CONSTRUCTED_DATA_MARK + 1);
-            auto const before = m_bucket->m_counter.fetch_add(-1, std::memory_order_consume);
+            auto const before = m_bucket->m_counter.fetch_sub(1, std::memory_order_consume);
 
             if (before == release_etalon)
             {

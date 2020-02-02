@@ -89,9 +89,9 @@ public:
     euclidean_heuristic(const grid& graph, const vertex_descriptor& goal) : m_graph(graph), m_goal(goal) {}
 
     distance_t operator() (vertex_descriptor v) {
-        distance_t x = std::fabs(m_graph[m_goal].x - m_graph[v].x);
-        distance_t y = std::fabs(m_graph[m_goal].y - m_graph[v].y);
-        return std::sqrt(std::pow(x, 2) + std::pow(y, 2));
+        distance_t x = static_cast<distance_t>(std::fabs(m_graph[m_goal].x - m_graph[v].x));
+        distance_t y = static_cast<distance_t>(std::fabs(m_graph[m_goal].y - m_graph[v].y));
+        return static_cast<distance_t>(std::sqrt(std::pow(x, 2) + std::pow(y, 2)));
     }
 
 private:
@@ -106,7 +106,7 @@ struct astar_goal_visitor : public boost::default_astar_visitor
 {
     astar_goal_visitor(const vertex_descriptor& goal) : m_goal(goal) {}
 
-    void examine_vertex(const vertex_descriptor& u, const grid& graph) {
+    void examine_vertex(const vertex_descriptor& u, const grid&) {
         if (u == m_goal) {
             throw found_goal();
         }
@@ -145,7 +145,7 @@ public:
         }
 
         // init diagonal edge
-        const distance_t diagonal_size = std::sqrt(2);
+        const distance_t diagonal_size = static_cast<distance_t>(std::sqrt(2));
         for(size_t x = 0; x < width - 1; x++) {
             for(size_t y = 0; y < height - 1; y++) {
                 const size_t index = calc_vertex_index(x, y);

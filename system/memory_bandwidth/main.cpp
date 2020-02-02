@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    std::int64_t const gb = std::stol(argv[1]);
+    std::size_t const gb = std::stoul(argv[1]);
     std::cout << "memory size: " << gb << " Gb" << std::endl;
 
     using vec_t = std::vector<std::int64_t>;
@@ -61,12 +61,12 @@ int main(int argc, char* argv[])
         copy = data;
     }
 
-    std::int64_t summ = 0;
+    int summ = 0;
 
     {
         std::cout << "\naccumulating..." << std::endl;
         experiment e(alloc_bytes);
-        summ = std::accumulate(data.begin(), data.end(), std::int64_t(0));
+        summ = std::accumulate(data.begin(), data.end(), int{0});
     }
 
     {

@@ -32,7 +32,7 @@
 #include <sys/syscall.h>
 #include <linux/futex.h>
 
-static int futex(int *uaddr, int futex_op, int val)
+static auto futex(int *uaddr, int futex_op, int val)
 {
     return syscall(SYS_futex, uaddr, futex_op, val);
 }
@@ -104,7 +104,7 @@ template<class mutex_t>
 void test()
 {
     mutex_t mutex;
-    std::vector<int> data;
+    std::vector<size_t> data;
 
     std::chrono::high_resolution_clock clock;
     auto start = clock.now();

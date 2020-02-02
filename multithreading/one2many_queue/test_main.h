@@ -31,8 +31,8 @@ int test_main(T controller, int argc, char* argv[],
     std::cout << "usage: app <num readers> <events> * 10^6 <queue_size>" << std::endl;
 
     // TEST details
-    std::uint64_t const NUM_READERS = argc > 1 ? std::stoi(argv[1]) : num_readers;
-    std::uint64_t const TOTAL_EVENTS = std::uint64_t(argc > 2 ? std::stoi(argv[2]) : total_events) * std::mega::num;
+    std::uint64_t const NUM_READERS = static_cast<std::uint64_t>(argc > 1 ? std::stoul(argv[1]) : num_readers);
+    std::uint64_t const TOTAL_EVENTS = static_cast<std::uint64_t>(argc > 2 ? std::stoul(argv[2]) : total_events) * std::mega::num;
     std::uint64_t const QUEUE_SIZE = argc > 3 ? std::stoul(argv[3]) : queue_size;
 
     std::cout << "TEST: 1 writer, "

@@ -81,12 +81,12 @@ void cycle(size_t num)
 }
 #pragma optimize( "", on )
 
-uint64_t milliseconds()
+std::uint64_t milliseconds()
 {
     auto now = std::chrono::steady_clock::now();
     auto duration = now.time_since_epoch();
     auto count = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
-    return count;
+    return static_cast<std::uint64_t>(count);
 }
 
 class freq_t

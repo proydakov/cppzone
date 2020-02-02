@@ -111,9 +111,9 @@ int main( int argc, char *argv[] )
         std::chrono::high_resolution_clock clock;
         auto start = clock.now();
         {
-            positive = std::count_if(vector.begin(), vector.end(), is_positive<element>);
-            negative = std::count_if(vector.begin(), vector.end(), is_negative<element>);
-            zero = std::count_if(vector.begin(), vector.end(), is_zero<element>);
+            positive = static_cast<size_t>(std::count_if(vector.begin(), vector.end(), is_positive<element>));
+            negative = static_cast<size_t>(std::count_if(vector.begin(), vector.end(), is_negative<element>));
+            zero = static_cast<size_t>(std::count_if(vector.begin(), vector.end(), is_zero<element>));
         }
 
         auto end = clock.now();

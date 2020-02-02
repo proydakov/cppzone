@@ -26,7 +26,7 @@
 
 #include <binary_tree.h>
 
-typedef binary_tree<size_t> ctree;
+typedef binary_tree<int> ctree;
 
 void print_ascending(const ctree& tree);
 void print_descending(const ctree& tree);
@@ -40,9 +40,9 @@ int main( int argc, char *argv[] )
     
     std::cout << "SIZE : " << sizeof(ctree) << std::endl;
     
-    size_t size = 15;
+    int size = 15;
     srand((unsigned int)time(NULL));
-    for (size_t i = 0; i < size; ++i) {
+    for (int i = 0; i < size; ++i) {
         if(!tree.insert(rand() % size + 1))
             return 1;
     }
@@ -52,7 +52,7 @@ int main( int argc, char *argv[] )
     print_descending(tree);
     
     //tree.print();
-    for(size_t i = 0; i < size / 2; ++i)
+    for(int i = 0; i < size / 2; ++i)
         tree.erase(rand() % size);
     //tree.print();
     

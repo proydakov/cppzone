@@ -27,7 +27,7 @@ class object
 {
 public:
     object() : m_data("data") { std::cout << "create" << std::endl; }
-    object(const object& obj) { std::cout << "copy" << std::endl; }
+    object(const object&) { std::cout << "copy" << std::endl; }
     ~object() { std::cout << "destroy" << std::endl; }
 
     const std::string m_data;

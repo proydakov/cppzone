@@ -4,9 +4,13 @@
 #include <stdio.h>
 #include <string.h>
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[])
+{
+    (void)(argc);
+    (void)(argv);
+
     // port to start the server on
-    int SERVER_PORT = 8877;
+    unsigned short SERVER_PORT = 8877;
 
     // socket address used for the server
     struct sockaddr_in server_address;
@@ -43,10 +47,17 @@ int main(int argc, char *argv[]) {
         char buffer[1024];
 
         // read content into buffer from an incoming client
-        int const len = recvfrom(sock, buffer, sizeof(buffer), 0, (struct sockaddr*)&client_address, &client_address_len);
+        ssize_t const len = recvfrom(sock, buffer, sizeof(buffer), 0, (struct sockaddr*)&client_address, &client_address_len);
+
+        if (len < 0)
+        {
+            continue;
+        }
+
+        size_t const clen = (size_t)(len);
 
         // send same content back to the client ("echo")
-        sendto(sock, buffer, len, 0, (struct sockaddr*)&client_address, sizeof(client_address));
+        sendto(sock, buffer, clen, 0, (struct sockaddr*)&client_address, sizeof(client_address));
 
         buffer[len] = '\0';
         // inet_ntoa prints user friendly representation of the ip address

@@ -1,8 +1,8 @@
 #==============================================================================
-# Copyright (c) 2011-2018 Evgeny Proydakov <e.proydakov@gmail.com>
+# Copyright (c) 2011-2020 Evgeny Proydakov <e.proydakov@gmail.com>
 #==============================================================================
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10.0)
 
 PROJECT(I++)
 MESSAGE(STATUS "CREATE PROJECT I++")
@@ -28,19 +28,10 @@ INCLUDE(imacro)
 INCLUDE(icompiler)
 INCLUDE(ilinker)
 
-# setup build
-SETUP_CXX_FLAGS()
-
+# begin setup build
+SETUP_COMPILER_FLAGS()
 SETUP_LINKER()
-
-# colors =)
-set (CMAKE_BUILD_COLOR_MAKEFILE ON)
-
-if (CMAKE_GENERATOR STREQUAL "Ninja")
-    # Turn on colored output. https://github.com/ninja-build/ninja/wiki/FAQ
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fdiagnostics-color=always")
-endif ()
+SETUP_TOOL_FLAGS()
 
 # end setup build
 
@@ -88,12 +79,6 @@ ENDIF()
 
 IF(PROJECT_OS_LINUX)
     ADD_SUBDIRECTORY(linux)
-
-#    FIND_PACKAGE(ALUT)
-#    FIND_PACKAGE(OpenAL)
-#    IF(ALUT_FOUND AND OPENAL_FOUND)
-#        ADD_SUBDIRECTORY(openal)
-#    ENDIF()
 ENDIF()
 
 FIND_PACKAGE(GLUT)

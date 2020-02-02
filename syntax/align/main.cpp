@@ -6,7 +6,7 @@ struct alignas(N) IAllocator
 {
     IAllocator() : p(data), sz(N)
     {
-        std::cout << "align IAllocator ok: " << ((intptr_t)this % N == 0) << std::endl;
+        std::cout << "align IAllocator ok: " << ((size_t)(this) % N == 0) << std::endl;
     }
 
     template <typename T>

@@ -40,7 +40,7 @@ void clear(node<T>* parent)
     delete parent;
 }
 
-typedef node<int> inode;
+typedef node<size_t> inode;
 
 int main()
 {

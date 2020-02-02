@@ -39,7 +39,7 @@ struct C : public A, public B
     }
 };
 
-int main(int argc, char *argv[])
+int main(int, char*[])
 {
     C obj;
 

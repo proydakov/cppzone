@@ -34,7 +34,7 @@ typename string::size_type substring_search_begin(const string& str, const strin
             return i;
         }
     }
-    return -1;
+    return std::string::npos;
 }
 
 template<class string>
@@ -46,7 +46,7 @@ typename string::size_type substring_search_end(const string& str, const string&
             return i;
         }
     }
-    return -1;
+    return std::string::npos;
 }
 
 #endif // I_SUB_H

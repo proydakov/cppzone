@@ -8,7 +8,7 @@ const int MB = 1024 * KB;
 const int data_size = 128 * MB / sizeof(int);
 const int repeats = 64 * MB;
 const int times = 8;
-const float cache_k = 1.15;
+const double cache_k = 1.15;
 
 long long clock_time()
 {
@@ -25,7 +25,7 @@ int main()
         data[i]++;
     }
 
-    std::vector<int> steps({
+    std::vector<size_t> steps({
         1 * KB,   2 * KB,   4 * KB,  8 * KB,
         16 * KB,  32 * KB,  64 * KB, 128 * KB,
         256 * KB, 512 * KB, 1 * MB,  2 * MB,
@@ -38,18 +38,18 @@ int main()
     std::vector< std::pair<int, double> > labs;
     for (size_t i = 0; i < steps.size(); i++) {
         double totalTime = 0;    
-        int size_mask = steps[i] / sizeof(int) - 1;
+        size_t size_mask = steps[i] / sizeof(int) - 1;
 
-        for (int k = 0; k < times; k++) {
+        for (size_t k = 0; k < times; k++) {
             long long start = clock_time();
-            for (int j = 0; j < repeats; j++) {
+            for (size_t j = 0; j < repeats; j++) {
                 ++data[ (j * sizeof(int) * sizeof(int) * sizeof(int) ) & size_mask ];
             }
             long long end = clock_time();
             totalTime += (end - start) / 1000000000.0;
         }
         labs.push_back( std::make_pair(steps[i] / KB, totalTime) );
-        printf("%d time: %lf\n", steps[i] / KB, totalTime);
+        printf("%lu time: %lf\n", steps[i] / KB, totalTime);
     }
 
     int calc_cache = 0;

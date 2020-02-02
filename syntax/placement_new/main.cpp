@@ -6,7 +6,7 @@ struct alignas(32) data_t
 {
     data_t(void* ptr) : ptr_(ptr)
     {
-        std::cout << "align ok: " << (((intptr_t)this % alignof(data_t)) == 0) << std::endl;
+        std::cout << "align ok: " << (((size_t)(this) % alignof(data_t)) == 0) << std::endl;
     }
 
     void* ptr_;

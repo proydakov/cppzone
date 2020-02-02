@@ -54,7 +54,7 @@ private:
         auto data = make_message();
         auto self(shared_from_this());
         boost::asio::async_write(m_socket, boost::asio::buffer(data, data.length()),
-                                 [this, self] (boost::system::error_code ec, std::size_t length)
+                                 [this, self] (boost::system::error_code ec, std::size_t)
         {
             (void)(this);
             if (ec)
@@ -77,7 +77,7 @@ private:
 class server
 {
 public:
-    server(boost::asio::io_service& io_service, short port)
+    server(boost::asio::io_service& io_service, unsigned short port)
         : m_io_service(io_service), m_acceptor(io_service, tcp::endpoint(tcp::v4(), port))
     {
         do_accept();
@@ -116,7 +116,7 @@ int main(int argc, char* argv[])
         std::cerr << "Usage: boost_async_tcp_server <port>" << std::endl;
         return 1;
     }
-    const int port(std::atoi(argv[1]));
+    auto const port = static_cast<unsigned short>(std::atoi(argv[1]));
 
     boost::asio::io_service io_service;
     server s(io_service, port);

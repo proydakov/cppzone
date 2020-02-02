@@ -31,10 +31,10 @@ void load_stream()
 
 int main()
 {
-    const int thread_col = std::thread::hardware_concurrency();
+    const unsigned thread_col = std::thread::hardware_concurrency();
 
     std::vector<std::thread> group;
-    for(int i = 0; i < thread_col; ++i) {
+    for(unsigned i = 0; i < thread_col; ++i) {
         group.push_back(std::thread(load_stream));
     }
 

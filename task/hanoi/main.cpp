@@ -24,7 +24,7 @@
 #include <string>
 #include <iostream>
 
-typedef int disk;
+typedef size_t disk;
 typedef std::list<disk> tower;
 
 void hanoi(size_t num, tower& start, tower& middle, tower& end);

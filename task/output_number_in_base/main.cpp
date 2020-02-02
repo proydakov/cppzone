@@ -62,14 +62,14 @@ void output_number(type num, type base)
 {
     std::array<std::uint8_t, sizeof(type) * 8> array{};
 
-    int i = 0;
+    size_t i = 0;
     for (; num != 0; i++)
     {
-        array[i] = num % base;
+        array[i] = static_cast<std::uint8_t>(num % base);
         num /= base;
     }
 
-    for (int j = std::ceil(sizeof(type) * 8 / std::log2(base)) - 1; j >= 0; j--)
+    for (size_t j = static_cast<size_t>(std::ceil(sizeof(type) * 8 / std::log2(base))) - 1; j != std::numeric_limits<size_t>::max(); j--)
     {
         std::cout << alphabet[array[j]];
     }

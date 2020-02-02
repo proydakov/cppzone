@@ -10,6 +10,7 @@ SET(GLOBAL_PROJECT_FOLDER "multithreading")
 
 IF(UNIX)
     ADD_SUBDIRECTORY(pthread)
+    ADD_SUBDIRECTORY(semaphore)
 ENDIF()
 
 IF(UNIX AND NOT APPLE)

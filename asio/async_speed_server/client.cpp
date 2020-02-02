@@ -3,6 +3,7 @@
 #include <istream>
 #include <ostream>
 #include <iostream>
+#include <algorithm>
 #include <boost/asio.hpp>
 
 using boost::asio::ip::tcp;
@@ -30,9 +31,13 @@ public:
     {
         std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
 
-        size_t elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start_time_).count();
+        auto elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start_time_).count();
+        if (elapsed_seconds < 0)
+        {
+            return;
+        }
 
-        size_t bit_in_sec = accumulator_ / elapsed_seconds * 8;
+        auto bit_in_sec = accumulator_ / static_cast<size_t>(elapsed_seconds) * 8;
 
         double bandwidth = bit_in_sec;
         std::string units = "Bit/s";
@@ -55,7 +60,7 @@ public:
                   << std::endl;
     }
 
-    void go(const std::string& server, int port)
+    void go(const std::string& server, unsigned short port)
     {
         std::clog << "<- go" << std::endl;
 
@@ -80,7 +85,7 @@ private:
         auto self(shared_from_this());
         build_request();
         boost::asio::async_write(socket_, request_,
-            [this, self](boost::system::error_code ec, std::size_t length) {
+            [this, self](boost::system::error_code ec, std::size_t) {
                 if (!ec) {
                     do_read();
                 }
@@ -130,7 +135,7 @@ int main(int argc, char* argv[])
 
         boost::asio::io_service io_service;
         auto c = std::make_shared<client>(io_service);
-        c->go( argv[1], std::stoi(argv[2]) );
+        c->go( argv[1], static_cast<unsigned short>(std::stoi(argv[2])));
         c.reset();
 
         std::clog << "<- io_service run" << std::endl;

@@ -40,7 +40,7 @@ template<typename data_type>
 void diminution(const std::vector<data_type>& a, const std::vector<data_type>& b, std::vector<data_type>& res);
 
 template<typename data_type>
-data_type binary_search(const std::vector<data_type>& data, const data_type& a);
+typename std::vector<data_type>::const_iterator binary_search(const std::vector<data_type>& data, const data_type& a);
 
 template<typename data_type>
 void remove_duplicates(std::vector<data_type>& data);
@@ -130,14 +130,12 @@ void subtraction(const std::vector<data_type>& a, const std::vector<data_type>& 
 }
 
 template<typename data_type>
-data_type binary_search(const std::vector<data_type>& data, const data_type& a)
+typename std::vector<data_type>::const_iterator binary_search(const std::vector<data_type>& data, const data_type& a)
 {
-    if(data.empty()) {
-        return -1;
-    }
     typename std::vector<data_type>::size_type begin = 0;
     typename std::vector<data_type>::size_type end = data.size() - 1;
     typename std::vector<data_type>::size_type middle = 0;
+
     while(begin <= end) {
         middle = (end + begin) / 2;
         if(data[middle] > a) {
@@ -147,10 +145,10 @@ data_type binary_search(const std::vector<data_type>& data, const data_type& a)
             begin = middle + 1;
         }
         else {
-            return middle;
+            return data.begin() + static_cast<typename std::vector<data_type>::difference_type>(middle);
         }
     }
-    return -1;
+    return data.end();
 }
 
 bool is_cyclic_permutation(const std::string& etalon, const std::string& test)
@@ -201,9 +199,7 @@ template<typename data_type>
 void remove_duplicates(std::vector<data_type>& data)
 {
     std::sort(data.begin(), data.end());
-    auto it = std::unique(data.begin(), data.end());
-    auto distance = std::distance(data.begin(), it);
-    data.resize(distance);
+    data.erase(std::unique(data.begin(), data.end()), data.end());
 }
 
 #endif // I_ARRAY_H

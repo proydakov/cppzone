@@ -22,7 +22,7 @@ int main()
 
     std::cout << "push" << std::endl;
 
-    for(int i = 0; i < 31; i++) {
+    for(char i = 0; i < 31; i++) {
         str.push_back('0' + i);
     }
 

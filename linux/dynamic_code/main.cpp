@@ -39,8 +39,7 @@ void emit_code_into_memory(void* m) {
     memcpy(m, code, sizeof(code));
 }
 
-// Выделяет RW память, сохраняет код в нее и меняет права на RX перед
-// исполнением.
+// Выделяет RW память, сохраняет код в нее и меняет права на RX перед исполнением.
 void emit_to_rw_run_from_rx(long val) {
     const size_t SIZE = 1024;
     typedef long (*JittedFunc)(long);
@@ -50,8 +49,8 @@ void emit_to_rw_run_from_rx(long val) {
     make_memory_executable(m, SIZE);
 
     JittedFunc func = (JittedFunc)( m );
-    int result = func(val);
-    printf("result = %d\n", result);
+    long result = func(val);
+    printf("result = %lu\n", result);
 
     const int unm = munmap(m, SIZE);
     if(unm == -1) {

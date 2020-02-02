@@ -56,7 +56,7 @@ int main()
 
     tagged_ptr<char const> p64(g_p_str);
 
-    p64 |= ~0;
+    p64 |= ~0ul;
 
     std::cout << "addr: " << (void*)(p64.ptr_data()) << std::flush;
     std::cout << " mask: " << std::hex << p64.mask_data() << std::flush;

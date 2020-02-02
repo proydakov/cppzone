@@ -1,7 +1,7 @@
 #include <vector>
 #include <iostream>
 
-int main(int argc, char **argv)
+int main(int, char*[])
 {
     size_t s = 1l * 1024 * 1024 * 1024 / sizeof(int) * 4;
     std::vector<int> blob( s, 0 );

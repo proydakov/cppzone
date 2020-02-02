@@ -40,7 +40,7 @@ void operator delete(void* ptr) noexcept
     free(ptr);
 }
 
-int main(int argc, char **argv)
+int main(int, char*[])
 {
     std::string data{"ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890 0987654321 1234567890"};
 

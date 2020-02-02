@@ -195,7 +195,7 @@ public:
 
     bitmask_t get_id() const noexcept
     {
-        return std::log2(m_mask);
+        return static_cast<bitmask_t>(std::log2(m_mask));
     }
 
 private:

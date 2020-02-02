@@ -3,15 +3,15 @@ macro(COMPILER_SET_MAX_WARNING_LEVEL)
     if(MSVC)
         string(REGEX REPLACE /W[0-4] /W4 CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
     else()
-        set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -Wall -Werror")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+        set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -Wall -Werror -Wextra -pedantic -pedantic-errors -Wconversion -Wsign-conversion")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pedantic -pedantic-errors -Wconversion -Wsign-conversion")
 
         if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-attributes -Wno-unknown-pragmas -Wno-noexcept-type")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-attributes -Wno-unknown-pragmas")
         endif()
 
         if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations -Wno-unknown-attributes -Wno-unknown-pragmas")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-attributes -Wno-unknown-pragmas")
         endif()
 endif()
 
@@ -39,12 +39,12 @@ ENDMACRO(COMPILER_MSVC_SET_STATIC_RUNTIME)
 
 ###############################################################################
 
-MACRO(SETUP_CXX_FLAGS)
+MACRO(SETUP_COMPILER_FLAGS)
 
+    #set(CMAKE_C_STANDARD 11)
     #set(CMAKE_CXX_STANDARD 17)
-    #set(CMAKE_CXX_EXTENSIONS 1) # https://cmake.org/cmake/help/latest/prop_tgt/CXX_EXTENSIONS.html#prop_tgt:CXX_EXTENSIONS
+    #set(CMAKE_CXX_EXTENSIONS 0)
     #set(CMAKE_CXX_STANDARD_REQUIRED ON)
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -Wnon-virtual-dtor")
 
     if(PROJECT_OS_LINUX)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
@@ -79,4 +79,15 @@ MACRO(SETUP_CXX_FLAGS)
     COMPILER_SET_MAX_WARNING_LEVEL()
     #COMPILER_MSVC_SET_STATIC_RUNTIME()
 
-ENDMACRO(SETUP_CXX_FLAGS)
+ENDMACRO(SETUP_COMPILER_FLAGS)
+
+MACRO(SETUP_TOOL_FLAGS)
+    # colors =)
+    set (CMAKE_BUILD_COLOR_MAKEFILE ON)
+
+    if (CMAKE_GENERATOR STREQUAL "Ninja")
+        # Turn on colored output. https://github.com/ninja-build/ninja/wiki/FAQ
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always -fcolor-diagnostics")
+        set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fdiagnostics-color=always -fcolor-diagnostics")
+    endif ()
+ENDMACRO(SETUP_TOOL_FLAGS)

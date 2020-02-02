@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
     std::cout << ss.str() << std::endl;
     int call = ::system(ss.str().c_str());
 
-    ::sleep(-1);
+    ::sleep(1'000'000);
 
     return call;
 }

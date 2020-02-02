@@ -38,6 +38,8 @@
 
 #include <iostream>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wzero-length-array"
 
 #ifndef _MSC_VER
 struct N
@@ -271,7 +273,7 @@ int main(int argc, char *argv[])
     std::cout << "sizeof std::timed_mutex:           " << sizeof(std::timed_mutex) << std::endl;
     std::cout << "sizeof std::recursive_mutex:       " << sizeof(std::recursive_mutex) << std::endl;
     std::cout << "sizeof std::recursive_timed_mutex: " << sizeof(std::recursive_timed_mutex) << std::endl;
-    //std::cout << "sizeof std::shared_mutex:          " << sizeof(std::shared_mutex) << std::endl;
+    std::cout << "sizeof std::shared_mutex:          " << sizeof(std::shared_mutex) << std::endl;
     std::cout << "sizeof std::shared_timed_mutex:    " << sizeof(std::shared_timed_mutex) << std::endl;
 
     std::cout << "sizeof std::condition_variable:    " << sizeof(std::condition_variable) << std::endl;
@@ -280,3 +282,5 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+#pragma GCC diagnostic pop

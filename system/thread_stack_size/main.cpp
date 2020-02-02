@@ -2,7 +2,7 @@
 #include <vector>
 #include <iostream>
 
-int main(int argc, char **argv)
+int main(int, char*[])
 {
     const size_t size = 4096 - 1;
     std::vector<std::thread> threads;

@@ -22,7 +22,7 @@ private:
         std::size_t result = 0;
         for (auto it = buffer.begin(), end_it = buffer.end(); it != end_it; ++it)
         {
-            result ^= *it;
+            result ^= static_cast<std::size_t>(*it);
             if (trace)
             {
                 std::cout << __FILE__ << ':' << __LINE__ << " byte: " << *it << std::endl;

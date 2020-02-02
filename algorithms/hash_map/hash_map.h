@@ -70,7 +70,7 @@ public:
 
 private:
     size_type get_index(const key_type& k);
-    static size_type get_next_pow_2(int val);
+    static size_type get_next_pow_2(size_type val);
 
 private:
     std::vector<std::list<value_type>> m_data;
@@ -235,7 +235,7 @@ typename hash_map<key, value, hash, equal>::size_type hash_map<key, value, hash,
 }
 
 template<class key, class value, class hash, class equal>
-typename hash_map<key, value, hash, equal>::size_type hash_map<key, value, hash, equal>::get_next_pow_2(int val)
+typename hash_map<key, value, hash, equal>::size_type hash_map<key, value, hash, equal>::get_next_pow_2(size_type val)
 {
-    return std::pow(2, std::ceil(std::log2(val)));
+    return static_cast<hash_map<key, value, hash, equal>::size_type>(std::pow(2, std::ceil(std::log2(val))));
 }
