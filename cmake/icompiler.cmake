@@ -9,8 +9,13 @@ macro(COMPILER_SET_MAX_WARNING_LEVEL)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-attributes -Wno-unknown-pragmas")
         endif()
 
+
         if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-attributes -Wno-unknown-pragmas")
+        endif()
+
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-attributes -Wno-unknown-pragmas -Wno-deprecated-declarations")
         endif()
 endif()
 

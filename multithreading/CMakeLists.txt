@@ -10,11 +10,11 @@ SET(GLOBAL_PROJECT_FOLDER "multithreading")
 
 IF(UNIX)
     ADD_SUBDIRECTORY(pthread)
-    ADD_SUBDIRECTORY(semaphore)
 ENDIF()
 
 IF(UNIX AND NOT APPLE)
     ADD_SUBDIRECTORY(mutex_impl)
+    ADD_SUBDIRECTORY(semaphore)
 ENDIF()
 
 ADD_SUBDIRECTORY(one2many_queue)

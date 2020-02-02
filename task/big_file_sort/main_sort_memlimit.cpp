@@ -53,7 +53,7 @@ void operator delete(void* ptr) noexcept
     free(ptr);
 }
 
-void operator delete(void* ptr, std::size_t)
+void operator delete(void* ptr, std::size_t) noexcept
 {
     free(ptr);
 }
