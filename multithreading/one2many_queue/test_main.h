@@ -106,7 +106,7 @@ int test_main(T controller, int argc, char* argv[],
     auto const milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
 
     std::cout << "TIME: " + std::to_string(milliseconds) + " milliseconds\n";
-    std::cout << "PERF: " + std::to_string(double(TOTAL_EVENTS) / milliseconds) + " events/millisecond\n";
+    std::cout << "PERF: " + std::to_string(double(TOTAL_EVENTS) / double(milliseconds)) + " events/millisecond\n";
 
     controller.after_test();
 

@@ -37,20 +37,20 @@ void generate_torus(object<P, C>& nobject, const C& color, GLfloat big_radius, G
 
     for(unsigned i = 0; i < circles_count; ++i) {
 
-        GLfloat phi = i * big_radius_angle_delta;
+        GLfloat phi = GLfloat(i) * big_radius_angle_delta;
         GLfloat xGlobal = 0;
         GLfloat yGlobal = 0;
 
         for(unsigned j = 0; j < points_on_circle; ++j) {
 
-            GLfloat omega = j * small_radius_angle_delta;
+            GLfloat omega = GLfloat(j) * small_radius_angle_delta;
 
-            GLfloat xLocal = small_radius * cos(omega) - big_radius;
+            GLfloat xLocal = small_radius * cosf(omega) - big_radius;
             GLfloat yLocal = 0;
-            GLfloat zLocal = small_radius * sin(omega);
+            GLfloat zLocal = small_radius * sinf(omega);
 
-            GLfloat xLocalRotated = xLocal * cos(phi) - yLocal * sin(phi);
-            GLfloat yLocalRotated = xLocal * sin(phi) + yLocal * cos(phi);
+            GLfloat xLocalRotated = xLocal * cosf(phi) - yLocal * sinf(phi);
+            GLfloat yLocalRotated = xLocal * sinf(phi) + yLocal * cosf(phi);
 
             GLfloat xReal = xGlobal + xLocalRotated;
             GLfloat yReal = yGlobal + yLocalRotated;

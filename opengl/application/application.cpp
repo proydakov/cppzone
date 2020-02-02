@@ -14,18 +14,19 @@ namespace
     }
 }
 
-application::application(int argc, char* argv[], size_t width, size_t height) :
+application::application(int, char* argv[], size_t width, size_t height) :
     m_flags(SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL),
     m_width(width),
     m_height(height),
     m_fullscreen(false),
     m_fs_functor(SDLK_F11, [this](){
         m_fullscreen = !m_fullscreen;
-        std::int32_t const new_flags = m_fullscreen ? (m_flags | SDL_WINDOW_FULLSCREEN_DESKTOP) : m_flags;
+        std::uint32_t const new_flags = m_fullscreen ? (m_flags | SDL_WINDOW_FULLSCREEN_DESKTOP) : m_flags;
         SDL_SetWindowFullscreen(m_window, new_flags);
     })
 {
-    if ( SDL_Init(SDL_INIT_VIDEO) < 0 ){
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
         std::cerr << "Unable to init SDL, error: " << SDL_GetError() << std::endl;
         exit(1);
     }
@@ -35,7 +36,7 @@ application::application(int argc, char* argv[], size_t width, size_t height) :
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,   8);
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,    8);
 
-    m_window = SDL_CreateWindow(extract_app_name(argv[0]).c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, m_flags);
+    m_window = SDL_CreateWindow(extract_app_name(argv[0]).c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, int(width), int(height), m_flags);
     if(nullptr == m_window)
     {
         std::cerr << "invalid window" << std::endl;
@@ -105,8 +106,8 @@ int application::run()
                     switch (e.window.event) {
                     case SDL_WINDOWEVENT_RESIZED:
                     {
-                        m_width = e.window.data1;
-                        m_height = e.window.data2;
+                        m_width = size_t(e.window.data1);
+                        m_height = size_t(e.window.data2);
                         resize(m_width, m_height);
                     }
                         break;

@@ -45,16 +45,16 @@ void generate_cube(object<P, C>& nobject, const C& color, GLfloat size, unsigned
         side = i - 1;
     }
 
-    int delta = precession - calc_cube_point(side);
+    unsigned delta = precession - calc_cube_point(side);
 
     GLfloat maxX = size / 2;
     GLfloat maxY = size / 2;
     GLfloat maxZ = size / 2;
 
     if(side % 2) {
-        maxX -= size / (side * 2);
-        maxY -= size / (side * 2);
-        maxZ -= size / (side * 2);
+        maxX -= size / GLfloat(side * 2);
+        maxY -= size / GLfloat(side * 2);
+        maxZ -= size / GLfloat(side * 2);
     }
 
     unsigned last = side - 1;
@@ -63,9 +63,9 @@ void generate_cube(object<P, C>& nobject, const C& color, GLfloat size, unsigned
         for(unsigned iy = 0; iy < side; ++iy) {
             for(unsigned iz = 0; iz < side; ++iz) {
 
-                GLfloat x = maxX - size * ix / side;
-                GLfloat y = maxY - size * iy / side;
-                GLfloat z = maxZ - size * iz / side;
+                GLfloat x = maxX - size * GLfloat(ix) / GLfloat(side);
+                GLfloat y = maxY - size * GLfloat(iy) / GLfloat(side);
+                GLfloat z = maxZ - size * GLfloat(iz) / GLfloat(side);
 
                 if(ix == 0 || ix == last ||
                     iy == 0 || iy == last ||

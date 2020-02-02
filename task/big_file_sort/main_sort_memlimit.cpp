@@ -53,6 +53,11 @@ void operator delete(void* ptr) noexcept
     free(ptr);
 }
 
+void operator delete(void* ptr, std::size_t)
+{
+    free(ptr);
+}
+
 struct data
 {
     std::string email;
@@ -211,8 +216,7 @@ int main(int argc, char* argv[])
     const size_t GB_SIZE = 1024 * 1024 * 1024;
     std::string::size_type sz;
     double limit_gb = std::stod(ssize, &sz);
-    double k_safe = 0.975;
-    const size_t MEMORY_LIMIT = static_cast<size_t>(k_safe * limit_gb * GB_SIZE / hardware_concurrency);
+    const size_t MEMORY_LIMIT = static_cast<size_t>(limit_gb * double(GB_SIZE) / double(hardware_concurrency) * 0.975);
 
     size_t blob_counter = 0;
     cblobs blobs;

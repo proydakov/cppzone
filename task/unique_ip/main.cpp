@@ -29,7 +29,7 @@
 
 namespace ip {
 
-template<class T, int Size>
+template<class T, size_t Size>
 struct impl
 {
     impl(std::initializer_list<T> list) {

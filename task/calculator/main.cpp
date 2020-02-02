@@ -360,6 +360,7 @@ private:
                         continue;
                     }
                 }
+                [[fallthrough]];
                 case '+':
                 case '*':
                 case '/':

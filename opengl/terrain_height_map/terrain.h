@@ -25,24 +25,24 @@
 class terrain
 {
 public:
-    typedef unsigned heigh;
+    typedef int height_t;
 
 public:
     terrain();
     ~terrain();
 
-    bool load_raw(std::string file_name, unsigned width, unsigned height);
-    heigh get_element_height(unsigned x, unsigned y) const;
-    heigh get_max_height() const;
-    unsigned get_width() const;
-    unsigned get_height() const;
+    bool load_raw(std::string file_name, int width, int height);
+    height_t get_element_height(int x, int y) const;
+    height_t get_max_height() const;
+    int get_width() const;
+    int get_height() const;
 
 private:
     typedef unsigned char byte;
 
-    std::vector<heigh> m_height_map;
+    std::vector<height_t> m_height_map;
 
-    heigh m_max_height;
-    unsigned m_width;
-    unsigned m_height;
+    height_t m_max_height;
+    int m_width;
+    int m_height;
 };

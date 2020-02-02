@@ -15,6 +15,12 @@ void operator delete(void* ptr) noexcept
     std::free(ptr);
 }
 
+void operator delete(void* ptr, std::size_t size) noexcept
+{
+    std::cout << "free ptr=" << ptr << " size=" << size << std::endl;
+    std::free(ptr);
+}
+
 int main()
 {
     using map_t = std::unordered_map<int, int>;

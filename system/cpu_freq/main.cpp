@@ -102,7 +102,7 @@ std::ostream& operator<<(std::ostream& os, freq_t freq)
     os << std::fixed;
     os.precision(6);
 
-    double d = freq.val_;
+    auto d = double(freq.val_);
     if(d > std::giga::num)
     {
         os << d / std::giga::num << " GHz";

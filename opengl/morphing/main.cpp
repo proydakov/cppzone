@@ -59,14 +59,14 @@ const GLfloat SPEED_DELTA = 0.05f;
 
 typedef object< point3d<GLfloat>, color_rgba<GLdouble> > scene_object;
 
-const int OBJECT_SPHERE      = 0;
-const int OBJECT_TORUS       = 1;
-const int OBJECT_LINES       = 2;
-const int OBJECT_CUBE        = 3;
-const int OBJECT_SPIRAL      = 4;
-const int OBJECT_PARABOLOID  = 5;
-const int OBJECT_CHAOS       = 6;
-int g_object_index = OBJECT_SPHERE;
+const unsigned OBJECT_SPHERE      = 0;
+const unsigned OBJECT_TORUS       = 1;
+const unsigned OBJECT_LINES       = 2;
+const unsigned OBJECT_CUBE        = 3;
+const unsigned OBJECT_SPIRAL      = 4;
+const unsigned OBJECT_PARABOLOID  = 5;
+const unsigned OBJECT_CHAOS       = 6;
+unsigned g_object_index = OBJECT_SPHERE;
 
 scene_object g_object_sphere;
 scene_object g_object_torus;
@@ -107,7 +107,7 @@ void init()
     
     srand((unsigned)time(NULL));
 
-    int size = 1600;
+    unsigned size = 1600;
 
     scene_object::color_type color(0.1, 0.5, 1.0, 1.0);
 
@@ -144,9 +144,9 @@ void draw(scene_object& object, scene_object::color_type morphing_color)
         for(size_t i = 0; i < object.points.size(); ++i) {
             scene_object::vertex data = object.points[i];
 
-            GLfloat x = data.m_point.m_x + MAX_POINT_DELTA / (rand() % 10) - MAX_POINT_DELTA / 2;
-            GLfloat y = data.m_point.m_y + MAX_POINT_DELTA / (rand() % 10) - MAX_POINT_DELTA / 2;
-            GLfloat z = data.m_point.m_z + MAX_POINT_DELTA / (rand() % 10) - MAX_POINT_DELTA / 2;
+            GLfloat x = data.m_point.m_x + MAX_POINT_DELTA / GLfloat(rand() % 10) - MAX_POINT_DELTA / 2;
+            GLfloat y = data.m_point.m_y + MAX_POINT_DELTA / GLfloat(rand() % 10) - MAX_POINT_DELTA / 2;
+            GLfloat z = data.m_point.m_z + MAX_POINT_DELTA / GLfloat(rand() % 10) - MAX_POINT_DELTA / 2;
 
             if(!g_morphing) {
                 glColor4d(data.m_color.m_red, data.m_color.m_green, data.m_color.m_blue, data.m_color.m_alpha);

@@ -16,6 +16,12 @@ void operator delete(void* ptr) noexcept
     std::free(ptr);
 }
 
+void operator delete(void* ptr, std::size_t size) noexcept
+{
+    std::cout << "free[" << size << ']' << std::endl;
+    std::free(ptr);
+}
+
 int safe_get(std::map<std::string, int>& map, const char* str)
 {
     return map[str];

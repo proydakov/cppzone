@@ -40,6 +40,11 @@ void operator delete(void* ptr) noexcept
     free(ptr);
 }
 
+void operator delete(void* ptr, std::size_t) noexcept
+{
+    free(ptr);
+}
+
 int main(int, char*[])
 {
     std::string data{"ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890 0987654321 1234567890"};
@@ -49,11 +54,13 @@ int main(int, char*[])
     std::cout << "sizeof str: " << sizeof(std::string) << std::endl;
     std::cout << "size data:  " << data.capacity() + 1 << std::endl;
 
-    if(allocated > 1024 * 1024 * 1024) {
-        std::cout << "allocated:  " << 1.0 * allocated / (1024 * 1024 * 1024) << " Gb\n";
+    if(allocated > 1024 * 1024 * 1024)
+    {
+        std::cout << "allocated:  " << double(allocated) / (1024 * 1024 * 1024) << " Gb\n";
     }
-    else {
-        std::cout << "allocated:  " << 1.0 * allocated << std::endl;
+    else
+    {
+        std::cout << "allocated:  " << double(allocated) << std::endl;
     }
     std::cout << std::endl;
 

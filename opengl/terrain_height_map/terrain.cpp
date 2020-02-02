@@ -36,9 +36,9 @@ terrain::~terrain()
 {
 }
 
-bool terrain::load_raw(std::string file_name, unsigned width, unsigned height)
+bool terrain::load_raw(std::string file_name, int width, int height)
 {
-    unsigned num_vertices = width * height;
+    auto const num_vertices = static_cast<size_t>(width * height);
     std::vector<byte> in(num_vertices);
 
     std::ifstream file;
@@ -47,7 +47,7 @@ bool terrain::load_raw(std::string file_name, unsigned width, unsigned height)
         return false;
     }
 
-    file.read(reinterpret_cast<char*>(&in[0]), in.size());
+    file.read(reinterpret_cast<char*>(&in[0]), static_cast<std::streamsize>(in.size()));
     file.close();
 
     m_height_map.resize(num_vertices);
@@ -63,25 +63,25 @@ bool terrain::load_raw(std::string file_name, unsigned width, unsigned height)
     return true;
 }
 
-terrain::heigh terrain::get_element_height(unsigned x, unsigned y) const
+terrain::height_t terrain::get_element_height(int x, int y) const
 {
     assert(x >= 0 && x < m_width);
     assert(y >= 0 && y < m_height);
-    unsigned position = y * m_width + x;
+    auto position = static_cast<unsigned>(y * m_width + x);
     return m_height_map[position];
 }
 
-terrain::heigh terrain::get_max_height() const
+terrain::height_t terrain::get_max_height() const
 {
     return m_max_height;
 }
 
-unsigned terrain::get_width() const
+int terrain::get_width() const
 {
     return m_width;
 }
 
-unsigned terrain::get_height() const
+int terrain::get_height() const
 {
     return m_height;
 }

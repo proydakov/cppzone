@@ -37,9 +37,9 @@ public:
             return;
         }
 
-        auto bit_in_sec = accumulator_ / static_cast<size_t>(elapsed_seconds) * 8;
+        auto bit_in_sec = static_cast<double>(accumulator_ / static_cast<size_t>(elapsed_seconds) * 8);
 
-        double bandwidth = bit_in_sec;
+        auto bandwidth = bit_in_sec;
         std::string units = "Bit/s";
         if(bit_in_sec > 1000000000) {
             bandwidth = bit_in_sec / 1000000000.0;

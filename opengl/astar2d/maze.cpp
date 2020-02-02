@@ -46,7 +46,7 @@ struct found_goal {};
 
 distance_t euclidean_distance(distance_t dx, distance_t dy)
 {
-    return std::sqrt(dx * dx + dy * dy);
+    return static_cast<distance_t>(std::sqrt(dx * dx + dy * dy));
 }
 
 distance_t euclidean_squared_distance(distance_t dx, distance_t dy)
@@ -61,7 +61,7 @@ distance_t manhattan_distance(distance_t dx, distance_t dy)
 
 distance_t diagonal_distance(distance_t dx, distance_t dy)
 {
-    return dx + dy + (14 - 20) / 10.0 * std::min(dx, dy);
+    return static_cast<distance_t>(dx + dy + (14 - 20) / 10.0 * std::min(dx, dy));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -112,7 +112,7 @@ struct astar_goal_visitor : public boost::default_astar_visitor
     {
     }
 
-    void examine_vertex(const vertex_descriptor& u, const graph_t& graph) {
+    void examine_vertex(const vertex_descriptor& u, const graph_t&) {
         if (u == m_goal) {
             throw found_goal();
         }
@@ -132,7 +132,7 @@ maze::maze(std::size_t width, std::size_t height) :
     m_barriers(width * height, vertex_hash(m_grid)),
     m_barrier_grid(create_barrier_grid())
 {
-    m_random_generator.seed(std::time(0));
+    m_random_generator.seed(static_cast<unsigned>(std::time(0)));
 
     const size_t size = width * height;
     m_name.resize(size);
@@ -170,8 +170,8 @@ maze::maze(std::size_t width, std::size_t height) :
         for(size_t y = 0; y < height; y++) {
             const size_t index = calc_vertex_index(x, y);
             vertex_descriptor descriptor(index);
-            m_grid[descriptor].x = x;
-            m_grid[descriptor].y = y;
+            m_grid[descriptor].x = static_cast<distance_t>(x);
+            m_grid[descriptor].y = static_cast<distance_t>(y);
             std::stringstream sstream;
             sstream << "(" << x << ", " << y << ")";
             m_name[index] = sstream.str();
@@ -358,8 +358,8 @@ vertex_descriptor maze::next(vertex_descriptor u, std::size_t direction)
             assert(false);
             break;
     }
-    const size_t x = m_grid[u].x;
-    const size_t y = m_grid[u].y;
+    const size_t x = static_cast<size_t>(m_grid[u].x);
+    const size_t y = static_cast<size_t>(m_grid[u].y);
 
     const size_t new_x = x + delta_x;
     const size_t new_y = y + delta_y;
@@ -421,10 +421,10 @@ std::size_t maze::random_int(std::size_t a, std::size_t b)
     if (b < a) {
         b = a;
     }
-    boost::uniform_int<> dist(a, b);
+    boost::uniform_int<> dist(static_cast<int>(a), static_cast<int>(b));
     boost::variate_generator<boost::mt19937&, boost::uniform_int<> >
     generate(m_random_generator, dist);
-    return generate();
+    return static_cast<size_t>(generate());
 }
 
 // Generate a maze with a random assignment of barriers.
@@ -440,7 +440,7 @@ std::shared_ptr<maze> random_maze(std::size_t x, std::size_t y)
     vertices_size_type n = num_vertices(m->m_grid);
     
     // One quarter of the cells in the maze should be barriers.
-    int barriers = pow(n, 0.75);
+    int barriers = static_cast<int>(pow(n, 0.75));
     while (barriers > 0) {
         // Choose horizontal or vertical direction.
         std::size_t direction = m->random_int(0, 1);

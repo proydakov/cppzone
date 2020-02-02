@@ -46,7 +46,7 @@ int main()
                 ++data[ (j * sizeof(int) * sizeof(int) * sizeof(int) ) & size_mask ];
             }
             long long end = clock_time();
-            totalTime += (end - start) / 1000000000.0;
+            totalTime += double(end - start) / 1000000000.0;
         }
         labs.push_back( std::make_pair(steps[i] / KB, totalTime) );
         printf("%lu time: %lf\n", steps[i] / KB, totalTime);

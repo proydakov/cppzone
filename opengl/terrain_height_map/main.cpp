@@ -87,7 +87,7 @@ void init_map();
 void init_color_buffer();
 
 void render();
-void draw_terrain(unsigned step);
+void draw_terrain(int step);
 void camera();
 
 void cycle();
@@ -134,7 +134,7 @@ void init_map()
     std::string base_directory(DATA_DIRECTORY);
     std::string file_name(base_directory + "terrain.raw");
 
-    unsigned side = MAP_SIZE;
+    int side = MAP_SIZE;
 
     bool load = g_terrain.load_raw(file_name, side, side);
     if(!load) {
@@ -147,7 +147,7 @@ void init_map()
     for(unsigned i = MIN_TERRAIN_DETAILS; i <= MAX_TERRAIN_DETAILS; ++i) {
         g_theTerrain[i - 1] = glGenLists(1);
         glNewList(g_theTerrain[i - 1], GL_COMPILE);
-        draw_terrain(i);
+        draw_terrain(static_cast<int>(i));
         glEndList();
     }
 }
@@ -157,15 +157,15 @@ void init_color_buffer()
     g_theTerrainColor.resize(MAP_SIZE * MAP_SIZE);
 
     GLdouble max_height = g_terrain.get_max_height();
-    unsigned width = g_terrain.get_width();
-    unsigned height = g_terrain.get_height();
+    auto width = g_terrain.get_width();
+    auto height = g_terrain.get_height();
 
-    for(unsigned i = 0; i < width - 1; ++i) {
-        for(unsigned j = 0; j < height -1; ++j) {
+    for(int i = 0; i < width - 1; ++i) {
+        for(int j = 0; j < height -1; ++j) {
             GLdouble current_height = g_terrain.get_element_height(i, j);
             GLdouble index = current_height / max_height;
 
-            g_theTerrainColor[i + j * width] = color_rgb(1 - index, 0, index);
+            g_theTerrainColor[static_cast<size_t>(i + j * width)] = color_rgb(1 - index, 0, index);
         }
     }
 }
@@ -190,15 +190,15 @@ void render()
     camera();
 }
 
-void draw_terrain(unsigned step)
+void draw_terrain(int step)
 {
-    unsigned width = g_terrain.get_width();
-    unsigned height = g_terrain.get_height();
+    auto width = g_terrain.get_width();
+    auto height = g_terrain.get_height();
 
-    for(unsigned i = 0; i < width - step; i += step) {
-        for(unsigned j = 0; j < height -step; j += step) {
+    for(int i = 0; i < width - step; i += step) {
+        for(int j = 0; j < height -step; j += step) {
 
-            color_rgb color = g_theTerrainColor[i + j * width];
+            color_rgb color = g_theTerrainColor[static_cast<size_t>(i + j * width)];
             glColor3d(color.r, color.g, color.b);
 
             glBegin(GL_POLYGON);

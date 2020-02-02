@@ -18,6 +18,12 @@ void operator delete(void* ptr) noexcept
     std::free(ptr);
 }
 
+void operator delete(void* ptr, std::size_t size) noexcept
+{
+    std::cout << "free, ptr=" << ptr << " size: " << size << std::endl;
+    std::free(ptr);
+}
+
 template<std::size_t N>
 void test()
 {

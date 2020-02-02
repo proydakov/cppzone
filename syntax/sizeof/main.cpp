@@ -38,19 +38,8 @@
 
 #include <iostream>
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wzero-length-array"
-
-#ifndef _MSC_VER
-struct N
-{
-    int k[0];
-};
-#endif
-
 class O
 {
-    
 };
 
 class A
@@ -167,30 +156,6 @@ int main(int argc, char *argv[])
 
     std::cout << std::endl;
 
-#ifndef _MSC_VER
-    std::cout << "sizeof N: "<< sizeof(N) << std::endl;
-    std::cout << "sizeof N::k: "<< sizeof(N::k) << std::endl;
-
-    N* n1 = new N;
-    N* n2 = new N;
-
-    std::cout << "n1: " << n1 << std::endl;
-    std::cout << "n2: " << n2 << std::endl;
-
-    N parray[10];
-    N* pi = parray;
-
-    for(size_t i = 0; i < 10; ++i, ++pi) {
-        std::cout << "adress pi:   " << &pi << std::endl;
-    }
-
-    for(auto& item : parray) {
-        std::cout << "step: " << &item << std::endl;
-    }
-
-    std::cout << std::endl;
-#endif
-
     std::cout << "sizeof types:" << std::endl;
     std::cout << "sizeof bool:        " << sizeof(bool)   << std::endl;
     std::cout << "sizeof char:        " << sizeof(char)   << std::endl;
@@ -282,5 +247,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
-#pragma GCC diagnostic pop

@@ -21,8 +21,8 @@ public:
         auto end = std::chrono::high_resolution_clock::now();
 
         auto const delta = end - m_start;
-        std::cout << "fill size: " << m_bytes * 1.0 / giga << " Gb time: " << std::chrono::duration_cast<std::chrono::milliseconds>(delta).count() << " milliseconds" << std::endl;
-        std::cout << "memory_bandwidth: " << m_bytes * 1.0 / giga / std::chrono::duration_cast<std::chrono::milliseconds>(delta).count() * 1000 << " GB/s" << std::endl;
+        std::cout << "fill size: " << double(m_bytes) / double(giga) << " Gb time: " << std::chrono::duration_cast<std::chrono::milliseconds>(delta).count() << " milliseconds" << std::endl;
+        std::cout << "memory_bandwidth: " << double(m_bytes) / double(giga) / double(std::chrono::duration_cast<std::chrono::milliseconds>(delta).count() * 1000) << " GB/s" << std::endl;
     }
 
 private:

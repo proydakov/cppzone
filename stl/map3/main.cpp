@@ -14,6 +14,12 @@ void operator delete(void* ptr) noexcept
     std::free(ptr);
 }
 
+void operator delete(void* ptr, std::size_t size) noexcept
+{
+    std::cout << "free[" << size << ']' << std::endl;
+    std::free(ptr);
+}
+
 using map_t = std::map<std::int64_t, std::int64_t>;
 
 #ifdef _MSC_VER

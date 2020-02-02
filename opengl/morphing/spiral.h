@@ -30,19 +30,19 @@ template <class P, class C>
 void generate_spiral(object<P, C>& nobject, const C& color, GLfloat radius, unsigned precession)
 {
     GLfloat height = radius * 2;
-    GLfloat height_delta = height / precession;
+    GLfloat height_delta = height / GLfloat(precession);
     GLfloat base = -radius;
     GLfloat angle_delta = 0.1f;
 
-    GLfloat compression = 1.0f / precession;
+    GLfloat compression = 1.0f / GLfloat(precession);
 
     for(unsigned i = 0; i < precession; ++i) {
         
-        GLfloat phi = angle_delta * i;
+        GLfloat phi = angle_delta * GLfloat(i);
 
-        GLfloat x = radius * cos(phi) * i * compression;
-        GLfloat y = radius * sin(phi) * i * compression;
-        GLfloat z = base + height_delta * i;
+        GLfloat x = radius * cosf(phi) * GLfloat(i) * compression;
+        GLfloat y = radius * sinf(phi) * GLfloat(i) * compression;
+        GLfloat z = base + height_delta * GLfloat(i);
 
         typename object<P, C>::point_type point(x, y, z);
         nobject.points.push_back(typename object<P, C>::vertex(point, color));

@@ -33,7 +33,7 @@ void generate_paraboloid(object<P, C>& nobject, const C& color, GLfloat radius, 
     unsigned point_on_level = precession / levels;
 
     GLfloat height = radius * 2;
-    GLfloat height_delta = height / levels;
+    GLfloat height_delta = height / GLfloat(levels);
     GLfloat base = -radius;
 
     GLfloat radius_angle_delta = static_cast<GLfloat>(2 * M_PI / point_on_level);
@@ -41,13 +41,13 @@ void generate_paraboloid(object<P, C>& nobject, const C& color, GLfloat radius, 
     for(unsigned i = 0; i < levels; ++i) {
         for(unsigned j = 0; j < point_on_level; ++j) {
 
-            GLfloat phi = j * radius_angle_delta;
+            GLfloat phi = GLfloat(j) * radius_angle_delta;
 
-            GLfloat z = height_delta * i;
-            GLfloat cradius = 0.7f * sqrt(z);
+            GLfloat z = height_delta * GLfloat(i);
+            GLfloat cradius = 0.7f * sqrtf(z);
             z += base;
-            GLfloat x = cradius * cos(phi);
-            GLfloat y = cradius * sin(phi);
+            GLfloat x = cradius * cosf(phi);
+            GLfloat y = cradius * sinf(phi);
 
             typename object<P, C>::point_type point(x, y, z);
             nobject.points.push_back(typename object<P, C>::vertex(point, color));

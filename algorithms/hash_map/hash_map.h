@@ -198,7 +198,7 @@ typename hash_map<key, value, hash, equal>::size_type hash_map<key, value, hash,
 template<class key, class value, class hash, class equal>
 float hash_map<key, value, hash, equal>::load_factor() const
 {
-    return static_cast<float>(size()) / bucket_count();
+    return static_cast<float>(size() / bucket_count());
 }
 
 template<class key, class value, class hash, class equal>

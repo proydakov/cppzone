@@ -1,5 +1,4 @@
 macro(COMPILER_SET_MAX_WARNING_LEVEL)
-
     if(MSVC)
         string(REGEX REPLACE /W[0-4] /W4 CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
     else()
@@ -87,7 +86,11 @@ MACRO(SETUP_TOOL_FLAGS)
 
     if (CMAKE_GENERATOR STREQUAL "Ninja")
         # Turn on colored output. https://github.com/ninja-build/ninja/wiki/FAQ
-        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always -fcolor-diagnostics")
-        set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fdiagnostics-color=always -fcolor-diagnostics")
+        set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fdiagnostics-color=always")
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+            set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fcolor-diagnostics")
+            set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcolor-diagnostics")
+        endif()
     endif ()
 ENDMACRO(SETUP_TOOL_FLAGS)

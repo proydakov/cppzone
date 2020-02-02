@@ -13,6 +13,12 @@ void operator delete(void* ptr) noexcept
     std::free(ptr);
 }
 
+void operator delete(void* ptr, std::size_t size) noexcept
+{
+    std::cout << "free[" << size << ']' << std::endl;
+    std::free(ptr);
+}
+
 int main()
 {
     std::string str;
@@ -23,7 +29,7 @@ int main()
     std::cout << "push" << std::endl;
 
     for(char i = 0; i < 31; i++) {
-        str.push_back('0' + i);
+        str.push_back(static_cast<char>('0' + i));
     }
 
     std::cout << "size: " << str.size() << std::endl;

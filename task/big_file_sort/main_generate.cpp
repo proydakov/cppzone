@@ -10,7 +10,7 @@
 #include <sstream>
 #include <iostream>
 
-size_t GB_SIZE = 1024 * 1024 * 1024;
+constexpr double GB_SIZE = 1024.0 * 1024.0 * 1024.0;
 
 std::string pretty_size(double size)
 {
@@ -53,7 +53,7 @@ void producer(cstorage<std::vector<std::string>>& storage, double size)
         sstream << email << "@yandex.ru " << count << "\n";
 
         std::string buffer(sstream.str());
-        generated += buffer.size();
+        generated += double(buffer.size());
 
         data.push_back(buffer);
         if(data.size() >= batch) {
@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
     std::vector<std::thread> threads;
 
     const size_t hardware_concurrency = std::thread::hardware_concurrency();
-    double segment_size = target / hardware_concurrency;
+    double segment_size = target / double(hardware_concurrency);
 
     cstorage<std::vector<std::string>> storage;
 

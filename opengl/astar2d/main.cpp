@@ -48,11 +48,11 @@ public:
     void set_heuristic(maze::heuristic_type h);
 
 public:
-    int m_window_width;
-    int m_window_height;
+    size_t m_window_width;
+    size_t m_window_height;
 
-    int m_maze_width;
-    int m_maze_height;
+    size_t m_maze_width;
+    size_t m_maze_height;
 
     std::shared_ptr<maze> m_sp_maze;
     maze::maze_type m_type;
@@ -115,10 +115,10 @@ void tcapplication::resize(std::size_t w, std::size_t h)
     m_window_width = w;
     m_window_height = h;
 
-    glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+    glViewport(0, 0, GLsizei(w), GLsizei(h));
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluOrtho2D(0, w, h, 0);
+    gluOrtho2D(0, GLdouble(w), GLdouble(h), 0);
     glMatrixMode(GL_MODELVIEW);
 }
 
@@ -134,7 +134,7 @@ void tcapplication::draw()
     vertices_size_type const nx = m_sp_maze->length(0);
     vertices_size_type const ny = m_sp_maze->length(1);
 
-    auto const size = std::fmin(GLdouble(m_window_width) / nx, GLdouble(m_window_height) / ny);
+    auto const size = std::fmin(GLdouble(m_window_width) / GLdouble(nx), GLdouble(m_window_height) / GLdouble(ny));
 
     // barrier
     {
@@ -256,10 +256,10 @@ void tcapplication::draw()
         glLoadIdentity();
         glColor3d(0, 0, 1);
 
-        double width = ny * size;
+        double width = double(ny) * double(size);
 
         for (vertices_size_type y = 0; y < ny + 1; y++) {
-            double h = y * size;
+            double h = double(y) * double(size);
             glBegin(GL_LINES);
             {
                 glVertex3d(  0.0, h, 0.0);
@@ -268,10 +268,10 @@ void tcapplication::draw()
             glEnd();
         }
 
-        double height = nx * size;
+        double height = double(nx) * double(size);
 
         for (vertices_size_type x = 0; x < nx + 1; x++) {
-            double w = x * size;
+            double w = double(x) * double(size);
             glBegin(GL_LINES);
             {
                 glVertex3d(w,    0.0, 0.0);

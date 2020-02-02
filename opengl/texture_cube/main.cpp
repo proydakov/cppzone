@@ -125,7 +125,7 @@ void tcapplication::init()
 
 void tcapplication::resize(std::size_t w, std::size_t h)
 {
-    glViewport(0, 0, w, h);
+    glViewport(0, 0, GLsizei(w), GLsizei(h));
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(45.0, (GLdouble) w / (GLdouble) h, 0.1, 100.0);

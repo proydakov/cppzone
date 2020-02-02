@@ -28,13 +28,14 @@ using namespace texture;
 
 bool get_ext(const std::string& file_name, std::string& ext)
 {
-    int pos = file_name.rfind('.');
-    if(pos == -1) {
+    auto pos = file_name.rfind('.');
+    if(pos == std::string::npos)
+    {
         return false;
     }
 
     size_t size = file_name.size();
-    ext.resize(size - pos);
+    ext.resize(size - static_cast<size_t>(pos));
     for(size_t i = pos, j = 0; i < size; ++i, ++j) {
         ext[j] = file_name[i];
     }

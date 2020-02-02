@@ -256,7 +256,7 @@ void display()
             break;
 
         default:
-            assert(!"INVALID INPUT DATA");
+            abort();
             break;
     }
     glFlush();

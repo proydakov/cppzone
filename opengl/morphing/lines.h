@@ -36,15 +36,15 @@ void generate_lines(object<P, C>& nobject, const C& color, GLfloat radius, unsig
     unsigned points_on_line = precession / lines_count;
 
     GLfloat big_radius_angle_delta = static_cast<GLfloat>(2 * M_PI / lines_count);
-    GLfloat height_delta = height / points_on_line;
+    GLfloat height_delta = height / GLfloat(points_on_line);
 
     for(unsigned i = 0; i < points_on_line; ++i) {
         for(unsigned j = 0; j < lines_count; ++j) {
-            GLfloat phi = big_radius_angle_delta * j;
+            GLfloat phi = big_radius_angle_delta * GLfloat(j);
 
-            GLfloat x =  radius * cos(phi);
-            GLfloat y = -radius * sin(phi);
-            GLfloat z = base + height_delta * i;
+            GLfloat x =  radius * cosf(phi);
+            GLfloat y = -radius * sinf(phi);
+            GLfloat z = base + height_delta * GLfloat(i);
 
             typename object<P, C>::point_type point(x, y, z);
 
