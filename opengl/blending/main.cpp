@@ -38,8 +38,8 @@ public:
     void update(std::chrono::microseconds) override;
     void draw() override;
 
-    void info() override;
-    void keyboard(SDL_Event const& e) override;
+    void info(std::ostream&) override;
+    void on_event(SDL_Event const& e) override;
 
 private:
     int g_leftFirst = GL_TRUE;
@@ -68,7 +68,6 @@ void tcapplication::resize(std::size_t w, std::size_t h)
 
 void tcapplication::update(std::chrono::microseconds)
 {
-
 }
 
 void drawTriangle(GLdouble side, GLdouble red, GLdouble green, GLdouble blue, GLdouble alpha)
@@ -104,34 +103,42 @@ void tcapplication::draw()
     glClear(GL_COLOR_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
 
-    if(g_leftFirst) {
-        drawLeftTriangle();
-        drawRightTriangle();
-    }
-    else {
-        drawRightTriangle();
-        drawLeftTriangle();
-    }
-}
-
-void tcapplication::info()
-{
-    std::cout << COMMENT << "\n" << std::endl;
-}
-
-void tcapplication::keyboard(SDL_Event const& e)
-{
-    switch (e.key.keysym.sym)
+    if(g_leftFirst)
     {
-        case SDLK_e:
-            g_leftFirst = true;
-            break;
+        drawLeftTriangle();
+        drawRightTriangle();
+    }
+    else
+    {
+        drawRightTriangle();
+        drawLeftTriangle();
+    }
+}
 
-        case SDLK_d:
-            g_leftFirst = false;
-            break;
+void tcapplication::info(std::ostream& os)
+{
+    os << COMMENT << "\n" << std::endl;
+}
 
-        default:
+void tcapplication::on_event(SDL_Event const& e)
+{
+    switch (e.type)
+    {
+        case SDL_KEYDOWN:
+        case SDL_KEYUP:
+            switch (e.key.keysym.sym)
+            {
+                case SDLK_e:
+                    g_leftFirst = true;
+                    break;
+
+                case SDLK_d:
+                    g_leftFirst = false;
+                    break;
+
+                default:
+                    break;
+            }
             break;
     }
 }

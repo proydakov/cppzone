@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ostream>
 #include <chrono>
 #include <cstdint>
 #include <functional>
@@ -37,8 +38,8 @@ public:
     virtual void update(std::chrono::microseconds delta) = 0;
     virtual void draw() = 0;
 
-    virtual void info();
-    virtual void keyboard(SDL_Event const& Event);
+    virtual void info(std::ostream&);
+    virtual void on_event(SDL_Event const&);
 
     int run();
 

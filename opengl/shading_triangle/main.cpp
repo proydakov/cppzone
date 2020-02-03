@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
+ *  Copyright (c) 2020 Evgeny Proydakov <lord.tiran@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -20,59 +20,37 @@
  *  THE SOFTWARE.
  */
 
+#include <string>
+#include <fstream>
 #include <iostream>
 
-#include <common/iglut.h>
+#include <application/application.h>
 
-void info()
+class tcapplication : public application
 {
-    int red_bits, green_bits, blue_bits, alpha_bits, index_bits;
+public:
+    tcapplication(int argc, char* argv[], std::size_t w, std::size_t h);
 
-    glGetIntegerv(GL_RED_BITS, &red_bits);
-    glGetIntegerv(GL_GREEN_BITS, &green_bits);
-    glGetIntegerv(GL_BLUE_BITS, &blue_bits);
-    glGetIntegerv(GL_ALPHA_BITS, &alpha_bits);
-    glGetIntegerv(GL_INDEX_BITS, &index_bits);
+    void init() override;
+    void resize(std::size_t w, std::size_t h) override;
+    void update(std::chrono::microseconds delta) override;
+    void draw() override;
 
-    std::cout << "GL_RED_BITS : " << red_bits << std::endl;
-    std::cout << "GL_GREEN_BITS : " << green_bits << std::endl;
-    std::cout << "GL_BLUE_BITS : " << blue_bits << std::endl;
-    std::cout << "GL_ALPHA_BITS : " << alpha_bits << std::endl;
-    std::cout << "GL_INDEX_BITS : " << index_bits << std::endl;
+    void info(std::ostream&) override;
+};
+
+tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t h) :
+    application(argc, argv, w, h)
+{
 }
 
-void drawTriangle()
-{
-    glBegin(GL_TRIANGLES);
-    {
-        glColor3d(1.0, 0.0, 0.0);
-        glVertex2d(5.0, 5.0);
-        glColor3d(0.0, 1.0, 0.0);
-        glVertex2d(25.0, 5.0);
-        glColor3d(0.0, 0.0, 1.0);
-        glVertex2d(5.0, 25.0);
-    }
-    glEnd();
-}
-
-void init()
+void tcapplication::init()
 {
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glShadeModel(GL_SMOOTH);
-
-    info();
 }
 
-void display()
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    drawTriangle();
-    glutSwapBuffers();
-    glFlush();
-}
-
-void reshape(int w, int h)
+void tcapplication::resize(std::size_t w, std::size_t h)
 {
     glViewport(0, 0, (GLsizei) w, (GLsizei) h);
     glMatrixMode(GL_PROJECTION);
@@ -83,18 +61,51 @@ void reshape(int w, int h)
         gluOrtho2D(0.0, 30.0 * (GLdouble) w / (GLdouble) h, 0.0, 30.0);
 }
 
-int main(int argc, char** argv)
+void tcapplication::update(std::chrono::microseconds)
 {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(250, 250);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow(argv[0]);
+}
 
-    init();
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutMainLoop();
+void tcapplication::info(std::ostream& os)
+{
+    int red_bits, green_bits, blue_bits, alpha_bits, index_bits;
 
-    return 0;
+    glGetIntegerv(GL_RED_BITS, &red_bits);
+    glGetIntegerv(GL_GREEN_BITS, &green_bits);
+    glGetIntegerv(GL_BLUE_BITS, &blue_bits);
+    glGetIntegerv(GL_ALPHA_BITS, &alpha_bits);
+    glGetIntegerv(GL_INDEX_BITS, &index_bits);
+
+    os << "GL_RED_BITS : " << red_bits << std::endl;
+    os << "GL_GREEN_BITS : " << green_bits << std::endl;
+    os << "GL_BLUE_BITS : " << blue_bits << std::endl;
+    os << "GL_ALPHA_BITS : " << alpha_bits << std::endl;
+    os << "GL_INDEX_BITS : " << index_bits << std::endl;
+}
+
+void tcapplication::draw()
+{
+    auto drawTriangle = []()
+    {
+        glBegin(GL_TRIANGLES);
+        {
+            glColor3d(1.0, 0.0, 0.0);
+            glVertex2d(5.0, 5.0);
+            glColor3d(0.0, 1.0, 0.0);
+            glVertex2d(25.0, 5.0);
+            glColor3d(0.0, 0.0, 1.0);
+            glVertex2d(5.0, 25.0);
+        }
+        glEnd();
+    };
+
+    glClear(GL_COLOR_BUFFER_BIT);
+    glMatrixMode(GL_MODELVIEW);
+    drawTriangle();
+}
+
+int main( int argc, char* argv[] )
+{
+    tcapplication app(argc, argv, 640, 480);
+
+    return app.run();
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
+ *  Copyright (c) 2020 Evgeny Proydakov <lord.tiran@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,27 +24,58 @@
 #include <fstream>
 #include <iostream>
 
-#include <common/iglut.h>
+#include <application/application.h>
 
-int main(int argc, char* argv[])
+class tcapplication : public application
 {
-    glutInit(&argc, argv);
-    glutInitWindowSize(400, 400);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow(argv[0]);
+public:
+    tcapplication(int argc, char* argv[], std::size_t w, std::size_t h);
+
+    void init() override;
+    void resize(std::size_t w, std::size_t h) override;
+    void update(std::chrono::microseconds delta) override;
+    void draw() override;
+};
+
+tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t h) :
+    application(argc, argv, w, h)
+{
+}
+
+void tcapplication::init()
+{
+}
+
+void tcapplication::resize(std::size_t, std::size_t)
+{
+}
+
+void tcapplication::update(std::chrono::microseconds)
+{
+}
+
+void tcapplication::draw()
+{
+}
+
+int main( int argc, char* argv[] )
+{
+    tcapplication app(argc, argv, 640, 480);
 
     const GLubyte* glVendor = glGetString(GL_VENDOR);
     const GLubyte* glRenderer = glGetString(GL_RENDERER);
     const GLubyte* glVersion = glGetString(GL_VERSION);
     GLubyte* glExtensions = const_cast<GLubyte*>(glGetString(GL_EXTENSIONS));
 
-    if(!glVendor || !glRenderer || !glVersion || !glExtensions) {
+    if(!glVendor || !glRenderer || !glVersion || !glExtensions)
+    {
         std::cout << "Not found the required version of OpenGL." << std::endl;
         return 1;
     }
 
     int counter = 0;
-    for(int i = 0; glExtensions[i]; ++i) {
+    for(int i = 0; glExtensions[i]; ++i)
+    {
         if(glExtensions[i] == ' ') {
             glExtensions[i] = '\n';
             ++counter;
@@ -52,10 +83,10 @@ int main(int argc, char* argv[])
     }
 
     std::ofstream file;
-
     std::string fileName("opengl_system_info.txt");
     file.open(fileName.c_str());
-    if(file.is_open()) {
+    if(file.is_open())
+    {
         file << "GL_VENDOR     : " << glVendor << "\n\n"
             << "GL_RENDERER   : " << glRenderer << "\n\n"
             << "GL_VERSION    : " << glVersion << "\n\n"
@@ -63,10 +94,11 @@ int main(int argc, char* argv[])
             << glExtensions << std::endl;
 
         std::cout << "Generated : " << fileName << std::endl;
+        return 0;
     }
-    else {
+    else
+    {
         std::cout << "Can not create : " << fileName << " error !!!" << std::endl;
         return 1;
     }
-    return 0;
 }

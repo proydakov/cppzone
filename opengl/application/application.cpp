@@ -49,27 +49,26 @@ application::~application()
 {
 }
 
-void application::info()
+void application::info(std::ostream&)
 {
 }
 
-void application::keyboard(SDL_Event const& Event)
+void application::on_event(SDL_Event const&)
 {
-    (void)(Event);
 }
 
 void application::default_info()
 {
-    std::cout << "Press F11 for fullscreen.\n";
-    std::cout << "Press ESC for exit.\n";
-    std::cout << "\n";
+    std::clog << "Press F11 for fullscreen.\n";
+    std::clog << "Press ESC for exit.\n";
+    std::clog << "\n";
 }
 
 int application::run()
 {
     default_info();
-    info();
-    std::cout << std::endl;
+    info(std::clog);
+    std::clog << std::endl;
 
     resize(m_width, m_height);
     init();
@@ -97,7 +96,7 @@ int application::run()
                     break;
 
                 default:
-                    keyboard(e);
+                    on_event(e);
                     break;
                 }
                 break;
@@ -119,6 +118,7 @@ int application::run()
                 break;
 
             default:
+                on_event(e);
                 break;
             }
         }
@@ -139,14 +139,14 @@ int application::run()
 ///////////////////////////////////////////////////////////////////////////////
 
 
-keyboard_press_guard::keyboard_press_guard(SDL_Keycode code, std::function<void()>&& lambda) :
-    m_code(code),
-    m_lock(false),
-    m_lambda(std::move(lambda))
+keyboard_press_guard::keyboard_press_guard(SDL_Keycode code, std::function<void()>&& lambda)
+    : m_code(code)
+    , m_lock(false)
+    , m_lambda(std::move(lambda))
 {
 }
 
-void keyboard_press_guard::operator ()(SDL_Event const& Event)
+void keyboard_press_guard::operator()(SDL_Event const& Event)
 {
     switch (Event.type) {
     case SDL_KEYDOWN:

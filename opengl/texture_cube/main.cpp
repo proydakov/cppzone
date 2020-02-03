@@ -46,8 +46,8 @@ public:
     void update(std::chrono::microseconds delta) override;
     void draw() override;
 
-    void info() override;
-    void keyboard(SDL_Event const& e) override;
+    void info(std::ostream&) override;
+    void on_event(SDL_Event const&) override;
 
 private:
     bool load_texture(const std::string& file, size_t num);
@@ -201,31 +201,37 @@ void tcapplication::draw()
     glEnd();
 }
 
-void tcapplication::info()
+void tcapplication::info(std::ostream& os)
 {
-    std::cout << "Press 'B' to change the blending\n";
-    std::cout << "Press '1', '2', '3', '4', '5', '6', '7' to change textuire\n";
+    os << "Press 'B' to change the blending\n";
+    os << "Press '1', '2', '3', '4', '5', '6', '7' to change textuire\n";
 }
 
-void tcapplication::keyboard(SDL_Event const& e)
+void tcapplication::on_event(SDL_Event const& e)
 {
-    switch (e.key.keysym.sym)
+    switch (e.type)
     {
-        case SDLK_1:
-        case SDLK_2:
-        case SDLK_3:
-        case SDLK_4:
-        case SDLK_5:
-        case SDLK_6:
-        case SDLK_7:
-            m_textureIndex = static_cast<std::size_t>(e.key.keysym.sym - '1');
-            break;
+        case SDL_KEYDOWN:
+        case SDL_KEYUP:
+            switch (e.key.keysym.sym)
+            {
+                case SDLK_1:
+                case SDLK_2:
+                case SDLK_3:
+                case SDLK_4:
+                case SDLK_5:
+                case SDLK_6:
+                case SDLK_7:
+                    m_textureIndex = static_cast<std::size_t>(e.key.keysym.sym - '1');
+                    break;
 
-        case SDLK_b:
-            m_bl_functor(e);
-            break;
+                case SDLK_b:
+                    m_bl_functor(e);
+                    break;
 
-        default:
+                default:
+                    break;
+            }
             break;
     }
 }
@@ -237,7 +243,8 @@ bool tcapplication::load_texture(const std::string& file, size_t num)
     texture::loader loader;
     loader.load(file.c_str());
 
-    if(loader.isLoaded()) {
+    if(loader.isLoaded())
+    {
         status = true;
 
         glGenTextures(1, &m_texture[num]);
@@ -262,7 +269,7 @@ bool tcapplication::load_texture(const std::string& file, size_t num)
     return status;
 }
 
-int main( int argc, char* argv[] )
+int main(int argc, char* argv[])
 {
     tcapplication app(argc, argv, 640, 480);
 

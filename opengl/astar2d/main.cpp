@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2012-2013 Evgeny Proydakov <lord.tiran@gmail.com>
+ *  Copyright (c) 2012-2020 Evgeny Proydakov <lord.tiran@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,6 @@
 #include <iostream>
 #include <algorithm>
 
-#include <boost/lexical_cast.hpp>
-
 #include <maze.h>
 
 #include <application/application.h>
@@ -41,8 +39,8 @@ public:
     void update(std::chrono::microseconds delta) override;
     void draw() override;
 
-    void info() override;
-    void keyboard(SDL_Event const& e) override;
+    void info(std::ostream&) override;
+    void on_event(SDL_Event const& e) override;
 
     void new_maze();
     void set_heuristic(maze::heuristic_type h);
@@ -122,9 +120,8 @@ void tcapplication::resize(std::size_t w, std::size_t h)
     glMatrixMode(GL_MODELVIEW);
 }
 
-void tcapplication::update(std::chrono::microseconds delta)
+void tcapplication::update(std::chrono::microseconds)
 {
-    (void)(delta);
 }
 
 void tcapplication::draw()
@@ -140,7 +137,8 @@ void tcapplication::draw()
     {
         glColor3d(0.0, 0.5, 1);
         auto way = m_sp_maze->get_barriers();
-        for(const auto& el : way) {
+        for(const auto& el : way)
+        {
             auto property = m_sp_maze->get_vertex_property(el);
             int x = property.x;
             int y = property.y;
@@ -163,7 +161,8 @@ void tcapplication::draw()
     {
         glColor3d(0.8, 0.75, 0.75);
         auto vector = m_sp_maze->get_heuristic_tested();
-        for(const auto& el : vector) {
+        for(const auto& el : vector)
+        {
             auto property = m_sp_maze->get_vertex_property(el);
             int x = property.x;
             int y = property.y;
@@ -186,7 +185,8 @@ void tcapplication::draw()
     {
         glColor3d(1, 0.5, 0);
         auto solution = m_sp_maze->get_solution();
-        for(const auto& el : solution) {
+        for(const auto& el : solution)
+        {
             auto property = m_sp_maze->get_vertex_property(el);
             int x = property.x;
             int y = property.y;
@@ -258,7 +258,8 @@ void tcapplication::draw()
 
         double width = double(ny) * double(size);
 
-        for (vertices_size_type y = 0; y < ny + 1; y++) {
+        for (vertices_size_type y = 0; y < ny + 1; y++)
+        {
             double h = double(y) * double(size);
             glBegin(GL_LINES);
             {
@@ -270,7 +271,8 @@ void tcapplication::draw()
 
         double height = double(nx) * double(size);
 
-        for (vertices_size_type x = 0; x < nx + 1; x++) {
+        for (vertices_size_type x = 0; x < nx + 1; x++)
+        {
             double w = double(x) * double(size);
             glBegin(GL_LINES);
             {
@@ -282,49 +284,55 @@ void tcapplication::draw()
     }
 }
 
-void tcapplication::info()
+void tcapplication::info(std::ostream& os)
 {
-    std::cout << "Press 'g' or 'G' for generate new maze.\nPress '1', '2', '3' for select maze type\n";
+    os << "Press 'g' or 'G' for generate new maze.\nPress '1', '2', '3' for select maze type\n";
 }
 
-void tcapplication::keyboard(SDL_Event const& e)
+void tcapplication::on_event(SDL_Event const& e)
 {
-    switch (e.key.keysym.sym)
+    switch (e.type)
     {
-    case SDLK_1:
-        m_functor_fixed(e);
-        break;
+        case SDL_KEYDOWN:
+        case SDL_KEYUP:
+            switch (e.key.keysym.sym)
+            {
+            case SDLK_1:
+                m_functor_fixed(e);
+                break;
 
-    case SDLK_2:
-        m_functor_empty(e);
-        break;
+            case SDLK_2:
+                m_functor_empty(e);
+                break;
 
-    case SDLK_3:
-        m_functor_random(e);
-        break;
+            case SDLK_3:
+                m_functor_random(e);
+                break;
 
-    case SDLK_g:
-        m_functor_generate(e);
-        break;
+            case SDLK_g:
+                m_functor_generate(e);
+                break;
 
-    case SDLK_e:
-        m_functor_euclidean(e);
-        break;
+            case SDLK_e:
+                m_functor_euclidean(e);
+                break;
 
-    case SDLK_s:
-        m_functor_euclidean_squared(e);
-        break;
+            case SDLK_s:
+                m_functor_euclidean_squared(e);
+                break;
 
-    case SDLK_m:
-        m_functor_manhattan(e);
-        break;
+            case SDLK_m:
+                m_functor_manhattan(e);
+                break;
 
-    case SDLK_d:
-        m_functor_diagonal(e);
-        break;
+            case SDLK_d:
+                m_functor_diagonal(e);
+                break;
 
-    default:
-        break;
+            default:
+                break;
+            }
+            break;
     }
 }
 
@@ -365,9 +373,10 @@ int main(int argc, char* argv[])
     std::size_t x = size;
     std::size_t y = size;
 
-    if (argc == 3) {
-        x = boost::lexical_cast<std::size_t>(argv[1]);
-        y = boost::lexical_cast<std::size_t>(argv[2]);
+    if (argc == 3)
+    {
+        x = std::stoul(argv[1]);
+        y = std::stoul(argv[2]);
     }
 
     tcapplication app(argc, argv, 600, 600);
