@@ -17,7 +17,6 @@ ADD_SUBDIRECTORY(get_system_info)
 
 ADD_SUBDIRECTORY(texture)
 ADD_SUBDIRECTORY(texture_cube)
-#ADD_SUBDIRECTORY(follow_mouse)
 ADD_SUBDIRECTORY(fill)
 ADD_SUBDIRECTORY(shading_triangle)
 ADD_SUBDIRECTORY(morphing)
