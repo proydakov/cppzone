@@ -33,8 +33,8 @@ before_build:
   - cmd: md build
   - cmd: cd build
   # We generate project files for Visual Studio 12 because the boost binaries installed on the test server are for Visual Studio 15.
-  - cmd: if "%platform%"=="Win32" cmake -G "Visual Studio 16" -DCMAKE_BUILD_TYPE="%configuration%" ..
-  - cmd: if "%platform%"=="x64"   cmake -G "Visual Studio 16" -DCMAKE_BUILD_TYPE="%configuration%" ..
+  - cmd: if "%platform%"=="Win32" cmake -G "Visual Studio 16" -A Win32 -DCMAKE_BUILD_TYPE="%configuration%" ..
+  - cmd: if "%platform%"=="x64"   cmake -G "Visual Studio 16" -A x64 -DCMAKE_BUILD_TYPE="%configuration%" ..
 
 build:
   project: C:\projects\cppzone\build\I++.sln
