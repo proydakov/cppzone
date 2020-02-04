@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     type num, base;
     sstream >> num >> base;
 
-    if (base >= 2 and base <=16)
+    if (base >= 2 && base <=16)
     {
         output_number(num, base);
         return 0;

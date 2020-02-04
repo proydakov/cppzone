@@ -94,7 +94,7 @@ public:
 
     explicit token(std::string_view const text, std::size_t position)
     {
-        if (not text.empty())
+        if (!text.empty())
         {
             m_value = text_2_number(text, position);
             m_type = type::number;
@@ -180,7 +180,7 @@ private:
         number_t result{};
         for (auto const symbol : text)
         {
-            if (symbol >= '0' and symbol <= '9')
+            if (symbol >= '0' && symbol <= '9')
             {
                 result *= 10;
                 result += static_cast<number_t>(symbol - '0');
@@ -354,7 +354,7 @@ private:
                 {
                     try_to_flush_number(index);
                     auto const next = index + 1;
-                    if (allow_negative_number and next < input.size() and std::isdigit(input[next]))
+                    if (allow_negative_number && next < input.size() && std::isdigit(input[next]))
                     {
                         ++number_size;
                         continue;
@@ -429,7 +429,7 @@ private:
                         }
                         temp_token = m_tmp_tokens_stack.back();
                         m_tmp_tokens_stack.pop_back();
-                        if (not temp_token.is_bracket())
+                        if (!temp_token.is_bracket())
                         {
                             m_rpn_tokens.emplace_back(temp_token);
                         }
@@ -440,7 +440,7 @@ private:
                 default:
                 {
                     auto priority = token::get_operator_priority(t.get_type());
-                    while (not m_tmp_tokens_stack.empty())
+                    while (!m_tmp_tokens_stack.empty())
                     {
                         auto temp_token = m_tmp_tokens_stack.back();
                         if (temp_token.is_operator())
@@ -468,7 +468,7 @@ private:
             last_type = t.get_type();
         }
 
-        while (not m_tmp_tokens_stack.empty())
+        while (!m_tmp_tokens_stack.empty())
         {
             auto temp_token = m_tmp_tokens_stack.back();
             m_tmp_tokens_stack.pop_back();
@@ -597,7 +597,7 @@ std::ostream& operator<<(std::ostream& os, bash_text_color color)
 
 int main(int argc, char *argv[])
 {
-    bool const trace = (2 == argc) and std::string_view("trace") == std::string_view(argv[1]);
+    bool const trace = (2 == argc) && std::string_view("trace") == std::string_view(argv[1]);
 
     std::cout << "Enter string for calculation: ";
     std::string input;
