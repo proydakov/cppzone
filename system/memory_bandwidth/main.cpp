@@ -4,6 +4,7 @@
 #include <numeric>
 #include <iomanip>
 #include <cstdint>
+#include <cstring>
 #include <iostream>
 
 std::size_t constexpr giga = 1024ul * 1024ul * 1024ul;
