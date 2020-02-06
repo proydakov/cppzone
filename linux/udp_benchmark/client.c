@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
     const char* server_name = argv[1];
-    const int server_port = 8877;
+    const unsigned short server_port = 8877;
 
     struct sockaddr_in server_address;
     memset(&server_address, 0, sizeof(server_address));
