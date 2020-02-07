@@ -70,12 +70,15 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
-FIND_PATH(SDL2_INCLUDE_DIR SDL.h
+FIND_PATH(SDL2_INCLUDE_DIR
+  NAMES
+    SDL2/SDL.h SDL.h
   HINTS
-  $ENV{SDL2DIR}
-  PATH_SUFFIXES include/SDL2 include
+    $ENV{SDL2DIR}
+  PATH_SUFFIXES
+    include include/SDL2
   PATHS
-  ${PROJECT_SOURCE_DIR}/thirdparty/windows/SDL2/include
+  ${PROJECT_SOURCE_DIR}/thirdparty/windows/SDL2
   ~/Library/Frameworks
   /Library/Frameworks
   /usr/local/include/SDL2
@@ -89,10 +92,9 @@ FIND_PATH(SDL2_INCLUDE_DIR SDL.h
 FIND_LIBRARY(SDL2_LIBRARY_TEMP
   NAMES SDL2
   HINTS
-  $ENV{SDL2DIR}
   PATH_SUFFIXES lib64 lib
   PATHS
-  ${PROJECT_SOURCE_DIR}/thirdparty/windows/SDL2/lib/${SEARCH_PATH}
+  ${PROJECT_SOURCE_DIR}/thirdparty/windows/SDL2/lib/${GLOBAL_SEARCH_SUFFIX}
   /sw
   /opt/local
   /opt/csw
@@ -111,7 +113,7 @@ IF(NOT SDL2_BUILDING_LIBRARY)
       $ENV{SDL2DIR}
       PATH_SUFFIXES lib64 lib
       PATHS
-	  ${PROJECT_SOURCE_DIR}/thirdparty/windows/SDL2/lib/${SEARCH_PATH}
+      ${PROJECT_SOURCE_DIR}/thirdparty/windows/SDL2/lib/${GLOBAL_SEARCH_SUFFIX}
       /sw
       /opt/local
       /opt/csw

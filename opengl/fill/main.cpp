@@ -22,6 +22,7 @@
 
 #include <string>
 #include <iostream>
+#include <algorithm>
 
 #include <application/application.h>
 
@@ -190,7 +191,8 @@ void tcapplication::drawAllSquares()
 
     setPenColor(0, 0, 1);
 
-    GLdouble size = GLdouble(std::min(g_width, g_height) / OBJECT_COUNT);
+    auto const min_val = std::min(g_width, g_height);
+    GLdouble size = GLdouble(min_val / OBJECT_COUNT);
     GLdouble doubleSize = size * 2;
 
     GLdouble widthMax = GLdouble(g_width) + size;
