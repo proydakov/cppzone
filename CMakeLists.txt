@@ -44,6 +44,9 @@ IF(PROJECT_OS_LINUX)
     ADD_SUBDIRECTORY(linux)
 ENDIF()
 
+if(WIN32)
+    set(ENV{SDLDIR} ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/windows/SDL2)
+ENDIF()
 SET(OpenGL_GL_PREFERENCE "GLVND")
 FIND_PACKAGE(SDL2)
 FIND_PACKAGE(OpenGL)
@@ -84,18 +87,14 @@ MESSAGE(STATUS ${NOOP_STRING})
 #==============================================================================
 
 IF(PROJECT_OS_WIN)
-
     SET(SDL2_BINARIES ${PROJECT_SOURCE_DIR}/thirdparty/windows/SDL2/lib/${GLOBAL_SEARCH_SUFFIX}/SDL2.dll)
-    SET(GLUT_BINARIES ${PROJECT_SOURCE_DIR}/thirdparty/windows/freeglut/bin/${GLOBAL_SEARCH_SUFFIX}/freeglut.dll)
     SET(LUA_BINARIES  ${PROJECT_SOURCE_DIR}/thirdparty/windows/Lua5.1/lib/${GLOBAL_SEARCH_SUFFIX}/lua5.1.dll)
 
     SET(DLL_FILES
         ${SDL2_BINARIES}
-        ${GLUT_BINARIES}
         ${LUA_BINARIES}
     )
 
     FILE(COPY ${DLL_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug)
     FILE(COPY ${DLL_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release)
-
 ENDIF()
