@@ -2,10 +2,15 @@
 #include <iostream>
 #include <immintrin.h>
 
-template<typename type, size_t size>
+template<typename Type, size_t Size>
 struct alignas(32) avx2_t
 {
-    type val[size];
+    constexpr size_t size() const noexcept
+    {
+        return Size;
+    }
+
+    Type val[Size];
 
     static_assert(sizeof(val) == 32, "AVX2 require 32 byte alignment for data types.");
 };
@@ -15,7 +20,7 @@ using avx2_int32vec_t = avx2_t<int, 8>;
 void read(const char* name, avx2_int32vec_t& vec)
 {
     std::cout << name << ": ";
-    for(size_t i = 0; i < std::size(vec.val); i++)
+    for(size_t i = 0; i < vec.size(); i++)
     {
         std::cin >> vec.val[i];
     }
@@ -24,7 +29,7 @@ void read(const char* name, avx2_int32vec_t& vec)
 void trace(const char* name, avx2_int32vec_t const& vec)
 {
     std::cout << name << ": ";
-    for(size_t i = 0; i < std::size(vec.val); i++)
+    for(size_t i = 0; i < vec.size(); i++)
     {
         std::cout << vec.val[i] << ' ';
     }
