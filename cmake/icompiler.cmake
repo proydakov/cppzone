@@ -3,7 +3,7 @@ macro(COMPILER_SET_MAX_WARNING_LEVEL)
         string(REGEX REPLACE /W[0-4] /W4 CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
     else()
         set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -Wall -Werror -Wextra -pedantic -pedantic-errors -Wconversion -Wsign-conversion")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pedantic -pedantic-errors -Wconversion -Wsign-conversion")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2 -Wall -Werror -Wextra -pedantic -pedantic-errors -Wconversion -Wsign-conversion")
 
         if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-attributes -Wno-unknown-pragmas")
