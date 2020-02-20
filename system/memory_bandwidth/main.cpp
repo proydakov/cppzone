@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
     }
 
     {
-        std::cout << "\nwriting..." << std::endl;
+        std::cout << "\nmemset..." << std::endl;
         experiment e(alloc_bytes);
         std::memset(origin.data(), 7, alloc_bytes);
     }
@@ -70,28 +70,25 @@ int main(int argc, char* argv[])
         }
     }
 
-    vec_t copy(alloc_size, 2);
-
-    {
-        std::cout << "\ncopying..." << std::endl;
+   {
+        std::cout << "\nwriting..." << std::endl;
         experiment e(alloc_bytes);
-        std::memcpy(copy.data(), origin.data(), alloc_bytes);
+        auto end_ptr = (volatile int64_t*)((char*)origin.data() + alloc_bytes);
+        for (auto ptr = (volatile int64_t*)(origin.data()); ptr < end_ptr; ptr++)
+        {
+            *ptr = 999;
+        }
     }
 
-    int cmp = 0;
-
-    {
-        std::cout << "\ncomparing..." << std::endl;
-        experiment e(alloc_bytes);
-        cmp = std::memcmp(origin.data(), copy.data(), alloc_bytes);
-    }
-
-    int summ = 0;
-
-    {
-        std::cout << "\naccumulating..." << std::endl;
-        experiment e(alloc_bytes);
-        summ = std::accumulate(origin.begin(), origin.end(), int{0});
+   {
+        std::cout << "\nreading + writing..." << std::endl;
+        experiment e(alloc_bytes * 2);
+        auto end_ptr = (volatile int64_t*)((char*)origin.data() + alloc_bytes);
+        for (auto ptr = (volatile int64_t*)(origin.data()); ptr < end_ptr; ptr++)
+        {
+            [[maybe_unused]] volatile int64_t val = *ptr;
+	    *ptr = 777;
+        }
     }
 
     {
@@ -100,5 +97,5 @@ int main(int argc, char* argv[])
         std::cin >> n;
     }
 
-    return summ + cmp;
+    return 0;
 }
