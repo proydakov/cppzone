@@ -36,35 +36,35 @@ int main(int argc, char* argv[])
 {
     if (argc != 2)
     {
+        std::cout << "usage: app <memory_size>" << std::endl;
         return 0;
     }
 
     std::size_t const gb = std::stoul(argv[1]);
     std::cout << "memory size: " << gb << " Gb" << std::endl;
 
-    using vec_t = std::vector<std::int64_t>;
-    vec_t origin;
-
     std::size_t const alloc_bytes = gb * giga;
-    std::size_t const alloc_size = alloc_bytes / sizeof(vec_t::value_type);
+    std::size_t const alloc_size = alloc_bytes;
+    std::byte* origin = nullptr;
 
     {
         std::cout << "\nallocating..." << std::endl;
         experiment e(alloc_bytes);
-        origin.resize(alloc_size, 1);
+        origin = new (std::align_val_t{64}) std::byte[alloc_size];
+        std::memset(origin, 7, alloc_bytes);
     }
 
     {
         std::cout << "\nmemset..." << std::endl;
         experiment e(alloc_bytes);
-        std::memset(origin.data(), 7, alloc_bytes);
+        std::memset(origin, 7, alloc_bytes);
     }
 
     {
         std::cout << "\nreading..." << std::endl;
         experiment e(alloc_bytes);
-        auto end_ptr = (volatile int64_t*)((char*)origin.data() + alloc_bytes);
-        for (auto ptr = (volatile int64_t*)(origin.data()); ptr < end_ptr; ptr++)
+        auto end_ptr = reinterpret_cast<volatile int64_t*>(origin + alloc_bytes);
+        for (auto ptr = reinterpret_cast<volatile int64_t*>(origin); ptr < end_ptr; ptr++)
         {
             [[maybe_unused]] volatile int64_t val = *ptr;
         }
@@ -73,8 +73,8 @@ int main(int argc, char* argv[])
    {
         std::cout << "\nwriting..." << std::endl;
         experiment e(alloc_bytes);
-        auto end_ptr = (volatile int64_t*)((char*)origin.data() + alloc_bytes);
-        for (auto ptr = (volatile int64_t*)(origin.data()); ptr < end_ptr; ptr++)
+        auto end_ptr = reinterpret_cast<volatile int64_t*>(origin + alloc_bytes);
+        for (auto ptr = reinterpret_cast<volatile int64_t*>(origin); ptr < end_ptr; ptr++)
         {
             *ptr = 999;
         }
@@ -83,11 +83,11 @@ int main(int argc, char* argv[])
    {
         std::cout << "\nreading + writing..." << std::endl;
         experiment e(alloc_bytes * 2);
-        auto end_ptr = (volatile int64_t*)((char*)origin.data() + alloc_bytes);
-        for (auto ptr = (volatile int64_t*)(origin.data()); ptr < end_ptr; ptr++)
+        auto end_ptr = reinterpret_cast<volatile int64_t*>(origin + alloc_bytes);
+        for (auto ptr = reinterpret_cast<volatile int64_t*>(origin); ptr < end_ptr; ptr++)
         {
             [[maybe_unused]] volatile int64_t val = *ptr;
-	    *ptr = 777;
+	        *ptr = 777;
         }
     }
 
@@ -96,6 +96,8 @@ int main(int argc, char* argv[])
         std::int32_t n{ 0 };
         std::cin >> n;
     }
+
+    delete [] origin;
 
     return 0;
 }

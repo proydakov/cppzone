@@ -9,3 +9,4 @@ SET(SOURCE_FILES
     )
 
 I_ADD_EXECUTABLE(linux_avx2 ${SOURCE_FILES})
+target_compile_options(linux_avx2 PRIVATE -mavx2)
