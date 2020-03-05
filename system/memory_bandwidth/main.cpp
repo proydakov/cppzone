@@ -92,12 +92,11 @@ int main(int argc, char* argv[])
     }
 
     {
+        delete [] origin;
         std::cout << "\nwaiting..." << std::endl;
         std::int32_t n{ 0 };
         std::cin >> n;
     }
-
-    delete [] origin;
 
     return 0;
 }
