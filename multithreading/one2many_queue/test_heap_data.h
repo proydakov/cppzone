@@ -35,21 +35,12 @@ struct data_t
     }
 
     // move ctor and assign
-    data_t(data_t&& data) : m_ptr(data.m_ptr)
+    data_t(data_t&& data) noexcept : m_ptr(data.m_ptr)
     {
         data.m_ptr = nullptr;
     }
 
-    data_t& operator=(data_t&& data)
-    {
-        if (&data != this)
-        {
-            release();
-            m_ptr = data.m_ptr;
-            data.m_ptr = nullptr;
-        }
-        return *this;
-    }
+    data_t& operator=(data_t&& data) = delete;
 
     // copy ctor and assign
     data_t(const data_t&) = delete;
@@ -78,6 +69,16 @@ private:
 
 struct perf_allocated_test
 {
+    perf_allocated_test(std::uint64_t, std::uint64_t)
+    {
+        std::cout << "g_counter before: " << (g_global_allocated.counter - g_global_released.counter) << " (must be zero)" << std::endl;
+    }
+
+    ~perf_allocated_test()
+    {
+        std::cout << "g_counter after: " << (g_global_allocated.counter - g_global_released.counter) << " (must be zero)" << std::endl;
+    }
+
     data_t create_data(std::uint64_t i)
     {
         return data_t(new std::uint64_t(i));
@@ -85,16 +86,6 @@ struct perf_allocated_test
 
     void check_data(std::uint64_t, data_t const&)
     {
-    }
-
-    void before_test(std::uint64_t, std::uint64_t)
-    {
-        std::cout << "g_counter before: " << (g_global_allocated.counter - g_global_released.counter) << " (must be zero)" << std::endl;
-    }
-
-    void after_test()
-    {
-        std::cout << "g_counter after: " << (g_global_allocated.counter - g_global_released.counter) << " (must be zero)" << std::endl;
     }
 
     void reader_done()

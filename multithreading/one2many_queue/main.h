@@ -9,6 +9,8 @@
 
 #if defined(__linux__) // any linux distribution
 
+#include <emmintrin.h>
+
 #include <sys/prctl.h>
 
 void set_thread_name(std::string const& name)
@@ -18,6 +20,8 @@ void set_thread_name(std::string const& name)
 
 #else
 
+#include <intrin.h>
+
 void set_thread_name(std::string const&)
 {
 }
@@ -25,7 +29,7 @@ void set_thread_name(std::string const&)
 #endif
 
 template<class Q, class T>
-int test_main(T controller, int argc, char* argv[],
+int test_main(int argc, char* argv[],
     std::uint64_t total_events = 64, std::uint64_t num_readers = (std::thread::hardware_concurrency() - 1), std::uint64_t queue_size = 4096)
 {
     std::cout << "usage: app <num readers> <events> * 10^6 <queue_size>" << std::endl;
@@ -41,8 +45,9 @@ int test_main(T controller, int argc, char* argv[],
         << QUEUE_SIZE << " queue size"
         << std::endl;
 
-    controller.before_test(NUM_READERS, TOTAL_EVENTS);
+    T controller(NUM_READERS, TOTAL_EVENTS);
 
+    std::uint64_t rdtsc_start, rdtsc_end;
     std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
 
     {
@@ -60,6 +65,7 @@ int test_main(T controller, int argc, char* argv[],
         auto const mask = queue.get_alive_mask();
         std::cout << "alive mask: " << std::bitset<sizeof(mask) * 8>(mask) << " [" << mask << "]" << std::endl;;
 
+        rdtsc_start = __rdtsc();
         start = std::chrono::high_resolution_clock::now();
 
         std::vector<std::thread> threads;
@@ -76,7 +82,6 @@ int test_main(T controller, int argc, char* argv[],
                     auto opt = reader.try_read();
                     if (opt)
                     {
-                        //controller.check_data(rid, opt.operator*().get_event());
                         j++;
                     }
                 }
@@ -85,7 +90,7 @@ int test_main(T controller, int argc, char* argv[],
             }));
         }
 
-        threads.push_back(std::thread([queue = std::move(queue), &waitinig_readers_counter, TOTAL_EVENTS, &controller]() mutable {
+        threads.push_back(std::thread([&queue, &waitinig_readers_counter, TOTAL_EVENTS, &controller]() mutable {
             set_thread_name("writer");
 
             while (waitinig_readers_counter > 0);
@@ -93,22 +98,28 @@ int test_main(T controller, int argc, char* argv[],
             for (std::uint64_t j = 0; j < TOTAL_EVENTS; j++)
             {
                 typename Q::event_type data(controller.create_data(j));
-                queue.write(std::move(data));
+                while(!queue.try_write(std::move(data)))
+                {
+                    _mm_pause();
+                }
             }
 
             controller.writer_done();
         }));
 
         for (auto& t : threads) t.join();
+
+        rdtsc_end = __rdtsc();
+        stop = std::chrono::high_resolution_clock::now();
     }
 
-    stop = std::chrono::high_resolution_clock::now();
     auto const milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
+    auto const rdtsc_delta = rdtsc_end - rdtsc_start;
 
     std::cout << "TIME: " + std::to_string(milliseconds) + " milliseconds\n";
+    std::cout << "TIME: " + std::to_string(rdtsc_delta) + " cycles\n";
     std::cout << "PERF: " + std::to_string(double(TOTAL_EVENTS) / double(milliseconds)) + " events/millisecond\n";
-
-    controller.after_test();
+    std::cout << "PERF: " + std::to_string(double(rdtsc_delta) / double(TOTAL_EVENTS)) + " cycle per event\n";
 
     return 0;
 }

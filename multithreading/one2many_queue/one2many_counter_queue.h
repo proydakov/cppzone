@@ -252,7 +252,7 @@ public:
         return reader_type(m_local.m_storage, m_local.m_storage_size, read_from, next_id);
     }
 
-    bool try_write(event_t&& event) noexcept
+    bool try_write(event_t&& event, std::memory_order store_order = std::memory_order_release) noexcept
     {
         auto& bucket = m_local.m_storage.get()[get_bounded_index(m_local.m_next_seq_num)];
         if (bucket.m_counter.load(std::memory_order_consume) == one2many_counter_queue_impl<counter_t>::EMPTY_DATA_MARK)
@@ -261,7 +261,7 @@ public:
 
             new (&bucket.m_storage) event_t(std::move(event));
             bucket.m_counter.store(num_readers + one2many_counter_queue_impl<counter_t>::CONSTRUCTED_DATA_MARK, std::memory_order_release);
-            bucket.m_seqn.store(m_local.m_next_seq_num++, std::memory_order_seq_cst);
+            bucket.m_seqn.store(m_local.m_next_seq_num++, store_order);
 
             return true;
         }

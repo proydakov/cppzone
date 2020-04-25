@@ -17,15 +17,11 @@ struct data_t
     }
 
     // move ctor and assign
-    data_t(data_t&& data) : m_start(data.m_start)
+    data_t(data_t&& data) noexcept : m_start(data.m_start)
     {
     }
 
-    data_t& operator=(data_t&& data)
-    {
-        m_start = data.m_start;
-        return *this;
-    }
+    data_t& operator=(data_t&& data) = delete;
 
     // copy ctor and assign
     data_t(const data_t&) = delete;
@@ -41,19 +37,7 @@ struct data_t
 
 struct latency_test
 {
-    data_t create_data(std::uint64_t)
-    {
-        return data_t(std::chrono::high_resolution_clock::now());
-    }
-
-    void check_data(std::uint64_t i, data_t const& data)
-    {
-        std::chrono::time_point<std::chrono::high_resolution_clock> stop = std::chrono::high_resolution_clock::now();
-        auto const microseconds = std::chrono::duration_cast<std::chrono::microseconds>(stop - data.m_start).count();
-        m_lines[i].m_delta.push_back(microseconds);
-    }
-
-    void before_test(std::uint64_t NUM_READERS, std::uint64_t TOTAL_EVENTS)
+    latency_test(std::uint64_t NUM_READERS, std::uint64_t TOTAL_EVENTS)
     {
         m_lines.resize(NUM_READERS);
         for(auto & line : m_lines)
@@ -62,7 +46,7 @@ struct latency_test
         }
     }
 
-    void after_test()
+    ~latency_test()
     {
         for(std::size_t i = 0; i < m_lines.size(); i++)
         {
@@ -73,6 +57,18 @@ struct latency_test
                 output << delta << "\n";
             }
         }
+    }
+
+    data_t create_data(std::uint64_t)
+    {
+        return data_t(std::chrono::high_resolution_clock::now());
+    }
+
+    void check_data(std::uint64_t i, data_t const& data)
+    {
+        std::chrono::time_point<std::chrono::high_resolution_clock> stop = std::chrono::high_resolution_clock::now();
+        auto const microseconds = std::chrono::duration_cast<std::chrono::microseconds>(stop - data.m_start).count();
+        m_lines[i].m_delta.push_back(microseconds);
     }
 
     void reader_done()

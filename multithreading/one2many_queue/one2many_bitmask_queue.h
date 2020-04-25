@@ -20,106 +20,46 @@ struct one2many_bitmask_queue_impl
 // predeclaration
 
 // queue
-template<class event_t, typename bitmask_t>
+template<class event_t, typename counter_t>
 class one2many_bitmask_queue;
 
 // reader
-template<class event_t, typename bitmask_t>
+template<class event_t, typename counter_t>
 class one2many_bitmask_reader;
 
 // guard
-template<class event_t, typename bitmask_t>
+template<class event_t, typename counter_t>
 class one2many_bitmask_guard;
 
 // bucket
-template<class event_t, typename bitmask_t>
+template<class event_t, typename counter_t>
 struct one2many_bitmask_bucket;
 
 // implementation
 
-// guard
-template<class event_t, typename bitmask_t>
-class one2many_bitmask_guard
-{
-public:
-    // ctor
-    one2many_bitmask_guard(one2many_bitmask_bucket<event_t, bitmask_t>& bucket, bitmask_t mask) : m_bucket(&bucket), m_mask(mask)
-    {
-    }
-
-    // move ctor and assign
-    one2many_bitmask_guard(one2many_bitmask_guard&& data) : m_bucket(data.m_bucket), m_mask(data.m_mask)
-    {
-        data.m_mask = one2many_bitmask_queue_impl<bitmask_t>::EMPTY_DATA_MASK;
-    }
-
-    one2many_bitmask_guard& operator=(one2many_bitmask_guard&& data)
-    {
-        if (&data != this)
-        {
-            m_bucket = data.m_bucket;
-            m_mask = data.m_mask;
-            data.m_mask = one2many_bitmask_queue_impl<bitmask_t>::EMPTY_DATA_MASK;
-        }
-        return *this;
-    }
-
-    // copy ctor and assign
-    one2many_bitmask_guard(const one2many_bitmask_guard&) = delete;
-    one2many_bitmask_guard& operator=(const one2many_bitmask_guard&) = delete;
-
-    // dtor
-    ~one2many_bitmask_guard()
-    {
-        if (m_mask != one2many_bitmask_queue_impl<bitmask_t>::EMPTY_DATA_MASK)
-        {
-            auto const release_etalon(m_mask | one2many_bitmask_queue_impl<bitmask_t>::CONSTRUCTED_MASK);
-            auto const before = m_bucket->m_mask.fetch_and(~m_mask, std::memory_order_consume);
-
-            if (before == release_etalon)
-            {
-                m_bucket->get_event().~event_t();
-                m_bucket->m_mask.store(one2many_bitmask_queue_impl<bitmask_t>::EMPTY_DATA_MASK, std::memory_order_release);
-            }
-        }
-    }
-
-    event_t const& get_event() const
-    {
-        return m_bucket->get_event();
-    }
-
-private:
-    one2many_bitmask_bucket<event_t, bitmask_t>* m_bucket;
-    bitmask_t m_mask;
-};
-
 // bucket
-template<class event_t, typename bitmask_t>
+template<class event_t, typename counter_t>
 struct alignas(QUEUE_CPU_CACHE_LINE_SIZE) one2many_bitmask_bucket
 {
     using storage_t = typename std::aligned_storage<sizeof(event_t), alignof(event_t)>::type;
 
     one2many_bitmask_bucket()
-        : m_seqn(one2many_bitmask_queue_impl<bitmask_t>::DUMMY_EVENT_SEQ_NUM)
-        , m_mask(one2many_bitmask_queue_impl<bitmask_t>::EMPTY_DATA_MASK)
+        : m_seqn(one2many_bitmask_queue_impl<counter_t>::DUMMY_EVENT_SEQ_NUM)
+        , m_mask(one2many_bitmask_queue_impl<counter_t>::EMPTY_DATA_MASK)
     {
     }
 
-    // copy ctor and assign
     one2many_bitmask_bucket(const one2many_bitmask_bucket&) = delete;
     one2many_bitmask_bucket& operator=(const one2many_bitmask_bucket&) = delete;
-
-    // move ctor and assign
     one2many_bitmask_bucket(one2many_bitmask_bucket&&) = delete;
     one2many_bitmask_bucket& operator=(one2many_bitmask_bucket&&) = delete;
 
     ~one2many_bitmask_bucket()
     {
-        if (m_mask != one2many_bitmask_queue_impl<bitmask_t>::EMPTY_DATA_MASK)
+        if (m_mask != one2many_bitmask_queue_impl<counter_t>::EMPTY_DATA_MASK)
         {
             get_event().~event_t();
-            m_mask.store(one2many_bitmask_queue_impl<bitmask_t>::EMPTY_DATA_MASK, std::memory_order_relaxed);
+            m_mask.store(one2many_bitmask_queue_impl<counter_t>::EMPTY_DATA_MASK, std::memory_order_relaxed);
         }
     }
 
@@ -128,59 +68,100 @@ struct alignas(QUEUE_CPU_CACHE_LINE_SIZE) one2many_bitmask_bucket
         return reinterpret_cast<event_t&>(m_storage);
     }
 
-    std::atomic<bitmask_t> m_seqn;
-    std::atomic<bitmask_t> m_mask;
+    std::atomic<counter_t> m_seqn;
+    std::atomic<counter_t> m_mask;
     storage_t m_storage;
 };
 
+// guard
+template<class event_t, typename counter_t>
+class one2many_bitmask_guard
+{
+public:
+    one2many_bitmask_guard(one2many_bitmask_bucket<event_t, counter_t>& bucket, counter_t mask)
+        : m_bucket(bucket), m_mask(mask)
+    {
+    }
+
+    one2many_bitmask_guard(one2many_bitmask_guard&& data)
+        : m_bucket(data.m_bucket)
+        , m_mask(data.m_mask)
+    {
+        m_mask = one2many_bitmask_queue_impl<counter_t>::EMPTY_DATA_MASK;
+    }
+
+    one2many_bitmask_guard& operator=(one2many_bitmask_guard&& data) = delete;
+    one2many_bitmask_guard(const one2many_bitmask_guard&) = delete;
+    one2many_bitmask_guard& operator=(const one2many_bitmask_guard&) = delete;
+
+    ~one2many_bitmask_guard()
+    {
+        if (m_mask != one2many_bitmask_queue_impl<counter_t>::EMPTY_DATA_MASK)
+        {
+            auto const release_etalon(m_mask | one2many_bitmask_queue_impl<counter_t>::CONSTRUCTED_MASK);
+            auto const before = m_bucket.m_mask.fetch_and(~m_mask, std::memory_order_relaxed);
+
+            if (before == release_etalon)
+            {
+                m_bucket.get_event().~event_t();
+                m_bucket.m_mask.store(one2many_bitmask_queue_impl<counter_t>::EMPTY_DATA_MASK, std::memory_order_release);
+            }
+        }
+    }
+
+    event_t const& get_event() const
+    {
+        return m_bucket.get_event();
+    }
+
+private:
+    one2many_bitmask_bucket<event_t, counter_t>& m_bucket;
+    counter_t m_mask;
+};
+
 // reader
-template<class event_t, typename bitmask_t>
+template<class event_t, typename counter_t>
 class alignas(QUEUE_CPU_CACHE_LINE_SIZE) one2many_bitmask_reader
 {
 public:
-    using bucket_type = one2many_bitmask_bucket<event_t, bitmask_t>;
-    using guard_type = one2many_bitmask_guard<event_t, bitmask_t>;
+    using bucket_type = one2many_bitmask_bucket<event_t, counter_t>;
+    using guard_type = one2many_bitmask_guard<event_t, counter_t>;
     using event_type = event_t;
-    using bitmask_type = bitmask_t;
+    using storage_t = std::shared_ptr<bucket_type[]>;
 
 public:
-    // ctor
-    one2many_bitmask_reader(std::shared_ptr<bucket_type> storage, std::size_t storage_size, bitmask_t read_from, bitmask_t mask)
-        : m_next_read_index(read_from)
-        , m_storage_size(storage_size)
-        , m_storage(storage)
-        , m_mask(mask)
+    one2many_bitmask_reader(storage_t storage, std::size_t storage_mask, counter_t read_from, counter_t mask)
+        : m_storage(std::move(storage))
+        , m_next_bucket(read_from & storage_mask)
+        , m_storage_mask(storage_mask)
+        , m_next_read_index(read_from)
+        , m_reader_mask(mask)
     {
     }
 
-    // copy ctor and assign
     one2many_bitmask_reader(const one2many_bitmask_reader&) = delete;
     one2many_bitmask_reader& operator=(const one2many_bitmask_reader&) = delete;
+    one2many_bitmask_reader(one2many_bitmask_reader&&) noexcept = default;
+    one2many_bitmask_reader& operator=(one2many_bitmask_reader&&) noexcept = default;
 
-    // move ctor and assign
-    one2many_bitmask_reader(one2many_bitmask_reader&&) = default;
-    one2many_bitmask_reader& operator=(one2many_bitmask_reader&&) = default;
-
-    // dtor
-    ~one2many_bitmask_reader()
-    {
-    }
+    ~one2many_bitmask_reader() noexcept = default;
 
     std::optional<guard_type> try_read() noexcept
     {
-        bool result = false;
-        auto& bucket = m_storage.get()[get_bounded_index(m_next_read_index)];
-        if (bucket.m_seqn.load(std::memory_order_consume) == m_next_read_index)
+        auto& bucket = m_storage[static_cast<std::ptrdiff_t>(m_next_bucket)];
+        if (bucket.m_seqn.load(std::memory_order_acquire) == m_next_read_index)
         {
             m_next_read_index++;
-            result = true;
+            m_next_bucket = m_next_read_index & m_storage_mask;
+            return std::optional<guard_type>(guard_type{bucket, m_reader_mask});
         }
-        return result ?
-            std::optional<guard_type>(guard_type{bucket, m_mask}) :
-            std::optional<guard_type>();
+        else
+        {
+            return std::nullopt;
+        }
     }
 
-    one2many_bitmask_guard<event_t, bitmask_t> read() noexcept
+    one2many_bitmask_guard<event_t, counter_t> read() noexcept
     {
         read_mark:
 
@@ -193,86 +174,81 @@ public:
         goto read_mark;
     }
 
-    bitmask_t get_id() const noexcept
+    counter_t get_id() const noexcept
     {
-        return static_cast<bitmask_t>(std::log2(m_mask));
+        return static_cast<counter_t>(std::log2(m_reader_mask));
     }
 
 private:
-    std::size_t get_bounded_index(std::size_t seqn) const noexcept
-    {
-        return seqn % m_storage_size;
-    }
-
-private:
-    bitmask_t m_next_read_index;
-    std::size_t const m_storage_size;
-    std::shared_ptr<bucket_type> const m_storage;
-    bitmask_t const m_mask;
+    storage_t m_storage;
+    std::size_t m_next_bucket;
+    std::size_t m_storage_mask;
+    counter_t m_next_read_index;
+    counter_t m_reader_mask;
 };
 
 // queue
-template<class event_t, typename bitmask_t>
+template<class event_t, typename counter_t>
 class alignas(QUEUE_CPU_CACHE_LINE_SIZE) one2many_bitmask_queue
 {
 public:
-    using writer_type = one2many_bitmask_queue<event_t, bitmask_t>;
-    using reader_type = one2many_bitmask_reader<event_t, bitmask_t>;
-    using bucket_type = one2many_bitmask_bucket<event_t, bitmask_t>;
-    using guard_type = one2many_bitmask_guard<event_t, bitmask_t>;
+    using writer_type = one2many_bitmask_queue<event_t, counter_t>;
+    using reader_type = one2many_bitmask_reader<event_t, counter_t>;
+    using bucket_type = one2many_bitmask_bucket<event_t, counter_t>;
+    using guard_type = one2many_bitmask_guard<event_t, counter_t>;
     using event_type = event_t;
-    using bitmask_type = bitmask_t;
+    using storage_t = std::shared_ptr<bucket_type[]>;
 
 public:
-    // ctor
-    one2many_bitmask_queue(std::size_t n) : m_local(n)
+    one2many_bitmask_queue(std::size_t n)
+        : m_next_bucket(one2many_bitmask_queue_impl<counter_t>::MIN_EVENT_SEQ_NUM)
+        , m_storage_mask(calc_mask(n))
+        , m_next_seq_num(one2many_bitmask_queue_impl<counter_t>::MIN_EVENT_SEQ_NUM)
+        , m_alive_mask(one2many_bitmask_queue_impl<counter_t>::CONSTRUCTED_MASK)
+        , m_next_reader_id(one2many_bitmask_queue_impl<counter_t>::MIN_READER_ID)
     {
+        m_storage.reset(new bucket_type[n], [](bucket_type* ptr) {
+            delete[] ptr;
+        });
     }
 
-    // copy ctor and assign
     one2many_bitmask_queue(const one2many_bitmask_queue&) = delete;
     one2many_bitmask_queue& operator=(const one2many_bitmask_queue&) = delete;
 
-    // move ctor and assign
-    one2many_bitmask_queue(one2many_bitmask_queue&&) = default;
-    one2many_bitmask_queue& operator=(one2many_bitmask_queue&&) = default;
+    one2many_bitmask_queue(one2many_bitmask_queue&&) noexcept = default;
+    one2many_bitmask_queue& operator=(one2many_bitmask_queue&&) noexcept = default;
 
-    // dtor
-    ~one2many_bitmask_queue()
-    {
-    }
+    ~one2many_bitmask_queue() noexcept =  default;
 
     reader_type create_reader()
     {
         /// @todo : think about the ability to dynamically create readers
 
-        auto const next_id = m_local.m_next_reader_id++;
-        if (next_id > one2many_bitmask_queue_impl<bitmask_t>::MAX_READER_ID)
+        auto const next_id = m_next_reader_id++;
+        if (next_id > one2many_bitmask_queue_impl<counter_t>::MAX_READER_ID)
         {
-            throw std::runtime_error("Next reader id overflow: " + std::to_string(next_id) + " > " + std::to_string(one2many_bitmask_queue_impl<bitmask_t>::MAX_READER_ID));
+            throw std::runtime_error("Next reader id overflow: " + std::to_string(next_id) + " > " + std::to_string(one2many_bitmask_queue_impl<counter_t>::MAX_READER_ID));
         }
 
-        // read next_seq_num before updating alive mask
-        auto const read_from = m_local.m_next_seq_num;
+        counter_t const mask(counter_t(1) << next_id);
+        m_alive_mask |= mask;
 
-        bitmask_t const mask(bitmask_t(1) << next_id);
-
-        m_local.m_alive_mask |= mask;
-
-        reader_type reader(m_local.m_storage, m_local.m_storage_size, read_from, mask);
-        return reader;
+        return {m_storage, m_storage_mask, m_next_seq_num, mask};
     }
 
-    bool try_write(event_t&& event) noexcept
+    bool try_write(event_t&& event, std::memory_order store_order = std::memory_order_release) noexcept
     {
-        auto& bucket = m_local.m_storage.get()[get_bounded_index(m_local.m_next_seq_num)];
-        if (bucket.m_mask.load(std::memory_order_consume) == one2many_bitmask_queue_impl<bitmask_t>::EMPTY_DATA_MASK)
+        static_assert(std::is_nothrow_move_constructible<event_t>::value);
+
+        auto& bucket = m_storage[static_cast<std::ptrdiff_t>(m_next_bucket)];
+        if (bucket.m_mask.load(std::memory_order_acquire) == one2many_bitmask_queue_impl<counter_t>::EMPTY_DATA_MASK)
         {
-            auto const alive_mask = m_local.m_alive_mask;
+            auto const seqn = m_next_seq_num++;
+            m_next_bucket = m_next_seq_num & m_storage_mask;
 
             new (&bucket.m_storage) event_t(std::move(event));
-            bucket.m_mask.store(alive_mask, std::memory_order_release);
-            bucket.m_seqn.store(m_local.m_next_seq_num++, std::memory_order_seq_cst);
+            bucket.m_mask.store(m_alive_mask, std::memory_order_relaxed);
+            bucket.m_seqn.store(seqn, store_order);
 
             return true;
         }
@@ -284,48 +260,34 @@ public:
 
     void write(event_t&& obj) noexcept
     {
-        while (! try_write(std::move(obj)));
+        while (!try_write(std::move(obj)));
     }
 
     std::size_t size() const noexcept
     {
-        return m_local.m_storage_size;
+        return m_storage_mask + 1;
     }
 
-    bitmask_t get_alive_mask() const noexcept
+    counter_t get_alive_mask() const noexcept
     {
-        return m_local.m_alive_mask & (sizeof(bitmask_t) == 8 ? 0x7FFFFFFFFFFFFFFF : 0x7FFFFFFF);
-    }
-
-private:
-    std::size_t get_bounded_index(std::size_t seqn) const noexcept
-    {
-        return seqn % m_local.m_storage_size;
+        return m_alive_mask & (sizeof(counter_t) == 8 ? 0x7FFFFFFFFFFFFFFF : 0x7FFFFFFF);
     }
 
 private:
-    // data used in writer thread
-    struct local_t
+    static std::size_t calc_mask(std::size_t n)
     {
-        using storage_t = std::shared_ptr<bucket_type>;
-
-        local_t(std::size_t n) :
-            m_next_seq_num(one2many_bitmask_queue_impl<bitmask_t>::MIN_EVENT_SEQ_NUM),
-            m_storage_size(n),
-            m_storage(new bucket_type[n], [](bucket_type* ptr) {
-                delete[] ptr;
-            }),
-            m_alive_mask(one2many_bitmask_queue_impl<bitmask_t>::CONSTRUCTED_MASK),
-            m_next_reader_id(one2many_bitmask_queue_impl<bitmask_t>::MIN_READER_ID)
+        if (n > 0 and 0 == ((n - 1) & n))
         {
+            return n - 1;
         }
+        throw std::invalid_argument("queue size should be pow of 2.");
+    }
 
-        bitmask_t m_next_seq_num;
-        std::size_t const m_storage_size;
-        storage_t const m_storage;
-        bitmask_t m_alive_mask;
-        bitmask_t m_next_reader_id;
-    };
-
-    local_t  m_local;
+private:
+    storage_t m_storage;
+    std::size_t m_next_bucket;
+    std::size_t m_storage_mask;
+    counter_t m_next_seq_num;
+    counter_t m_alive_mask;
+    counter_t m_next_reader_id;
 };
