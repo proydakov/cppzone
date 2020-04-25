@@ -7,25 +7,25 @@
 template<int64_t N>
 struct fibonacci_positive
 {
-    enum int64_t { value = fibonacci_positive<N - 1>::value + fibonacci_positive<N - 2>::value };
+    static constexpr int64_t value = fibonacci_positive<N - 1>::value + fibonacci_positive<N - 2>::value;
 };
 
 template<>
 struct fibonacci_positive<0>
 {
-    enum int64_t { value = 0 };
+    static constexpr int64_t value = 0;
 };
 
 template<>
 struct fibonacci_positive<1>
 {
-    enum int64_t { value = 1 };
+    static constexpr int64_t value = 1;
 };
 
 template<>
 struct fibonacci_positive<2>
 {
-    enum int64_t { value = 1 };
+    static constexpr int64_t value = 1;
 };
 
 // fibonacci_negative
@@ -33,25 +33,25 @@ struct fibonacci_positive<2>
 template<int64_t N>
 struct fibonacci_negative
 {
-    enum int64_t { value = fibonacci_negative<N + 2>::value - fibonacci_negative<N + 1>::value };
+    static constexpr int64_t value = fibonacci_negative<N + 2>::value - fibonacci_negative<N + 1>::value;
 };
 
 template<>
 struct fibonacci_negative<0>
 {
-    enum int64_t { value = 0 };
+    static constexpr int64_t value = 0;
 };
 
 template<>
 struct fibonacci_negative<1>
 {
-    enum int64_t { value = 1 };
+    static constexpr int64_t value = 1;
 };
 
 template<>
 struct fibonacci_negative<2>
 {
-    enum int64_t { value = 1 };
+    static constexpr int64_t value = 1;
 };
 
 // fibonacci
