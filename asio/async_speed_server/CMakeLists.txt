@@ -11,9 +11,9 @@ I_ADD_EXECUTABLE(asio_speed_client
     client.cpp
 )
 
-TARGET_LINK_LIBRARIES(asio_speed_client ${Boost_SYSTEM_LIBRARY})
 TARGET_LINK_LIBRARIES(asio_speed_client ${Boost_DATE_TIME_LIBRARY})
 TARGET_LINK_LIBRARIES(asio_speed_client ${Boost_REGEX_LIBRARY})
+TARGET_LINK_LIBRARIES(asio_speed_client ${Boost_SYSTEM_LIBRARY})
 
 #==============================================================================
 
@@ -21,6 +21,6 @@ I_ADD_EXECUTABLE(asio_speed_server
     server.cpp
 )
 
-TARGET_LINK_LIBRARIES(asio_speed_server ${Boost_SYSTEM_LIBRARY})
 TARGET_LINK_LIBRARIES(asio_speed_server ${Boost_DATE_TIME_LIBRARY})
 TARGET_LINK_LIBRARIES(asio_speed_server ${Boost_REGEX_LIBRARY})
+TARGET_LINK_LIBRARIES(asio_speed_server ${Boost_SYSTEM_LIBRARY})

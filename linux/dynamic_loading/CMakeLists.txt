@@ -4,16 +4,12 @@
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-FIND_LIBRARY(DL_LIBRARY
-    NAMES dl
-    )
-
 SET(LIBRARY_FILES
     object.h
     object.cpp
     )
 
-I_ADD_SHARED_LIBRARY(linux_object ${LIBRARY_FILES})
+I_ADD_SHARED_LIBRARY(unix_object ${LIBRARY_FILES})
 
 SET(SOURCE_FILES
     main.cpp
