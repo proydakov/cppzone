@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <iostream>
 
-#include "queue_common.h"
+#include "common.h"
 
 struct alignas(QUEUE_CPU_CACHE_LINE_SIZE) stat_local_t
 {
@@ -22,28 +22,33 @@ thread_local stat_local_t g_local_released;
 stat_global_t g_global_allocated;
 stat_global_t g_global_released;
 
+template<typename allocator_t>
 struct data_t
 {
-    data_t() noexcept : m_ptr(nullptr)
-    {
-    }
+    using value_type = typename allocator_t::value_type;
 
     ~data_t() noexcept
     {
         if (m_ptr != nullptr)
         {
-            delete m_ptr;
+            m_ptr->~value_type();
+            m_allocator.deallocate(m_ptr, 1);
             m_ptr = nullptr;
             g_local_released.counter++;
         }
     }
 
-    data_t(std::uint64_t* ptr) noexcept : m_ptr(ptr)
+    data_t(std::uint64_t val, allocator_t& allocator) noexcept
+        : m_ptr(allocator.allocate(sizeof val))
+        , m_allocator(allocator)
     {
+        new (m_ptr) value_type(val);
         g_local_allocated.counter++;
     }
 
-    data_t(data_t&& data) noexcept : m_ptr(data.m_ptr)
+    data_t(data_t&& data) noexcept
+        : m_ptr(data.m_ptr)
+        , m_allocator(data.m_allocator)
     {
         data.m_ptr = nullptr;
     }
@@ -52,12 +57,15 @@ struct data_t
     data_t(const data_t&) = delete;
     void operator=(const data_t&) = delete;
 
-    std::uint64_t* m_ptr;
+    typename allocator_t::pointer m_ptr;
+    allocator_t& m_allocator;
 };
 
+template<typename allocator_t>
 struct perf_allocated_test
 {
-    perf_allocated_test(std::uint64_t, std::uint64_t) noexcept
+    perf_allocated_test(std::uint64_t, std::uint64_t, allocator_t& allocator) noexcept
+        : m_allocator(allocator)
     {
         std::cout << "g_counter before: " << (g_global_allocated.counter - g_global_released.counter) << " (must be zero)" << std::endl;
     }
@@ -67,12 +75,12 @@ struct perf_allocated_test
         std::cout << "g_counter after: " << (g_global_allocated.counter - g_global_released.counter) << " (must be zero)" << std::endl;
     }
 
-    data_t create_data(std::uint64_t i) noexcept
+    auto create_data(std::uint64_t i) noexcept
     {
-        return data_t(new std::uint64_t(i));
+        return data_t<allocator_t>(i, m_allocator);
     }
 
-    void check_data(std::uint64_t, data_t const&) noexcept
+    void check_data(std::uint64_t, data_t<allocator_t> const&) noexcept
     {
     }
 
@@ -85,4 +93,6 @@ struct perf_allocated_test
     {
         g_global_allocated.counter += g_local_allocated.counter;
     }
+
+    allocator_t& m_allocator;
 };

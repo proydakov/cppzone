@@ -30,7 +30,8 @@ struct data_t
 
 struct perf_plain_test
 {
-    perf_plain_test(std::uint64_t, std::uint64_t) noexcept
+    template<typename allocator_t>
+    perf_plain_test(std::uint64_t, std::uint64_t, allocator_t&) noexcept
     {
     }
 

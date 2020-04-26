@@ -1,12 +1,12 @@
 #pragma once
 
-#include <limits>
 #include <atomic>
 #include <memory>
+#include <limits>
 #include <optional>
 #include <type_traits>
 
-#include "queue_common.h"
+#include "common.h"
 
 template<typename T>
 struct one2many_counter_queue_impl
@@ -21,21 +21,25 @@ struct one2many_counter_queue_impl
 
 // predeclaration
 
-// queue
+// bucket
 template<class event_t, typename counter_t>
-class one2many_counter_queue;
-
-// reader
-template<class event_t, typename counter_t>
-class one2many_counter_reader;
+struct one2many_counter_bucket;
 
 // guard
 template<class event_t, typename counter_t>
 class one2many_counter_guard;
 
-// bucket
-template<class event_t, typename counter_t>
-struct one2many_counter_bucket;
+// reader
+template<class event_t, typename counter_t, typename allocator_t>
+class one2many_counter_reader;
+
+// queue
+template<class event_t, typename counter_t, typename allocator_t>
+class one2many_counter_queue;
+
+// buffer
+template<class event_t, typename counter_t, typename allocator_t>
+using one2many_counter_ring_buffer_t = std::shared_ptr<std::pair<allocator_t, one2many_counter_bucket<event_t, counter_t>*>>;
 
 // implementation
 
@@ -123,20 +127,16 @@ private:
 };
 
 // reader
-template<class event_t, typename counter_t>
+template<class event_t, typename counter_t, typename allocator_t>
 class alignas(QUEUE_CPU_CACHE_LINE_SIZE) one2many_counter_reader
 {
 public:
-    using writer_type = one2many_counter_queue<event_t, counter_t>;
-    using reader_type = one2many_counter_reader<event_t, counter_t>;
-    using bucket_type = one2many_counter_bucket<event_t, counter_t>;
     using guard_type = one2many_counter_guard<event_t, counter_t>;
-    using event_type = event_t;
-    using storage_t = std::shared_ptr<bucket_type[]>;
+    using ring_buffer_t = one2many_counter_ring_buffer_t<event_t, counter_t, allocator_t>;
 
 public:
     // ctor
-    one2many_counter_reader(storage_t storage, std::size_t storage_mask, counter_t read_from, counter_t id) noexcept
+    one2many_counter_reader(ring_buffer_t storage, std::size_t storage_mask, counter_t read_from, counter_t id) noexcept
         : m_storage(std::move(storage))
         , m_next_bucket(read_from & storage_mask)
         , m_storage_mask(storage_mask)
@@ -157,7 +157,7 @@ public:
 
     std::optional<guard_type> try_read() noexcept
     {
-        auto& bucket = m_storage[static_cast<std::ptrdiff_t>(m_next_bucket)];
+        auto& bucket = m_storage->second[m_next_bucket];
         if (bucket.m_seqn.load(std::memory_order_acquire) == m_next_read_index)
         {
             m_next_read_index++;
@@ -189,7 +189,7 @@ public:
     }
 
 private:
-    storage_t m_storage;
+    ring_buffer_t m_storage;
     std::size_t m_next_bucket;
     std::size_t m_storage_mask;
     counter_t m_next_read_index;
@@ -197,26 +197,28 @@ private:
 };
 
 // queue
-template<class event_t, typename counter_t>
+template<class event_t, typename counter_t, typename allocator_t = empty_allocator>
 class alignas(QUEUE_CPU_CACHE_LINE_SIZE) one2many_counter_queue
 {
 public:
-    using writer_type = one2many_counter_queue<event_t, counter_t>;
-    using reader_type = one2many_counter_reader<event_t, counter_t>;
+    using writer_type = one2many_counter_queue<event_t, counter_t, allocator_t>;
+    using reader_type = one2many_counter_reader<event_t, counter_t, allocator_t>;
+    using ring_buffer_t = one2many_counter_ring_buffer_t<event_t, counter_t, allocator_t>;
     using bucket_type = one2many_counter_bucket<event_t, counter_t>;
     using guard_type = one2many_counter_guard<event_t, counter_t>;
     using event_type = event_t;
-    using storage_t = std::shared_ptr<bucket_type[]>;
 
 public:
-    one2many_counter_queue(std::size_t n)
+    one2many_counter_queue(std::size_t n, allocator_t&& allocator = allocator_t())
         : m_next_bucket(one2many_counter_queue_impl<counter_t>::MIN_EVENT_SEQ_NUM)
         , m_storage_mask(calc_mask(n))
         , m_next_seq_num(one2many_counter_queue_impl<counter_t>::MIN_EVENT_SEQ_NUM)
         , m_next_reader_id(one2many_counter_queue_impl<counter_t>::MIN_READER_ID)
     {
-        m_storage.reset(new bucket_type[n], [](bucket_type* ptr) {
-            delete[] ptr;
+        m_storage.reset(new std::pair<allocator_t, one2many_counter_bucket<event_t, counter_t>*>(
+            std::move(allocator), new bucket_type[n]), [](auto ptr) {
+                delete [] ptr->second;
+                delete ptr;
         });
     }
 
@@ -237,27 +239,21 @@ public:
         {
             throw std::runtime_error("Next reader id overflow: " + std::to_string(next_id) + " > " + std::to_string(one2many_counter_queue_impl<counter_t>::DUMMY_READER_ID));
         }
-
-        // read next_seq_num before updating alive mask
-        auto const read_from = m_next_seq_num;
-
-        return reader_type(m_storage, m_storage_mask, read_from, next_id);
+        return reader_type(m_storage, m_storage_mask, m_next_seq_num, next_id);
     }
 
     bool try_write(event_t&& event, std::memory_order store_order = std::memory_order_release) noexcept
     {
         static_assert(std::is_nothrow_move_constructible<event_t>::value);
 
-        auto& bucket = m_storage[static_cast<std::ptrdiff_t>(m_next_bucket)];
+        auto& bucket = m_storage->second[m_next_bucket];
         if (bucket.m_counter.load(std::memory_order_acquire) == one2many_counter_queue_impl<counter_t>::EMPTY_DATA_MARK)
         {
             auto const seqn = m_next_seq_num++;
             m_next_bucket = m_next_seq_num & m_storage_mask;
-
             new (&bucket.m_storage) event_t(std::move(event));
             bucket.m_counter.store(m_next_reader_id + one2many_counter_queue_impl<counter_t>::CONSTRUCTED_DATA_MARK, std::memory_order_relaxed);
             bucket.m_seqn.store(seqn, store_order);
-
             return true;
         }
         else
@@ -287,6 +283,11 @@ public:
         return mask;
     }
 
+    allocator_t& get_allocator() noexcept
+    {
+        return m_storage->first;
+    }
+
 private:
     static std::size_t calc_mask(std::size_t n)
     {
@@ -298,7 +299,7 @@ private:
     }
 
 private:
-    storage_t m_storage;
+    ring_buffer_t m_storage;
     std::size_t m_next_bucket;
     std::size_t m_storage_mask;
     counter_t m_next_seq_num;

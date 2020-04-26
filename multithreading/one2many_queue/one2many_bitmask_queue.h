@@ -6,7 +6,7 @@
 #include <optional>
 #include <type_traits>
 
-#include "queue_common.h"
+#include "common.h"
 
 template<typename T>
 struct one2many_bitmask_queue_impl
@@ -21,21 +21,25 @@ struct one2many_bitmask_queue_impl
 
 // predeclaration
 
-// queue
+// bucket
 template<class event_t, typename counter_t>
-class one2many_bitmask_queue;
-
-// reader
-template<class event_t, typename counter_t>
-class one2many_bitmask_reader;
+struct one2many_bitmask_bucket;
 
 // guard
 template<class event_t, typename counter_t>
 class one2many_bitmask_guard;
 
-// bucket
-template<class event_t, typename counter_t>
-struct one2many_bitmask_bucket;
+// reader
+template<class event_t, typename counter_t, typename allocator_t>
+class one2many_bitmask_reader;
+
+// queue
+template<class event_t, typename counter_t, typename allocator_t>
+class one2many_bitmask_queue;
+
+// buffer
+template<class event_t, typename counter_t, typename allocator_t>
+using one2many_bitmask_ring_buffer_t = std::shared_ptr<std::pair<allocator_t, one2many_bitmask_bucket<event_t, counter_t>*>>;
 
 // implementation
 
@@ -74,6 +78,9 @@ struct alignas(QUEUE_CPU_CACHE_LINE_SIZE) one2many_bitmask_bucket
     std::atomic<counter_t> m_mask;
     storage_t m_storage;
 };
+
+template<class event_t, typename counter_t>
+using ring_buffer_t = std::shared_ptr<one2many_bitmask_bucket<event_t, counter_t>[]>;
 
 // guard
 template<class event_t, typename counter_t>
@@ -122,17 +129,15 @@ private:
 };
 
 // reader
-template<class event_t, typename counter_t>
+template<class event_t, typename counter_t, typename allocator_t>
 class alignas(QUEUE_CPU_CACHE_LINE_SIZE) one2many_bitmask_reader
 {
 public:
-    using bucket_type = one2many_bitmask_bucket<event_t, counter_t>;
     using guard_type = one2many_bitmask_guard<event_t, counter_t>;
-    using event_type = event_t;
-    using storage_t = std::shared_ptr<bucket_type[]>;
+    using ring_buffer_t = one2many_bitmask_ring_buffer_t<event_t, counter_t, allocator_t>;
 
 public:
-    one2many_bitmask_reader(storage_t storage, std::size_t storage_mask, counter_t read_from, counter_t mask)
+    one2many_bitmask_reader(ring_buffer_t storage, std::size_t storage_mask, counter_t read_from, counter_t mask)
         : m_storage(std::move(storage))
         , m_next_bucket(read_from & storage_mask)
         , m_storage_mask(storage_mask)
@@ -150,7 +155,7 @@ public:
 
     std::optional<guard_type> try_read() noexcept
     {
-        auto& bucket = m_storage[static_cast<std::ptrdiff_t>(m_next_bucket)];
+        auto& bucket = m_storage->second[m_next_bucket];
         if (bucket.m_seqn.load(std::memory_order_acquire) == m_next_read_index)
         {
             m_next_read_index++;
@@ -182,7 +187,7 @@ public:
     }
 
 private:
-    storage_t m_storage;
+    ring_buffer_t m_storage;
     std::size_t m_next_bucket;
     std::size_t m_storage_mask;
     counter_t m_next_read_index;
@@ -190,27 +195,29 @@ private:
 };
 
 // queue
-template<class event_t, typename counter_t>
+template<class event_t, typename counter_t, typename allocator_t = empty_allocator>
 class alignas(QUEUE_CPU_CACHE_LINE_SIZE) one2many_bitmask_queue
 {
 public:
-    using writer_type = one2many_bitmask_queue<event_t, counter_t>;
-    using reader_type = one2many_bitmask_reader<event_t, counter_t>;
+    using writer_type = one2many_bitmask_queue<event_t, counter_t, allocator_t>;
+    using reader_type = one2many_bitmask_reader<event_t, counter_t, allocator_t>;
+    using ring_buffer_t = one2many_bitmask_ring_buffer_t<event_t, counter_t, allocator_t>;
     using bucket_type = one2many_bitmask_bucket<event_t, counter_t>;
     using guard_type = one2many_bitmask_guard<event_t, counter_t>;
     using event_type = event_t;
-    using storage_t = std::shared_ptr<bucket_type[]>;
 
 public:
-    one2many_bitmask_queue(std::size_t n)
+    one2many_bitmask_queue(std::size_t n, allocator_t&& allocator = allocator_t())
         : m_next_bucket(one2many_bitmask_queue_impl<counter_t>::MIN_EVENT_SEQ_NUM)
         , m_storage_mask(calc_mask(n))
         , m_next_seq_num(one2many_bitmask_queue_impl<counter_t>::MIN_EVENT_SEQ_NUM)
         , m_alive_mask(one2many_bitmask_queue_impl<counter_t>::CONSTRUCTED_MASK)
         , m_next_reader_id(one2many_bitmask_queue_impl<counter_t>::MIN_READER_ID)
     {
-        m_storage.reset(new bucket_type[n], [](bucket_type* ptr) {
-            delete[] ptr;
+        m_storage.reset(new std::pair<allocator_t, one2many_bitmask_bucket<event_t, counter_t>*>(
+            std::move(allocator), new bucket_type[n]), [](auto ptr) {
+                delete [] ptr->second;
+                delete ptr;
         });
     }
 
@@ -242,7 +249,7 @@ public:
     {
         static_assert(std::is_nothrow_move_constructible<event_t>::value);
 
-        auto& bucket = m_storage[static_cast<std::ptrdiff_t>(m_next_bucket)];
+        auto& bucket = m_storage->second[m_next_bucket];
         if (bucket.m_mask.load(std::memory_order_acquire) == one2many_bitmask_queue_impl<counter_t>::EMPTY_DATA_MASK)
         {
             auto const seqn = m_next_seq_num++;
@@ -275,6 +282,11 @@ public:
         return m_alive_mask & (sizeof(counter_t) == 8 ? 0x7FFFFFFFFFFFFFFF : 0x7FFFFFFF);
     }
 
+    allocator_t& get_allocator() noexcept
+    {
+        return m_storage->first;
+    }
+
 private:
     static std::size_t calc_mask(std::size_t n)
     {
@@ -286,7 +298,7 @@ private:
     }
 
 private:
-    storage_t m_storage;
+    ring_buffer_t m_storage;
     std::size_t m_next_bucket;
     std::size_t m_storage_mask;
     counter_t m_next_seq_num;

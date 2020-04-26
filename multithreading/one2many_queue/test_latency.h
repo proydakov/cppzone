@@ -5,7 +5,7 @@
 #include <vector>
 #include <fstream>
 
-#include "queue_common.h"
+#include "common.h"
 
 struct data_t
 {
@@ -31,7 +31,8 @@ struct data_t
 
 struct latency_test
 {
-    latency_test(std::uint64_t NUM_READERS, std::uint64_t TOTAL_EVENTS) noexcept
+    template<typename allocator_t>
+    latency_test(std::uint64_t NUM_READERS, std::uint64_t TOTAL_EVENTS, allocator_t&) noexcept
     {
         m_lines.resize(NUM_READERS);
         for(auto & line : m_lines)

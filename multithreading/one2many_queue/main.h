@@ -1,3 +1,5 @@
+#pragma once
+
 #include <ratio>
 #include <atomic>
 #include <string>
@@ -7,7 +9,7 @@
 #include <vector>
 #include <iostream>
 
-#include "queue_common.h"
+#include "common.h"
 
 #if defined(__linux__) // any linux distribution
 
@@ -52,8 +54,6 @@ int test_main(int argc, char* argv[],
         << QUEUE_SIZE << " queue size"
         << std::endl;
 
-    T controller(NUM_READERS, TOTAL_EVENTS);
-
     std::uint64_t rdtsc_start, rdtsc_end;
     std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
 
@@ -64,6 +64,8 @@ int test_main(int argc, char* argv[],
         //std::clog.setstate(std::ios_base::failbit);
 
         Q queue(QUEUE_SIZE);
+        T controller(NUM_READERS, TOTAL_EVENTS, queue.get_allocator());
+
         std::atomic<std::uint64_t> waitinig_readers_counter{ NUM_READERS };
 
         std::vector<typename Q::reader_type> readers;
@@ -130,6 +132,7 @@ int test_main(int argc, char* argv[],
     }
 
     auto const milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
+    auto const nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count();
     auto const rdtsc_delta = rdtsc_end - rdtsc_start;
 
     std::cout << "W WAIT: " << writerWait << "\n";
@@ -141,7 +144,8 @@ int test_main(int argc, char* argv[],
     std::cout << "TIME: " << milliseconds << " milliseconds\n";
     std::cout << "TIME: " << rdtsc_delta << " cycles\n";
     std::cout << "PERF: " << double(double(TOTAL_EVENTS) / double(milliseconds)) << " events/millisecond\n";
-    std::cout << "PERF: " << double(double(rdtsc_delta) / double(TOTAL_EVENTS)) << " cycle/event\n";
+    std::cout << "PERF: " << double(double(nanoseconds) / double(TOTAL_EVENTS)) << " nanoseconds/event\n";
+    std::cout << "PERF: " << double(double(rdtsc_delta) / double(TOTAL_EVENTS)) << " cycles/event\n";
 
     return 0;
 }
