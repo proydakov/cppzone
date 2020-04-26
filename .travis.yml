@@ -16,7 +16,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-9']
-          packages: ['clang-9', 'g++-9']
+          packages: ['clang-9', 'clang++-9', 'lld-9']
       env:
         - CC=clang-9
         - CXX=clang++-9

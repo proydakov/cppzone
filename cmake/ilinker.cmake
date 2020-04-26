@@ -1,8 +1,8 @@
 macro(SETUP_LINKER)
+    string(REPLACE "." ";" COMPILER_VERSION_LIST ${CMAKE_CXX_COMPILER_VERSION})
+    list (GET COMPILER_VERSION_LIST 0 MAJOR_CXX_VERSION)
 
-    string(REGEX MATCH "-?[0-9]+(.[0-9]+)?$" COMPILER_POSTFIX ${CMAKE_CXX_COMPILER})
-
-    find_program (LLD_PATH NAMES "lld${COMPILER_POSTFIX}" "lld")
+    find_program (LLD_PATH NAMES "lld-${MAJOR_CXX_VERSION}" "lld")
     find_program (GOLD_PATH NAMES "gold")
 
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND LLD_PATH)
@@ -18,10 +18,10 @@ macro(SETUP_LINKER)
     endif()
 
     if (LINKER_NAME)
-        message(STATUS "Using linker: ${LINKER_NAME} (selected from: LLD_PATH=${LLD_PATH}; GOLD_PATH=${GOLD_PATH}; COMPILER_POSTFIX=${COMPILER_POSTFIX})")
+        message(STATUS "Using linker: ${LINKER_NAME} (selected from: LLD_PATH=${LLD_PATH}; GOLD_PATH=${GOLD_PATH}")
         set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=${LINKER_NAME}")
     else ()
-	message(STATUS "Use default linker")
+        message(STATUS "Use default linker")
     endif ()
 
 endmacro(SETUP_LINKER)
