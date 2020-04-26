@@ -5,39 +5,33 @@
 #include <vector>
 #include <fstream>
 
-enum : std::uint64_t { CPU_CACHE_LINE = 64 };
-
-// main test code
+#include "queue_common.h"
 
 struct data_t
 {
-    // ctor
-    data_t(std::chrono::time_point<std::chrono::high_resolution_clock> start) : m_start(start)
+    data_t(std::chrono::time_point<std::chrono::high_resolution_clock> start) noexcept : m_start(start)
     {
     }
 
-    // move ctor and assign
-    data_t(data_t&& data) noexcept : m_start(data.m_start)
+    ~data_t() noexcept
+    {
+    }
+
+    data_t(data_t&& data) noexcept
+        : m_start(data.m_start)
     {
     }
 
     data_t& operator=(data_t&& data) = delete;
-
-    // copy ctor and assign
     data_t(const data_t&) = delete;
     void operator=(const data_t&) = delete;
-
-    // dtor
-    ~data_t()
-    {
-    }
 
     std::chrono::time_point<std::chrono::high_resolution_clock> m_start;
 };
 
 struct latency_test
 {
-    latency_test(std::uint64_t NUM_READERS, std::uint64_t TOTAL_EVENTS)
+    latency_test(std::uint64_t NUM_READERS, std::uint64_t TOTAL_EVENTS) noexcept
     {
         m_lines.resize(NUM_READERS);
         for(auto & line : m_lines)
@@ -46,7 +40,7 @@ struct latency_test
         }
     }
 
-    ~latency_test()
+    ~latency_test() noexcept
     {
         for(std::size_t i = 0; i < m_lines.size(); i++)
         {
@@ -59,7 +53,7 @@ struct latency_test
         }
     }
 
-    data_t create_data(std::uint64_t)
+    data_t create_data(std::uint64_t) noexcept
     {
         return data_t(std::chrono::high_resolution_clock::now());
     }
@@ -71,16 +65,16 @@ struct latency_test
         m_lines[i].m_delta.push_back(microseconds);
     }
 
-    void reader_done()
+    void reader_done() noexcept
     {
     }
 
-    void writer_done()
+    void writer_done() noexcept
     {
     }
 
 private:
-    struct alignas(CPU_CACHE_LINE) line_t
+    struct alignas(QUEUE_CPU_CACHE_LINE_SIZE) line_t
     {
         std::vector<long> m_delta;
     };

@@ -1,10 +1,12 @@
+#pragma once
+
 #include <cmath>
 #include <atomic>
 #include <memory>
 #include <optional>
 #include <type_traits>
 
-enum : std::uint64_t { QUEUE_CPU_CACHE_LINE_SIZE = 64 };
+#include "queue_common.h"
 
 template<typename T>
 struct one2many_bitmask_queue_impl
@@ -43,7 +45,7 @@ struct alignas(QUEUE_CPU_CACHE_LINE_SIZE) one2many_bitmask_bucket
 {
     using storage_t = typename std::aligned_storage<sizeof(event_t), alignof(event_t)>::type;
 
-    one2many_bitmask_bucket()
+    one2many_bitmask_bucket() noexcept
         : m_seqn(one2many_bitmask_queue_impl<counter_t>::DUMMY_EVENT_SEQ_NUM)
         , m_mask(one2many_bitmask_queue_impl<counter_t>::EMPTY_DATA_MASK)
     {
@@ -54,7 +56,7 @@ struct alignas(QUEUE_CPU_CACHE_LINE_SIZE) one2many_bitmask_bucket
     one2many_bitmask_bucket(one2many_bitmask_bucket&&) = delete;
     one2many_bitmask_bucket& operator=(one2many_bitmask_bucket&&) = delete;
 
-    ~one2many_bitmask_bucket()
+    ~one2many_bitmask_bucket() noexcept
     {
         if (m_mask != one2many_bitmask_queue_impl<counter_t>::EMPTY_DATA_MASK)
         {
@@ -63,7 +65,7 @@ struct alignas(QUEUE_CPU_CACHE_LINE_SIZE) one2many_bitmask_bucket
         }
     }
 
-    event_t& get_event()
+    event_t& get_event() noexcept
     {
         return reinterpret_cast<event_t&>(m_storage);
     }
@@ -78,12 +80,12 @@ template<class event_t, typename counter_t>
 class one2many_bitmask_guard
 {
 public:
-    one2many_bitmask_guard(one2many_bitmask_bucket<event_t, counter_t>& bucket, counter_t mask)
+    one2many_bitmask_guard(one2many_bitmask_bucket<event_t, counter_t>& bucket, counter_t mask) noexcept
         : m_bucket(bucket), m_mask(mask)
     {
     }
 
-    one2many_bitmask_guard(one2many_bitmask_guard&& data)
+    one2many_bitmask_guard(one2many_bitmask_guard&& data)  noexcept
         : m_bucket(data.m_bucket)
         , m_mask(data.m_mask)
     {
@@ -94,7 +96,7 @@ public:
     one2many_bitmask_guard(const one2many_bitmask_guard&) = delete;
     one2many_bitmask_guard& operator=(const one2many_bitmask_guard&) = delete;
 
-    ~one2many_bitmask_guard()
+    ~one2many_bitmask_guard() noexcept
     {
         if (m_mask != one2many_bitmask_queue_impl<counter_t>::EMPTY_DATA_MASK)
         {
@@ -165,10 +167,10 @@ public:
     {
         read_mark:
 
-        auto pair = try_read();
-        if (pair.first)
+        auto opt = try_read();
+        if (opt)
         {
-            return std::move(pair.second);
+            return std::move(*opt);
         }
 
         goto read_mark;

@@ -7,9 +7,11 @@
 #include <vector>
 #include <iostream>
 
+#include "queue_common.h"
+
 #if defined(__linux__) // any linux distribution
 
-#include <emmintrin.h>
+#include <x86intrin.h>
 
 #include <sys/prctl.h>
 
@@ -27,6 +29,11 @@ void set_thread_name(std::string const&)
 }
 
 #endif
+
+struct alignas(QUEUE_CPU_CACHE_LINE_SIZE) wait_t
+{
+    long waitCounter = 0;
+};
 
 template<class Q, class T>
 int test_main(int argc, char* argv[],
@@ -50,6 +57,9 @@ int test_main(int argc, char* argv[],
     std::uint64_t rdtsc_start, rdtsc_end;
     std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
 
+    long writerWait = 0;
+    std::vector<wait_t> readersWait{ NUM_READERS };
+
     {
         //std::clog.setstate(std::ios_base::failbit);
 
@@ -71,7 +81,7 @@ int test_main(int argc, char* argv[],
         std::vector<std::thread> threads;
         for (std::size_t i = 0; i < NUM_READERS; i++)
         {
-            threads.push_back(std::thread([reader = std::move(readers[i]), &waitinig_readers_counter, TOTAL_EVENTS, &controller]() mutable {
+            threads.emplace_back([reader = std::move(readers[i]), &waitinig_readers_counter, stat = &readersWait[i], TOTAL_EVENTS, &controller]() mutable {
                 auto const rid = reader.get_id();
                 set_thread_name("reader_" + std::to_string(rid));
 
@@ -84,13 +94,18 @@ int test_main(int argc, char* argv[],
                     {
                         j++;
                     }
+                    else
+                    {
+                        stat->waitCounter++;
+                        _mm_pause();
+                    }
                 }
 
                 controller.reader_done();
-            }));
+            });
         }
 
-        threads.push_back(std::thread([&queue, &waitinig_readers_counter, TOTAL_EVENTS, &controller]() mutable {
+        threads.emplace_back([&queue, &waitinig_readers_counter, &writerWait, TOTAL_EVENTS, &controller]() mutable {
             set_thread_name("writer");
 
             while (waitinig_readers_counter > 0);
@@ -98,14 +113,15 @@ int test_main(int argc, char* argv[],
             for (std::uint64_t j = 0; j < TOTAL_EVENTS; j++)
             {
                 typename Q::event_type data(controller.create_data(j));
-                while(!queue.try_write(std::move(data)))
+                while(!queue.try_write(std::move(data), std::memory_order_seq_cst))
                 {
+                    writerWait++;
                     _mm_pause();
                 }
             }
 
             controller.writer_done();
-        }));
+        });
 
         for (auto& t : threads) t.join();
 
@@ -116,10 +132,16 @@ int test_main(int argc, char* argv[],
     auto const milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
     auto const rdtsc_delta = rdtsc_end - rdtsc_start;
 
-    std::cout << "TIME: " + std::to_string(milliseconds) + " milliseconds\n";
-    std::cout << "TIME: " + std::to_string(rdtsc_delta) + " cycles\n";
-    std::cout << "PERF: " + std::to_string(double(TOTAL_EVENTS) / double(milliseconds)) + " events/millisecond\n";
-    std::cout << "PERF: " + std::to_string(double(rdtsc_delta) / double(TOTAL_EVENTS)) + " cycle per event\n";
+    std::cout << "W WAIT: " << writerWait << "\n";
+    for (auto const& stat : readersWait)
+    {
+        std::cout << "R WAIT: " << stat.waitCounter << "\n";
+    }
+    std::cout << "\n";
+    std::cout << "TIME: " << milliseconds << " milliseconds\n";
+    std::cout << "TIME: " << rdtsc_delta << " cycles\n";
+    std::cout << "PERF: " << double(double(TOTAL_EVENTS) / double(milliseconds)) << " events/millisecond\n";
+    std::cout << "PERF: " << double(double(rdtsc_delta) / double(TOTAL_EVENTS)) << " cycle/event\n";
 
     return 0;
 }

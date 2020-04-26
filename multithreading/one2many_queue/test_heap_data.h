@@ -4,14 +4,14 @@
 #include <cstdint>
 #include <iostream>
 
-enum : std::uint64_t { CPU_CACHE_LINE_SIZE = 64 };
+#include "queue_common.h"
 
-struct alignas(CPU_CACHE_LINE_SIZE) stat_local_t
+struct alignas(QUEUE_CPU_CACHE_LINE_SIZE) stat_local_t
 {
     std::int64_t counter{0};
 };
 
-struct alignas(CPU_CACHE_LINE_SIZE) stat_global_t
+struct alignas(QUEUE_CPU_CACHE_LINE_SIZE) stat_global_t
 {
     std::atomic<std::int64_t> counter{0};
 };
@@ -24,36 +24,11 @@ stat_global_t g_global_released;
 
 struct data_t
 {
-    // ctor
-    data_t() : m_ptr(nullptr)
+    data_t() noexcept : m_ptr(nullptr)
     {
     }
 
-    data_t(std::uint64_t* ptr) : m_ptr(ptr)
-    {
-        g_local_allocated.counter++;
-    }
-
-    // move ctor and assign
-    data_t(data_t&& data) noexcept : m_ptr(data.m_ptr)
-    {
-        data.m_ptr = nullptr;
-    }
-
-    data_t& operator=(data_t&& data) = delete;
-
-    // copy ctor and assign
-    data_t(const data_t&) = delete;
-    void operator=(const data_t&) = delete;
-
-    // dtor
-    ~data_t()
-    {
-        release();
-    }
-
-private:
-    void release()
+    ~data_t() noexcept
     {
         if (m_ptr != nullptr)
         {
@@ -63,37 +38,50 @@ private:
         }
     }
 
-private:
+    data_t(std::uint64_t* ptr) noexcept : m_ptr(ptr)
+    {
+        g_local_allocated.counter++;
+    }
+
+    data_t(data_t&& data) noexcept : m_ptr(data.m_ptr)
+    {
+        data.m_ptr = nullptr;
+    }
+
+    data_t& operator=(data_t&& data) = delete;
+    data_t(const data_t&) = delete;
+    void operator=(const data_t&) = delete;
+
     std::uint64_t* m_ptr;
 };
 
 struct perf_allocated_test
 {
-    perf_allocated_test(std::uint64_t, std::uint64_t)
+    perf_allocated_test(std::uint64_t, std::uint64_t) noexcept
     {
         std::cout << "g_counter before: " << (g_global_allocated.counter - g_global_released.counter) << " (must be zero)" << std::endl;
     }
 
-    ~perf_allocated_test()
+    ~perf_allocated_test() noexcept
     {
         std::cout << "g_counter after: " << (g_global_allocated.counter - g_global_released.counter) << " (must be zero)" << std::endl;
     }
 
-    data_t create_data(std::uint64_t i)
+    data_t create_data(std::uint64_t i) noexcept
     {
         return data_t(new std::uint64_t(i));
     }
 
-    void check_data(std::uint64_t, data_t const&)
+    void check_data(std::uint64_t, data_t const&) noexcept
     {
     }
 
-    void reader_done()
+    void reader_done() noexcept
     {
         g_global_released.counter += g_local_released.counter;
     }
 
-    void writer_done()
+    void writer_done() noexcept
     {
         g_global_allocated.counter += g_local_allocated.counter;
     }
