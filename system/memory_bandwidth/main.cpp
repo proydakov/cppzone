@@ -8,6 +8,12 @@
 #include <cstring>
 #include <iostream>
 
+#ifdef _MSC_VER
+#include <malloc.h>
+#else
+#include <stdlib.h>
+#endif
+
 std::size_t constexpr giga = 1024ul * 1024ul * 1024ul;
 
 class experiment
@@ -32,7 +38,6 @@ private:
     std::chrono::time_point<std::chrono::high_resolution_clock> const m_start;
 };
 
-
 int main(int argc, char* argv[])
 {
     if (argc != 2)
@@ -51,7 +56,11 @@ int main(int argc, char* argv[])
     {
         std::cout << "\nallocating..." << std::endl;
         experiment e(alloc_bytes);
-        origin = new (std::align_val_t{64}) std::byte[alloc_size];
+#ifdef _MSC_VER
+        origin = (std::byte*)(_aligned_malloc(64, alloc_size));
+#else
+        origin = new (std::align_val_t{ 64 }) std::byte[alloc_size];
+#endif // _MSC_VER
         std::memset(origin, 7, alloc_bytes);
     }
 
@@ -93,7 +102,11 @@ int main(int argc, char* argv[])
     }
 
     {
+#ifdef _MSC_VER
+         _aligned_free((void*)(origin));
+#else
         delete [] origin;
+#endif
         std::cout << "\nwaiting..." << std::endl;
         std::int32_t n{ 0 };
         std::cin >> n;

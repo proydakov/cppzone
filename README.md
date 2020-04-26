@@ -17,7 +17,7 @@ My ASM/C/C++, Lua, OpenGL, Direct3D experiments for desktop computer. Windows, M
 
     mkdir build-clang
     cd build-clang
-    CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Release -DSTATIC_LINK=1 -DCLANG_ROOT=/usr/lib/llvm-10 -DBOOST_ROOT=/home/proydakov/sdks/boost_1_65_0_libc++/ .. #CLANG_ROOT AND BOOST_ROOT require for libc++
+    CC=clang CXX=clang++ cmake -DSTATIC_LINK=1 -DCLANG_ROOT=/usr/lib/llvm-10 -DBOOST_ROOT=/home/proydakov/sdks/boost_1_65_0_libc++/ .. #CLANG_ROOT AND BOOST_ROOT require for libc++
     make -j #ninja
 
 # build boost with libc++

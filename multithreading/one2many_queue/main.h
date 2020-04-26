@@ -66,7 +66,7 @@ int test_main(int argc, char* argv[],
     std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
 
     long writerWait = 0;
-    std::vector<wait_t> readersWait{ NUM_READERS };
+    std::vector<wait_t> readersWait{ static_cast<std::size_t>(NUM_READERS) };
 
     {
         //std::clog.setstate(std::ios_base::failbit);

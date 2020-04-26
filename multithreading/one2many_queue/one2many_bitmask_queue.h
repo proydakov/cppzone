@@ -38,8 +38,8 @@ template<class event_t, typename counter_t, typename allocator_t>
 class one2many_bitmask_queue;
 
 // buffer
-template<class event_t, typename counter_t, typename allocator_t>
-using one2many_bitmask_ring_buffer_t = std::shared_ptr<std::pair<allocator_t, one2many_bitmask_bucket<event_t, counter_t>*>>;
+template<class event_t, typename counter_t>
+using one2many_bitmask_ring_buffer_t = std::shared_ptr<one2many_bitmask_bucket<event_t, counter_t>>;
 
 // implementation
 
@@ -134,16 +134,19 @@ class alignas(QUEUE_CPU_CACHE_LINE_SIZE) one2many_bitmask_reader
 {
 public:
     using guard_type = one2many_bitmask_guard<event_t, counter_t>;
-    using ring_buffer_t = one2many_bitmask_ring_buffer_t<event_t, counter_t, allocator_t>;
+    using ring_buffer_t = one2many_bitmask_ring_buffer_t<event_t, counter_t>;
+    using allocator_ptr = std::shared_ptr<allocator_t>;
 
 public:
-    one2many_bitmask_reader(ring_buffer_t storage, std::size_t storage_mask, counter_t read_from, counter_t mask)
-        : m_storage(std::move(storage))
+    one2many_bitmask_reader(allocator_ptr allocator, ring_buffer_t storage, std::size_t storage_mask, counter_t read_from, counter_t mask)
+        : m_allocator(std::move(allocator))
+        , m_storage(std::move(storage))
         , m_next_bucket(read_from & storage_mask)
         , m_storage_mask(storage_mask)
         , m_next_read_index(read_from)
         , m_reader_mask(mask)
     {
+        static_assert(sizeof(one2many_bitmask_reader<event_t, counter_t, allocator_t>) <= QUEUE_CPU_CACHE_LINE_SIZE);
     }
 
     one2many_bitmask_reader(const one2many_bitmask_reader&) = delete;
@@ -155,7 +158,7 @@ public:
 
     std::optional<guard_type> try_read() noexcept
     {
-        auto& bucket = m_storage->second[m_next_bucket];
+        auto& bucket = m_storage.get()[m_next_bucket];
         if (bucket.m_seqn.load(std::memory_order_acquire) == m_next_read_index)
         {
             m_next_read_index++;
@@ -187,6 +190,7 @@ public:
     }
 
 private:
+    allocator_ptr m_allocator;
     ring_buffer_t m_storage;
     std::size_t m_next_bucket;
     std::size_t m_storage_mask;
@@ -201,7 +205,8 @@ class alignas(QUEUE_CPU_CACHE_LINE_SIZE) one2many_bitmask_queue
 public:
     using writer_type = one2many_bitmask_queue<event_t, counter_t, allocator_t>;
     using reader_type = one2many_bitmask_reader<event_t, counter_t, allocator_t>;
-    using ring_buffer_t = one2many_bitmask_ring_buffer_t<event_t, counter_t, allocator_t>;
+    using ring_buffer_t = one2many_bitmask_ring_buffer_t<event_t, counter_t>;
+    using allocator_ptr = std::shared_ptr<allocator_t>;
     using bucket_type = one2many_bitmask_bucket<event_t, counter_t>;
     using guard_type = one2many_bitmask_guard<event_t, counter_t>;
     using event_type = event_t;
@@ -211,13 +216,14 @@ public:
         : m_next_bucket(one2many_bitmask_queue_impl<counter_t>::MIN_EVENT_SEQ_NUM)
         , m_storage_mask(calc_mask(n))
         , m_next_seq_num(one2many_bitmask_queue_impl<counter_t>::MIN_EVENT_SEQ_NUM)
-        , m_alive_mask(one2many_bitmask_queue_impl<counter_t>::CONSTRUCTED_MASK)
         , m_next_reader_id(one2many_bitmask_queue_impl<counter_t>::MIN_READER_ID)
     {
-        m_storage.reset(new std::pair<allocator_t, one2many_bitmask_bucket<event_t, counter_t>*>(
-            std::move(allocator), new bucket_type[n]), [](auto ptr) {
-                delete [] ptr->second;
-                delete ptr;
+        static_assert(sizeof(one2many_bitmask_queue<event_t, counter_t, allocator_t>) <= QUEUE_CPU_CACHE_LINE_SIZE);
+
+        m_allocator = std::make_shared<allocator_t>(std::move(allocator));
+
+        m_storage.reset(new bucket_type[n], [](bucket_type* ptr){
+            delete [] ptr;
         });
     }
 
@@ -226,8 +232,6 @@ public:
 
     one2many_bitmask_queue(one2many_bitmask_queue&&) noexcept = default;
     one2many_bitmask_queue& operator=(one2many_bitmask_queue&&) noexcept = default;
-
-    ~one2many_bitmask_queue() noexcept =  default;
 
     reader_type create_reader()
     {
@@ -240,23 +244,21 @@ public:
         }
 
         counter_t const mask(counter_t(1) << next_id);
-        m_alive_mask |= mask;
-
-        return {m_storage, m_storage_mask, m_next_seq_num, mask};
+        return {m_allocator, m_storage, m_storage_mask, m_next_seq_num, mask};
     }
 
     bool try_write(event_t&& event, std::memory_order store_order = std::memory_order_release) noexcept
     {
         static_assert(std::is_nothrow_move_constructible<event_t>::value);
 
-        auto& bucket = m_storage->second[m_next_bucket];
+        auto& bucket = m_storage.get()[m_next_bucket];
         if (bucket.m_mask.load(std::memory_order_acquire) == one2many_bitmask_queue_impl<counter_t>::EMPTY_DATA_MASK)
         {
+            auto const alive_mask = (~((~counter_t(0)) << m_next_reader_id)) | one2many_bitmask_queue_impl<counter_t>::CONSTRUCTED_MASK;
             auto const seqn = m_next_seq_num++;
             m_next_bucket = m_next_seq_num & m_storage_mask;
-
             new (&bucket.m_storage) event_t(std::move(event));
-            bucket.m_mask.store(m_alive_mask, std::memory_order_relaxed);
+            bucket.m_mask.store(alive_mask, std::memory_order_relaxed);
             bucket.m_seqn.store(seqn, store_order);
 
             return true;
@@ -279,18 +281,18 @@ public:
 
     counter_t get_alive_mask() const noexcept
     {
-        return m_alive_mask & (sizeof(counter_t) == 8 ? 0x7FFFFFFFFFFFFFFF : 0x7FFFFFFF);
+        return (~((~counter_t(0)) << m_next_reader_id));
     }
 
     allocator_t& get_allocator() noexcept
     {
-        return m_storage->first;
+        return *m_allocator;
     }
 
 private:
     static std::size_t calc_mask(std::size_t n)
     {
-        if (n > 0 and 0 == ((n - 1) & n))
+        if (n > 0 && 0 == ((n - 1) & n))
         {
             return n - 1;
         }
@@ -298,10 +300,10 @@ private:
     }
 
 private:
+    allocator_ptr m_allocator;
     ring_buffer_t m_storage;
     std::size_t m_next_bucket;
     std::size_t m_storage_mask;
     counter_t m_next_seq_num;
-    counter_t m_alive_mask;
     counter_t m_next_reader_id;
 };
