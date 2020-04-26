@@ -22,6 +22,14 @@ void set_thread_name(std::string const& name)
     prctl(PR_SET_NAME, name.c_str(), 0, 0, 0);
 }
 
+#elif defined(__APPLE__)
+
+#include <x86intrin.h>
+
+void set_thread_name(std::string const&)
+{
+}
+
 #else
 
 #include <intrin.h>
