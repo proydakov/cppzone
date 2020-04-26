@@ -15,22 +15,22 @@ matrix:
       compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
-          packages: ['clang-8', 'g++-8']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-9']
+          packages: ['clang-9', 'g++-9']
       env:
-        - CC=clang-8
-        - CXX=clang++-8
+        - CC=clang-9
+        - CXX=clang++-9
 
     - env: BUILD_TYPE=Release
       os: linux
       compiler: gcc
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
-          packages: ['gcc-8', 'g++-8']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-9']
+          packages: ['gcc-9', 'g++-9']
       env:
-        - CC=gcc-8
-        - CXX=g++-8
+        - CC=gcc-9
+        - CXX=g++-9
 
     - env: BUILD_TYPE=Release
       os: osx
