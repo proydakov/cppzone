@@ -10,14 +10,14 @@ My ASM/C/C++, Lua, OpenGL, Direct3D experiments for desktop computer. Windows, M
 
     mkdir build-gcc
     cd build-gcc
-    cmake ..
+    CC=gcc CXX=g++ cmake -DSTATIC_LINK=1 -DBOOST_ROOT=/home/proydakov/sdks/boost_1_65_0_libstdc++/ ..
     make -j #ninja
 
 # build clang
 
     mkdir build-clang
     cd build-clang
-    CC=clang CXX=clang++ cmake -G -DSTATIC_LINK=1 -DBOOST_ROOT=/home/proydakov/sdks/boost_1_65_0_libc++/ .. #BOOST_ROOT require for libc++
+    CC=clang CXX=clang++ cmake -G -DSTATIC_LINK=1 -DBOOST_ROOT=/home/proydakov/sdks/boost_1_65_0_libc++/ ..
     ninja #make
 
 # build boost with libc++
