@@ -61,7 +61,7 @@ uint64_t rdtsc()
 
 void bind_core(size_t core_id)
 {
-    SetThreadAffinityMask(GetCurrentThread(), (1 << core_id));
+    SetThreadAffinityMask(GetCurrentThread(), (size_t{1} << core_id));
 }
 
 #endif

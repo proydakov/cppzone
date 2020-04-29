@@ -9,3 +9,6 @@ SET(SOURCE_FILES
     )
 
 I_ADD_EXECUTABLE(syntax_placement_new ${SOURCE_FILES})
+if(MSVC)
+    TARGET_COMPILE_OPTIONS(syntax_placement_new PRIVATE "/wd4324")
+endif()

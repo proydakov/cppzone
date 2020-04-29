@@ -79,8 +79,7 @@ long test_remove_duplicate_impl(std::vector<data_type>& data, const std::string&
     }
     auto end = clock.now();
 
-    long duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-    return duration;
+    return static_cast<long>(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
 }
 
 void test_operations()

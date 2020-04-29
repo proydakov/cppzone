@@ -4,6 +4,10 @@
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
+if(MSVC)
+    add_compile_options("/wd4324")
+endif()
+
 I_ADD_EXECUTABLE(multithreading_one2many_bitmask_queue_perf_plain
     main.h
     test_plain_data.h

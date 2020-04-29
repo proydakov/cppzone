@@ -8,7 +8,7 @@ char const* const g_p_str = "Hello, x64 addr.";
 template<typename T, int virtual_addresses_bitcount = 48>
 struct tagged_ptr
 {
-    static constexpr std::uint64_t vaddr_bits = ((1ul << virtual_addresses_bitcount) - 1);
+    static constexpr std::uint64_t vaddr_bits = ((std::uint64_t{1} << virtual_addresses_bitcount) - 1);
 
     tagged_ptr(T* ptr) : m_data(std::uint64_t(ptr)) {}
 

@@ -9,3 +9,6 @@ SET(SOURCE_FILES
     )
 
 I_ADD_EXECUTABLE(multithreading_storage ${SOURCE_FILES})
+if(MSVC)
+    target_compile_options(multithreading_storage PRIVATE "/wd4324")
+endif()

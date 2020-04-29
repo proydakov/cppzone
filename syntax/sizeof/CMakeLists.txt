@@ -9,3 +9,6 @@ SET(SOURCE_FILES
     )
 
 I_ADD_EXECUTABLE(syntax_sizeof ${SOURCE_FILES})
+if(MSVC)
+    TARGET_COMPILE_OPTIONS(syntax_sizeof PRIVATE "/wd4324")
+endif()

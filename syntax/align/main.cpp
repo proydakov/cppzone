@@ -4,7 +4,7 @@
 template <std::size_t N>
 struct alignas(N) IAllocator
 {
-    IAllocator() : p(data), sz(N)
+    IAllocator() : data{}, p(data), sz(N)
     {
         std::cout << "align IAllocator ok: " << ((size_t)(this) % N == 0) << std::endl;
     }

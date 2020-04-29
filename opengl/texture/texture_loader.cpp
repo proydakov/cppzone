@@ -20,9 +20,9 @@
  *  THE SOFTWARE.
  */
 
-#include <SDL2/SDL.h>
-
 #include "texture_loader.h"
+
+#include <SDL2/SDL_surface.h>
 
 using namespace texture;
 

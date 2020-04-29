@@ -57,7 +57,7 @@ struct data_t
     data_t(const data_t&) = delete;
     void operator=(const data_t&) = delete;
 
-    typename allocator_t::pointer m_ptr;
+    typename std::allocator_traits<allocator_t>::pointer m_ptr;
     allocator_t& m_allocator;
 };
 

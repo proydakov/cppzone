@@ -1,6 +1,7 @@
 macro(COMPILER_SET_MAX_WARNING_LEVEL)
     if(MSVC)
-        string(REGEX REPLACE /W[0-4] /W4 CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+        string(REGEX REPLACE /W[0-4] "/W4 /WX" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
+        string(REGEX REPLACE /W[0-4] "/W4 /WX" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
     else()
         set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -Wall -Werror -Wextra -pedantic -pedantic-errors -Wconversion -Wsign-conversion")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pedantic -pedantic-errors -Wconversion -Wsign-conversion")

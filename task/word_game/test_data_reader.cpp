@@ -32,43 +32,41 @@
 
 void test_read_ok(const std::string& name, const std::string& error)
 {
-    std::stringstream sstream;
-    sstream << DATA_DIRECTORY << "/" << name;
-
     data_t data;
     try {
+        std::stringstream sstream;
+        sstream << DATA_DIRECTORY << "/" << name;
         DataReader::readTask(sstream.str(), data);
     }
     catch (...) {
-        std::stringstream sstream;
-        sstream << "Error: " << __FUNCTION__ << ": found error in good example";
-        throw std::runtime_error(sstream.str());
+        std::stringstream errsstream;
+        errsstream << "Error: " << __FUNCTION__ << ": found error in good example";
+        throw std::runtime_error(errsstream.str());
     }
     if (data.empty()) {
-        std::stringstream sstream;
-        sstream << "Error: " << __FUNCTION__ << " " << error;
-        throw std::runtime_error(sstream.str());
+        std::stringstream errsstream;
+        errsstream << "Error: " << __FUNCTION__ << " " << error;
+        throw std::runtime_error(errsstream.str());
     }
     std::cout << "Success: test_read_ok name: " << name << std::endl;
 }
 
 void test_read_error(const std::string& name, const std::string& error)
 {
-    std::stringstream sstream;
-    sstream << DATA_DIRECTORY << "/" << "task_not_found.txt";
-
     bool ok = false;
     data_t data;
     try {
+        std::stringstream sstream;
+        sstream << DATA_DIRECTORY << "/" << "task_not_found.txt";
         DataReader::readTask(sstream.str(), data);
     }
     catch (...) {
         ok = true;
     }
     if (!ok) {
-        std::stringstream sstream;
-        sstream << "Error: " << __FUNCTION__ << " " << error;
-        throw std::runtime_error(sstream.str());
+        std::stringstream errsstream;
+        errsstream << "Error: " << __FUNCTION__ << " " << error;
+        throw std::runtime_error(errsstream.str());
     }
     std::cout << "Success: test_read_error name: " << name << std::endl;
 }

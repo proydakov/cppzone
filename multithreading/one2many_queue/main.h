@@ -52,9 +52,9 @@ int test_main(int argc, char* argv[],
     std::cout << "usage: app <num readers> <events> * 10^6 <queue_size>" << std::endl;
 
     // TEST details
-    std::uint64_t const NUM_READERS = static_cast<std::uint64_t>(argc > 1 ? std::stoul(argv[1]) : num_readers);
-    std::uint64_t const TOTAL_EVENTS = static_cast<std::uint64_t>(argc > 2 ? std::stoul(argv[2]) : total_events) * std::mega::num;
-    std::uint64_t const QUEUE_SIZE = argc > 3 ? std::stoul(argv[3]) : queue_size;
+    auto const NUM_READERS = static_cast<std::size_t>(argc > 1 ? std::stoul(argv[1]) : num_readers);
+    auto const TOTAL_EVENTS = static_cast<std::size_t>( (argc > 2 ? std::stoul(argv[2]) : total_events) * std::mega::num);
+    auto const QUEUE_SIZE = static_cast<std::size_t>(argc > 3 ? std::stoul(argv[3]) : queue_size);
 
     std::cout << "TEST: 1 writer, "
         << std::to_string(NUM_READERS) << " readers, "
@@ -97,7 +97,7 @@ int test_main(int argc, char* argv[],
 
                 waitinig_readers_counter--;
 
-                for (std::uint64_t j = 0; j < TOTAL_EVENTS;)
+                for (std::size_t j = 0; j < TOTAL_EVENTS;)
                 {
                     auto opt = reader.try_read();
                     if (opt)
@@ -120,7 +120,7 @@ int test_main(int argc, char* argv[],
 
             while (waitinig_readers_counter > 0);
 
-            for (std::uint64_t j = 0; j < TOTAL_EVENTS; j++)
+            for (std::size_t j = 0; j < TOTAL_EVENTS; j++)
             {
                 typename Q::event_type data(controller.create_data(j));
                 while(!queue.try_write(std::move(data), std::memory_order_seq_cst))

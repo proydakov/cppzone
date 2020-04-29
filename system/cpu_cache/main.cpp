@@ -1,6 +1,6 @@
-#include <cstdio>
 #include <chrono>
 #include <vector>
+#include <cstring>
 #include <iostream>
 
 const int KB = 1024;
@@ -21,9 +21,7 @@ long long clock_time()
 int main()
 {
     int* data = new int[data_size];
-    for (int i = 0; i < data_size; i++) {
-        data[i]++;
-    }
+    std::memset(data, 1, data_size);
 
     std::vector<size_t> steps({
         1 * KB,   2 * KB,   4 * KB,  8 * KB,
@@ -49,7 +47,7 @@ int main()
             totalTime += double(end - start) / 1000000000.0;
         }
         labs.push_back( std::make_pair(steps[i] / KB, totalTime) );
-        printf("%lu time: %lf\n", steps[i] / KB, totalTime);
+        std::cout << (steps[i] / KB) << " time: " << totalTime << std::endl;
     }
 
     int calc_cache = 0;
@@ -62,7 +60,7 @@ int main()
         }
         current = labs[i].second;
     }
-    printf("calc   cache: %d\n", calc_cache);
+    std::cout << "calculated cache: " << calc_cache << std::endl;
 
     delete[] data;
     return 0;

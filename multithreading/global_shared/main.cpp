@@ -2,7 +2,10 @@
 #include <thread>
 #include <iostream>
 
-struct alignas(16) shared
+constexpr std::size_t PTR_SIZE = sizeof(void*);
+constexpr std::size_t SHARED_PTR_ALIGN = PTR_SIZE * 2;
+
+struct alignas(SHARED_PTR_ALIGN) shared
 {
     std::shared_ptr<int> val;
 };
@@ -14,7 +17,7 @@ int main()
     std::ios::sync_with_stdio(false);
 
     void* addr = &g_ptr;
-    std::cout << "addr ok: " << ((intptr_t)addr % 16 == 0) << std::endl;
+    std::cout << "addr ok: " << ((std::size_t)(addr) % SHARED_PTR_ALIGN == 0) << std::endl;
 
     std::thread t1([](){
         while(true) {

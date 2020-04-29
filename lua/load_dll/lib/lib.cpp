@@ -78,9 +78,9 @@ static int fun_var(lua_State* L)
         std::cout << "[Lib] fun_var argument is  " << i << "  |  ";
         int type = lua_type(L, i);
         std::cout << "type : ";
-        std::cout.width(9);
+        auto const prev_width = std::cout.width(9);
         std::cout << lua_typename(L, type) << "  | value:  ";
-        std::cout.width();
+        std::cout.width(prev_width);
 
         switch(type) {
         case 1:

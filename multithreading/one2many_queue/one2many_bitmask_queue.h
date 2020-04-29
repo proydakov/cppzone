@@ -52,6 +52,7 @@ struct alignas(QUEUE_CPU_CACHE_LINE_SIZE) one2many_bitmask_bucket
     one2many_bitmask_bucket() noexcept
         : m_seqn(one2many_bitmask_queue_impl<counter_t>::DUMMY_EVENT_SEQ_NUM)
         , m_mask(one2many_bitmask_queue_impl<counter_t>::EMPTY_DATA_MASK)
+        , m_storage{}
     {
     }
 

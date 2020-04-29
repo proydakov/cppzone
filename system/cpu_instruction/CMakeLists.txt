@@ -9,3 +9,6 @@ SET(SOURCE_FILES
     )
 
 I_ADD_EXECUTABLE(system_cpu_instruction ${SOURCE_FILES})
+if(MSVC)
+    TARGET_COMPILE_OPTIONS(system_cpu_instruction PRIVATE "/wd5030")
+endif()

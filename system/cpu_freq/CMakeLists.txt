@@ -9,3 +9,6 @@ SET(SOURCE_FILES
     )
 
 I_ADD_EXECUTABLE(system_cpu_freq ${SOURCE_FILES})
+if(MSVC)
+    TARGET_COMPILE_OPTIONS(system_cpu_freq PRIVATE "/wd5030")
+endif()

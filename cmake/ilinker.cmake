@@ -20,8 +20,10 @@ macro(SETUP_LINKER)
     string(REPLACE "." ";" COMPILER_VERSION_LIST ${CMAKE_CXX_COMPILER_VERSION})
     list(GET COMPILER_VERSION_LIST 0 MAJOR_CXX_VERSION)
 
-    find_program(LLD_PATH NAMES "lld-${MAJOR_CXX_VERSION}" "lld")
-    find_program(GOLD_PATH NAMES "gold")
+    if(UNIX)
+        find_program(LLD_PATH NAMES "lld-${MAJOR_CXX_VERSION}" "lld")
+        find_program(GOLD_PATH NAMES "gold")
+    endif()
 
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         # by default gcc and clang use stdc++

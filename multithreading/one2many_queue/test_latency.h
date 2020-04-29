@@ -32,7 +32,7 @@ struct data_t
 struct latency_test
 {
     template<typename allocator_t>
-    latency_test(std::uint64_t NUM_READERS, std::uint64_t TOTAL_EVENTS, allocator_t&) noexcept
+    latency_test(std::size_t NUM_READERS, std::size_t TOTAL_EVENTS, allocator_t&) noexcept
     {
         m_lines.resize(NUM_READERS);
         for(auto & line : m_lines)
@@ -59,10 +59,10 @@ struct latency_test
         return data_t(std::chrono::high_resolution_clock::now());
     }
 
-    void check_data(std::uint64_t i, data_t const& data)
+    void check_data(std::size_t i, data_t const& data)
     {
         std::chrono::time_point<std::chrono::high_resolution_clock> stop = std::chrono::high_resolution_clock::now();
-        auto const microseconds = std::chrono::duration_cast<std::chrono::microseconds>(stop - data.m_start).count();
+        auto const microseconds = static_cast<long>(std::chrono::duration_cast<std::chrono::microseconds>(stop - data.m_start).count());
         m_lines[i].m_delta.push_back(microseconds);
     }
 
