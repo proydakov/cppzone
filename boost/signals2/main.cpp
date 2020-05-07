@@ -57,7 +57,7 @@ public:
     void start() {
         bool status = m_working.exchange(true);
         if(!status) {
-            m_thread.reset(new boost::thread(boost::bind(&worker::thread_fun, this)));
+            m_thread.reset(new boost::thread(std::bind(&worker::thread_fun, this)));
         }
     }
 
@@ -98,7 +98,7 @@ int main( )
 {
     worker w;
 
-    w.signal.connect(boost::bind(&handler, _1));
+    w.signal.connect(std::bind(&handler, std::placeholders::_1));
     w.start();
     boost::this_thread::sleep(boost::posix_time::seconds(15));
     return 0;

@@ -32,7 +32,7 @@ void thread_fun()
         boost::this_thread::sleep(boost::posix_time::hours(1));
         std::cout << "thread finished" << std::endl;
     }
-    catch(boost::thread_interrupted& e) {
+    catch(boost::thread_interrupted&) {
         std::cout << "thread interrupted" << std::endl;
     }
 }

@@ -15,6 +15,7 @@ ADD_SUBDIRECTORY(asm)
 ADD_SUBDIRECTORY(algorithms)
 
 IF(MSVC)
+    SET(BOOST_ROOT ${PROJECT_SOURCE_DIR}/thirdparty/windows/boost_1_73_0_msvc_2019/)
     SET(Boost_USE_STATIC_LIBS    ON)
     SET(Boost_USE_MULTITHREADED  ON)
 ENDIF()

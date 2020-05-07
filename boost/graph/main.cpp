@@ -58,7 +58,7 @@ struct found_goal {};
 ///////////////////////////////////////////////////////////////////////////////
 
 // A hash function for vertices.
-class vertex_hash : std::unary_function<vertex_descriptor, std::size_t>
+class vertex_hash
 {
 public:
     vertex_hash(const grid& graph) : m_graph(graph) {}
@@ -213,7 +213,7 @@ public:
                                     distance_map(dist_pmap)
                                     );
             }
-            catch(const found_goal& fg) {
+            catch(const found_goal&) {
                 // Walk backwards from the goal through the predecessor chain adding
                 // vertices to the solution path.
                 for (vertex_descriptor u = goal; u != source; u = predecessor[u]) {

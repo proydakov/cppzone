@@ -285,7 +285,7 @@ bool maze::solve()
                                 distance_map(dist_pmap)
                                 );
         }
-        catch(const found_goal& fg) {
+        catch(const found_goal&) {
             // Walk backwards from the goal through the predecessor chain adding
             // vertices to the solution path.
             for (vertex_descriptor u = goal; u != source; u = predecessor[u]) {

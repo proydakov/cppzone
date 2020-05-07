@@ -17,3 +17,7 @@ TARGET_LINK_LIBRARIES(boost_interrupt ${Boost_THREAD_LIBRARY})
 TARGET_LINK_LIBRARIES(boost_interrupt ${Boost_DATE_TIME_LIBRARY})
 TARGET_LINK_LIBRARIES(boost_interrupt ${Boost_REGEX_LIBRARY})
 TARGET_LINK_LIBRARIES(boost_interrupt ${Boost_CHRONO_LIBRARY})
+
+if(MSVC)
+    TARGET_COMPILE_OPTIONS(boost_interrupt PRIVATE "/wd4244")
+endif()
