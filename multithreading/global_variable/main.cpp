@@ -24,33 +24,32 @@
 #include <vector>
 #include <iostream>
 
-const int MAX_COUNTER_VALUE = 100000;
+constexpr int MAX_COUNTER_VALUE = 100000;
 
-int counter = 0;
+int g_counter = 0;
 
 void thread_fun()
 {
-    while(true) {
-        ++counter;
+    while(true)
+    {
+        ++g_counter;
     }
 }
 
 int main()
 {
-    int thread_col = 30;
+    auto thread_col = std::thread::hardware_concurrency();
 
     std::vector<std::thread> group;
-    for(int i = 0; i < thread_col; ++i) {
-        group.push_back(std::thread(thread_fun));
+    for(auto i = 0u; i < thread_col; ++i)
+    {
+        group.emplace_back(thread_fun);
+	group.back().detach();
     }
 
-    while(true) {
-        if(counter > MAX_COUNTER_VALUE) {
-            break;
-        }
-    }
+    while(g_counter <= MAX_COUNTER_VALUE);
 
-    std::cout << "COUNTER VALUE: " << counter << std::endl;
+    std::cout << "COUNTER VALUE: " << g_counter << std::endl;
 
     return 0;
 }
