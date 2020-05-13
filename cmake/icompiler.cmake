@@ -31,9 +31,6 @@ MACRO(SETUP_COMPILER_FLAGS)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
     if(PROJECT_OS_LINUX)
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-
         if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
             set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c17")
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")

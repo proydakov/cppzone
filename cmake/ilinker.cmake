@@ -25,13 +25,18 @@ macro(SETUP_LINKER)
         find_program(GOLD_PATH NAMES "gold")
     endif()
 
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         # by default gcc and clang use stdc++
         set(CXX_RUNTIME_LIBRARY "libstdc++")
         # try to use gold instead of ld
-        if (GOLD_PATH)
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND GOLD_PATH)
             set(LINKER_NAME "gold")
             set(CMAKE_LINKER ${GOLD_PATH})
+        endif()
+
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND LLD_PATH)
+            set(LINKER_NAME "lld")
+            set(CMAKE_LINKER ${LLD_PATH})
         endif()
 
         if(STRIP_LINK)
@@ -45,6 +50,7 @@ macro(SETUP_LINKER)
         endif()
     elseif(MSVC)
         set(CXX_RUNTIME_LIBRARY "msvc")
+
         if(STATIC_LINK)
             COMPILER_MSVC_SET_STATIC_RUNTIME()
         endif()
@@ -52,15 +58,12 @@ macro(SETUP_LINKER)
         set(CXX_RUNTIME_LIBRARY "unknown")
     endif()
 
-    # try to use lld instead of gold and ld
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND LLD_PATH)
-        set(LINKER_NAME "lld")
-        set(CMAKE_LINKER ${LLD_PATH})
-
+    # try to use libc++ runtime for clang
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         execute_process(COMMAND readlink -fn ${CMAKE_C_COMPILER} OUTPUT_VARIABLE TEST_CLANG_ROOT)
         string(REPLACE "/bin/clang" "" TEST_CLANG_ROOT ${TEST_CLANG_ROOT})
 
-        if (EXISTS "${TEST_CLANG_ROOT}/lib/libc++.a" AND EXISTS "${TEST_CLANG_ROOT}/lib/libc++abi.a" AND EXISTS "${TEST_CLANG_ROOT}/include/c++/v1/")
+        if(EXISTS "${TEST_CLANG_ROOT}/include/c++/v1/" AND EXISTS "${TEST_CLANG_ROOT}/lib/libc++.a" AND EXISTS "${TEST_CLANG_ROOT}/lib/libc++abi.a")
             message(STATUS "Detected clang root: ${TEST_CLANG_ROOT}")
             set(CLANG_ROOT ${TEST_CLANG_ROOT})
         endif()
@@ -86,6 +89,10 @@ macro(SETUP_LINKER)
     # https://stackoverflow.com/questions/35116327/when-g-static-link-pthread-cause-segmentation-fault-why
     if(STATIC_LINK AND CXX_RUNTIME_LIBRARY STREQUAL "libstdc++")
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--whole-archive -lpthread -Wl,--no-whole-archive")
+    endif()
+
+    if(STATIC_LINK AND CXX_RUNTIME_LIBRARY STREQUAL "libc++")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lpthread")
     endif()
 
 endmacro(SETUP_LINKER)
