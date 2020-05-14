@@ -95,4 +95,8 @@ macro(SETUP_LINKER)
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lpthread")
     endif()
 
+    if(UNIX AND NOT STATIC_LINK)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lpthread")
+    endif()
+
 endmacro(SETUP_LINKER)
