@@ -40,13 +40,23 @@ void set_thread_name(std::string const&)
 
 #endif
 
+#if defined(__GNUC__)
+
+#define NOINLINE  __attribute__((noinline))
+
+#else
+
+#define NOINLINE __declspec(noinline)
+
+#endif
+
 struct alignas(QUEUE_CPU_CACHE_LINE_SIZE) wait_t
 {
     long waitCounter = 0;
 };
 
 template<typename reader_t>
-void __attribute__((noinline)) reader_method_impl(std::size_t total_events, reader_t& reader, wait_t& stat)
+void NOINLINE reader_method_impl(std::size_t total_events, reader_t& reader, wait_t& stat)
 {
     for (std::size_t j = 0; j < total_events;)
     {
@@ -76,7 +86,7 @@ void reader_method(std::size_t total_events, reader_t reader, wait_t& stat, std:
 }
 
 template<typename queue_t, typename controller_t>
-void __attribute__((noinline)) writer_method_impl(std::size_t total_events, queue_t& queue, controller_t& controller, wait_t& stat)
+void NOINLINE writer_method_impl(std::size_t total_events, queue_t& queue, controller_t& controller, wait_t& stat)
 {
     for (std::size_t j = 0; j < total_events;)
     {
