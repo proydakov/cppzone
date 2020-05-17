@@ -70,8 +70,13 @@ macro(SETUP_LINKER)
 
         # try to use libc++
         if (CLANG_ROOT)
+            # workaround. cmake passes -nostdinc++ in linker phase. -Wno-unused-command-line-argument fixed this problem.
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-command-line-argument -nostdinc++ -I${CLANG_ROOT}/include/c++/v1")
-            set(CLANG_EXTRA_LINKS "-stdlib=libc++ -lc++abi -L${CLANG_ROOT}/lib -Wl,-rpath,${CLANG_ROOT}/lib")
+            if(STATIC_LINK)
+                set(CLANG_EXTRA_LINKS "-stdlib=libc++ -lc++abi -L${CLANG_ROOT}/lib")
+            else()
+                set(CLANG_EXTRA_LINKS "-stdlib=libc++ -lc++abi -L${CLANG_ROOT}/lib -Wl,-rpath,${CLANG_ROOT}/lib")
+            endif()
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CLANG_EXTRA_LINKS}")
             set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${CLANG_EXTRA_LINKS}")
             set(CXX_RUNTIME_LIBRARY "libc++")
