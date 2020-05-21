@@ -91,9 +91,14 @@ macro(SETUP_LINKER)
         message(STATUS "Use default linker")
     endif()
 
+    if(CXX_RUNTIME_LIBRARY STREQUAL "libstdc++")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+    endif()
+
+    # http://www.javaear.com/question/7090623.html
     # https://stackoverflow.com/questions/35116327/when-g-static-link-pthread-cause-segmentation-fault-why
     if(STATIC_LINK AND CXX_RUNTIME_LIBRARY STREQUAL "libstdc++")
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--whole-archive -lpthread -Wl,--no-whole-archive")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-u,pthread_cancel,-u,pthread_cond_broadcast,-u,pthread_cond_destroy,-u,pthread_cond_signal,-u,pthread_cond_wait,-u,pthread_create,-u,pthread_detach,-u,pthread_cond_signal,-u,pthread_equal,-u,pthread_join,-u,pthread_mutex_lock,-u,pthread_mutex_unlock,-u,pthread_once,-u,pthread_setcancelstate -lpthread") #-Wl,--whole-archive -lpthread -Wl,--no-whole-archive")
     endif()
 
     if(STATIC_LINK AND CXX_RUNTIME_LIBRARY STREQUAL "libc++")
@@ -102,6 +107,11 @@ macro(SETUP_LINKER)
 
     if(UNIX AND NOT STATIC_LINK)
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lpthread")
+    endif()
+
+    if(UNIX)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections -ffunction-sections -fdata-sections")
+        set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections -ffunction-sections -fdata-sections")
     endif()
 
 endmacro(SETUP_LINKER)

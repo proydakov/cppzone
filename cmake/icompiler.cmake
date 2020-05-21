@@ -33,7 +33,7 @@ MACRO(SETUP_COMPILER_FLAGS)
 
         if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
             set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c17")
-            set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
         endif()
     endif()
 
