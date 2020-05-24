@@ -20,16 +20,11 @@
  *  THE SOFTWARE.
  */
 
-#include <iostream>
-
-int main( int argc, char *argv[] )
+int main(int, char*[] )
 {
-    (void)argc;
-    (void)argv;
-
-    while(1) {
-        int* leek = new int[1024];
-        (void) leek;
+    while(1)
+    {
+        [[maybe_unused]] int* leek = new int[4096];
     }
 
     return 0;

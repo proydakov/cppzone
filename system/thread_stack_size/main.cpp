@@ -10,7 +10,7 @@ int main(int, char*[])
 
     for(size_t i = 0; i < size; i++) {
         std::thread thread([](){
-            std::this_thread::sleep_for (std::chrono::seconds(1 * 60 * 60));
+            std::this_thread::sleep_for(std::chrono::seconds(1 * 60 * 60));
         });
         thread.detach();
         threads.push_back(std::move(thread));

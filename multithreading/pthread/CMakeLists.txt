@@ -8,4 +8,4 @@ SET(SOURCE_FILES
     main.cpp
     )
 
-ADD_EXECUTABLE(multithreading_pthread ${SOURCE_FILES})
+I_ADD_EXECUTABLE(multithreading_pthread ${SOURCE_FILES})
