@@ -11,16 +11,16 @@ My ASM/C/C++, Lua, OpenGL, Direct3D experiments for desktop computer. Windows, M
     mkdir build-gcc
     cd build-gcc
     CC=gcc CXX=g++ cmake -DSTATIC_LINK=1 -DBOOST_ROOT=/home/proydakov/sdks/boost_1_65_0_libstdc++/ ..
-    make -j #ninja
+    ninja # make -j
 
 # build clang
 
     mkdir build-clang
     cd build-clang
     CC=clang CXX=clang++ cmake -DSTATIC_LINK=1 -DBOOST_ROOT=/home/proydakov/sdks/boost_1_65_0_libc++/ ..
-    ninja #make
+    ninja # make -j
 
 # build boost with libc++
 
     ./bootstrap.sh --with-toolset=clang
-    ./b2 toolset=clang link=static cxxflags="-stdlib=libc++" linkflags="-stdlib=libc++" --prefix=/home/proydakov/sdks/boost_version_libc++ install
+    ./b2 toolset=clang link=static cxxflags="-stdlib=libc++" linkflags="-stdlib=libc++" --prefix=~/sdks/boost_version_libc++ install
