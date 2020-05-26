@@ -18,27 +18,53 @@ addons:
 
 matrix:
   include:
-    - env: BUILD_TYPE=Release
+    - env:
+        - BUILD_TYPE=Release
+        - STATIC_LINK=0
+        - CC=clang-9
+        - CXX=clang++-9
       os: linux
       compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-9']
           packages: ['clang-9', 'clang++-9', 'lld-9', 'libc++-9-dev', 'libc++abi-9-dev', 'libboost-all-dev', 'libxmu-dev', 'libxi-dev', 'libsdl2-dev', 'liblua5.1-dev']
-      env:
+
+    - env:
+        - BUILD_TYPE=Release
+        - STATIC_LINK=1
         - CC=clang-9
         - CXX=clang++-9
+      os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-9']
+          packages: ['clang-9', 'clang++-9', 'lld-9', 'libc++-9-dev', 'libc++abi-9-dev', 'liblua5.1-dev']
 
-    - env: BUILD_TYPE=Release
+    - env:
+        - BUILD_TYPE=Release
+        - STATIC_LINK=0
+        - CC=gcc-9
+        - CXX=g++-9
       os: linux
       compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-9']
           packages: ['gcc-9', 'g++-9', 'libboost-all-dev', 'libxmu-dev', 'libxi-dev', 'libsdl2-dev', 'liblua5.1-dev']
-      env:
+
+    - env:
+        - BUILD_TYPE=Release
+        - STATIC_LINK=1
         - CC=gcc-9
         - CXX=g++-9
+      os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-9']
+          packages: ['gcc-9', 'g++-9', 'libboost-all-dev', 'liblua5.1-dev']
 
     - env: BUILD_TYPE=Release
       os: osx
@@ -46,8 +72,9 @@ matrix:
       compiler: clang
 
 script:
+  - $CC --version
   - $CXX --version
   - mkdir build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ..
+  - cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DSTATIC_LINK=${STATIC_LINK} ..
   - cmake --build .
