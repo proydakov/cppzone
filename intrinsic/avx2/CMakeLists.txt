@@ -9,4 +9,6 @@ SET(SOURCE_FILES
     )
 
 I_ADD_EXECUTABLE(intrinsic_avx2 ${SOURCE_FILES})
-target_compile_options(intrinsic_avx2 PRIVATE -mavx2)
+if(UNIX)
+    target_compile_options(intrinsic_avx2 PRIVATE -mavx2)
+endif()

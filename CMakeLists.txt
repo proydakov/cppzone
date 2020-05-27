@@ -14,6 +14,14 @@ INCLUDE(cmake/icmake.cmake)
 ADD_SUBDIRECTORY(asm)
 ADD_SUBDIRECTORY(algorithms)
 
+ADD_SUBDIRECTORY(stl)
+ADD_SUBDIRECTORY(syntax)
+ADD_SUBDIRECTORY(system)
+ADD_SUBDIRECTORY(task)
+ADD_SUBDIRECTORY(template)
+ADD_SUBDIRECTORY(intrinsic)
+ADD_SUBDIRECTORY(multithreading)
+
 IF(MSVC)
     SET(BOOST_ROOT ${PROJECT_SOURCE_DIR}/thirdparty/windows/boost_1_73_0_msvc_2019/)
     SET(Boost_USE_STATIC_LIBS    ON)
@@ -28,37 +36,8 @@ IF(Boost_FOUND)
     ADD_SUBDIRECTORY(boost)
 ENDIF()
 
-ADD_SUBDIRECTORY(multithreading)
-ADD_SUBDIRECTORY(stl)
-ADD_SUBDIRECTORY(syntax)
-ADD_SUBDIRECTORY(system)
-ADD_SUBDIRECTORY(task)
-ADD_SUBDIRECTORY(template)
-
-IF(PROJECT_OS_WIN)
-    ADD_SUBDIRECTORY(nt)
-
-#    dirctx9 compiler from windows 10 doesn't compile examples from windows 7
-#    FIND_PACKAGE(DIRECTX9)
-#    IF(DIRECTX9_FOUND AND MSVC)
-#        ADD_SUBDIRECTORY(D3DX9)
-#    ENDIF()
-ENDIF()
-
-IF(UNIX)
-    IF(STATIC_LINK)
-        FIND_LIBRARY(DL_LIBRARY NAMES libdl.a)
-    ELSE()
-        FIND_LIBRARY(DL_LIBRARY NAMES dl)
-    ENDIF()
-ENDIF()
-
 IF(PROJECT_OS_LINUX)
     ADD_SUBDIRECTORY(linux)
-ENDIF()
-
-IF(UNIX)
-    ADD_SUBDIRECTORY(intrinsic)
 ENDIF()
 
 SET(OpenGL_GL_PREFERENCE "GLVND")
@@ -71,6 +50,16 @@ ENDIF()
 FIND_PACKAGE(Lua51)
 IF(LUA51_FOUND)
     ADD_SUBDIRECTORY(lua)
+ENDIF()
+
+IF(PROJECT_OS_WIN)
+    ADD_SUBDIRECTORY(nt)
+
+#    dirctx9 compiler from windows 10 doesn't compile examples from windows 7
+#    FIND_PACKAGE(DIRECTX9)
+#    IF(DIRECTX9_FOUND AND MSVC)
+#        ADD_SUBDIRECTORY(D3DX9)
+#    ENDIF()
 ENDIF()
 
 SET(FILES

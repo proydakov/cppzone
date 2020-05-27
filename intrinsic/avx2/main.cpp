@@ -55,5 +55,5 @@ int main()
     _mm256_store_si256(reinterpret_cast<raw_ptr>(&result), avx);
     trace("result", result);
 
-    return 0;    
+    return 0;
 }
