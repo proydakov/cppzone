@@ -26,11 +26,13 @@ int main()
     std::cout << "size: " << str.size() << std::endl;
     std::cout << "capacity: " << str.capacity() << std::endl;
 
-    std::cout << "push" << std::endl;
+    std::cout << "begin [push]" << std::endl;
 
     for(char i = 0; i < 31; i++) {
         str.push_back(static_cast<char>('0' + i));
     }
+
+    std::cout << "end [push]" << std::endl;
 
     std::cout << "size: " << str.size() << std::endl;
     std::cout << "capacity: " << str.capacity() << std::endl;
