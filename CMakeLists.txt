@@ -38,6 +38,7 @@ ADD_SUBDIRECTORY(template)
 IF(PROJECT_OS_WIN)
     ADD_SUBDIRECTORY(nt)
 
+#    dirctx9 compiler from windows 10 doesn't compile examples from windows 7
 #    FIND_PACKAGE(DIRECTX9)
 #    IF(DIRECTX9_FOUND AND MSVC)
 #        ADD_SUBDIRECTORY(D3DX9)
@@ -56,6 +57,10 @@ IF(PROJECT_OS_LINUX)
     ADD_SUBDIRECTORY(linux)
 ENDIF()
 
+IF(UNIX)
+    ADD_SUBDIRECTORY(intrinsic)
+ENDIF()
+
 SET(OpenGL_GL_PREFERENCE "GLVND")
 FIND_PACKAGE(SDL2)
 FIND_PACKAGE(OpenGL)
@@ -71,7 +76,7 @@ ENDIF()
 SET(FILES
     ${PROJECT_SOURCE_DIR}/README.md
     ${PROJECT_SOURCE_DIR}/COPYING
-    )
+)
 
 #==============================================================================
 #---------------------------------- info --------------------------------------

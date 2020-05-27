@@ -8,4 +8,5 @@ SET(SOURCE_FILES
     main.cpp
     )
 
-I_ADD_EXECUTABLE(linux_rdtsc ${SOURCE_FILES})
+I_ADD_EXECUTABLE(intrinsic_avx2 ${SOURCE_FILES})
+target_compile_options(intrinsic_avx2 PRIVATE -mavx2)
