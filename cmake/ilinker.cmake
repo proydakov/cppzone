@@ -61,7 +61,8 @@ macro(SETUP_LINKER)
     # try to use libc++ runtime for clang
     if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         execute_process(COMMAND readlink -fn ${CMAKE_C_COMPILER} OUTPUT_VARIABLE TEST_CLANG_ROOT)
-        string(REPLACE "/bin/clang" "" TEST_CLANG_ROOT ${TEST_CLANG_ROOT})
+        get_filename_component(TEST_CLANG_ROOT ${TEST_CLANG_ROOT} DIRECTORY)
+        get_filename_component(TEST_CLANG_ROOT ${TEST_CLANG_ROOT} DIRECTORY)
 
         if(EXISTS "${TEST_CLANG_ROOT}/include/c++/v1/" AND EXISTS "${TEST_CLANG_ROOT}/lib/libc++.a" AND EXISTS "${TEST_CLANG_ROOT}/lib/libc++abi.a")
             message(STATUS "Detected clang root: ${TEST_CLANG_ROOT}")
