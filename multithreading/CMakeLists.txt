@@ -18,7 +18,6 @@ IF(CMAKE_SYSTEM_NAME MATCHES "^Linux")
 ENDIF()
 
 ADD_SUBDIRECTORY(cpu_load)
-ADD_SUBDIRECTORY(one2many_queue)
 ADD_SUBDIRECTORY(storage)
 ADD_SUBDIRECTORY(global_variable)
 ADD_SUBDIRECTORY(global_shared)
