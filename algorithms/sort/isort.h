@@ -128,7 +128,7 @@ void insertion_sort(std::vector<type>& data)
     for(size_t i = 1; i < size; ++i) {
         type element = data[i];
         size_t j = i - 1;
-        for(;j >= 0 && data[j] > element; --j) {
+        for(;j != std::numeric_limits<size_t>::max() && data[j] > element; --j) {
             data[j + 1] = data[j];
         }
         data[j + 1] = element;
