@@ -48,6 +48,22 @@ macro(SETUP_LINKER)
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
             set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -s")
         endif()
+    elseif(APPLE)
+        set(CXX_RUNTIME_LIBRARY "libc++")
+
+        if(LLD_PATH)
+            set(LINKER_NAME "lld")
+            set(CMAKE_LINKER ${LLD_PATH})
+        endif()
+
+        if(STATIC_LINK)
+            message(FATAL_ERROR "Apple doesn't support static link")
+        endif()
+
+        if(STRIP_LINK)
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
+            set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -s")
+        endif()
     elseif(MSVC)
         set(CXX_RUNTIME_LIBRARY "msvc")
 
