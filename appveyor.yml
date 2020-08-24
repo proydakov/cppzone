@@ -24,7 +24,6 @@ clone_folder: C:\projects\cppzone
 
 # scripts that run after cloning repository
 install:
-  - cmd: sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
   - cmd: git submodule update --init --recursive
 
 # scripts to run before build

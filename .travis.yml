@@ -1,5 +1,5 @@
 git:
-  submodules: false
+  submodules: true
 
 # permissions
 sudo: false
@@ -84,8 +84,6 @@ matrix:
 script:
   - $CC --version
   - $CXX --version
-  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
-  - git submodule update --init --recursive
   - mkdir build
   - cd build
   - cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DSTATIC_LINK=${STATIC_LINK} ..
