@@ -4,7 +4,7 @@
 [![Appveyor CI status](https://ci.appveyor.com/api/projects/status/github/proydakov/cpplabs?svg=true)](https://ci.appveyor.com/project/proydakov/cpplabs)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/proydakov/cpplabs/blob/master/COPYING)
 
-My C/C++/intrinsic, OpenGL experiments for desktop computer. Platforms: Windows, MacOSX, Linux.
+My C/C++/Intrinsic, OpenGL experiments for desktop computer. Platforms: Windows, MacOSX, Linux.
 
 # build with gcc
 
