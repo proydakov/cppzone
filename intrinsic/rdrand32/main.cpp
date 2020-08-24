@@ -9,8 +9,8 @@
 
 int main()
 {
-    std::uint64_t val{0};
-    auto const res = _rdrand64_step((long long unsigned int*)&val);
+    std::uint32_t val{0};
+    auto const res = _rdrand32_step(&val);
     if (res)
     {
         std::cout << "Value: " << val << std::endl;
