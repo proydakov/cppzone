@@ -9,3 +9,6 @@ SET(SOURCE_FILES
     )
 
 I_ADD_EXECUTABLE(intrinsic_rdrand64 ${SOURCE_FILES})
+if(UNIX)
+    target_compile_options(intrinsic_rdrand64 PRIVATE -mrdrnd)
+endif()
