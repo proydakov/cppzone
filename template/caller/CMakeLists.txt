@@ -8,4 +8,4 @@ SET(SOURCE_FILES
     main.cpp
     )
 
-I_ADD_EXECUTABLE(syntax_caller ${SOURCE_FILES})
+I_ADD_EXECUTABLE(template_caller ${SOURCE_FILES})
