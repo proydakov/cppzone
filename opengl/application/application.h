@@ -9,8 +9,13 @@
 #include <windows.h>
 #endif // _MSC_VER
 
-#include <GL/gl.h>
-#include <GL/glu.h>
+#ifdef __APPLE__
+#   include <OpenGL/gl.h>
+#   include <OpenGL/glu.h>
+#else
+#   include <GL/gl.h>
+#   include <GL/glu.h>
+#endif
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>

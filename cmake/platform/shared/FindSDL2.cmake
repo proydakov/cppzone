@@ -78,6 +78,7 @@ FIND_PATH(SDL2_INCLUDE_DIR
   PATH_SUFFIXES
     include include/SDL2
   PATHS
+  ${PROJECT_SOURCE_DIR}/thirdparty/macosx
   ${PROJECT_SOURCE_DIR}/thirdparty/windows/SDL2
   ~/Library/Frameworks
   /Library/Frameworks
@@ -94,6 +95,7 @@ FIND_LIBRARY(SDL2_LIBRARY_TEMP
   HINTS
   PATH_SUFFIXES lib64 lib
   PATHS
+  ${PROJECT_SOURCE_DIR}/thirdparty/macosx
   ${PROJECT_SOURCE_DIR}/thirdparty/windows/SDL2/lib/${GLOBAL_SEARCH_SUFFIX}
   /sw
   /opt/local

@@ -20,6 +20,7 @@
  *  THE SOFTWARE.
  */
 
+#include <cmath>
 #include <string>
 #include <iostream>
 #include <algorithm>
@@ -159,7 +160,7 @@ void tcapplication::drawAllTriangles()
     setPenColor(0, 0, 1);
 
     auto size = GLdouble(std::min(g_width, g_height) / OBJECT_COUNT);
-    auto height = GLdouble(sqrt(size * size - size / 2 * size / 2));
+    auto height = GLdouble(std::sqrt(size * size - size / 2 * size / 2));
 
     auto widthMax = GLdouble(g_width) + size;
     auto heightMax = GLdouble(g_height) + height;
@@ -217,7 +218,7 @@ void tcapplication::drawAllHexagons()
 
     GLdouble size = GLdouble(std::min(g_width, g_height) / OBJECT_COUNT);
     GLdouble stepSize = size * 1.5;
-    GLdouble height = sqrt(size * size - size / 2 * size / 2);
+    GLdouble height = std::sqrt(size * size - size / 2 * size / 2);
 
     GLdouble widthMax = GLdouble(g_width) + size;
     GLdouble heightMax = GLdouble(g_height) + height;
