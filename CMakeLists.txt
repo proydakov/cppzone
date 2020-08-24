@@ -49,12 +49,6 @@ ENDIF()
 
 IF(PROJECT_OS_WIN)
     ADD_SUBDIRECTORY(nt)
-
-#    dirctx9 compiler from windows 10 doesn't compile examples from windows 7
-#    FIND_PACKAGE(DIRECTX9)
-#    IF(DIRECTX9_FOUND AND MSVC)
-#        ADD_SUBDIRECTORY(D3DX9)
-#    ENDIF()
 ENDIF()
 
 SET(FILES
