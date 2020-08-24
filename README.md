@@ -4,16 +4,16 @@
 [![Appveyor CI status](https://ci.appveyor.com/api/projects/status/github/proydakov/cpplabs?svg=true)](https://ci.appveyor.com/project/proydakov/cpplabs)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/proydakov/cpplabs/blob/master/COPYING)
 
-My C++/intrinsic, OpenGL, Direct3D experiments for desktop computer. Platforms: Windows, MacOSX, Linux.
+My C/C++/intrinsic, OpenGL, Direct3D experiments for desktop computer. Platforms: Windows, MacOSX, Linux.
 
-# build gcc
+# build with gcc
 
     mkdir build-gcc
     cd build-gcc
     CC=gcc CXX=g++ cmake -DSTATIC_LINK=1 -DBOOST_ROOT=/home/proydakov/sdks/boost_1_65_0_libstdc++/ ..
     ninja # make -j
 
-# build clang
+# build with clang
 
     mkdir build-clang
     cd build-clang
