@@ -2,14 +2,10 @@
 # Copyright (c) 2020 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-MESSAGE(STATUS "BUILD  INTRINSIC\n")
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-SET(GLOBAL_PROJECT_FOLDER "intrinsic")
+SET(SOURCE_FILES
+    main.cpp
+    )
 
-ADD_SUBDIRECTORY(avx2)
-ADD_SUBDIRECTORY(avx512)
-ADD_SUBDIRECTORY(pause)
-ADD_SUBDIRECTORY(rdtsc)
-ADD_SUBDIRECTORY(rdtscp)
-
-MESSAGE("")
+I_ADD_EXECUTABLE(intrinsic_pause ${SOURCE_FILES})
