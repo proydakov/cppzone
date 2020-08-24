@@ -11,7 +11,7 @@ int main()
     avx512_int32vec_t input1;
     avx512_int32vec_t input2;
 
-    std::cout << "Min 2 vector(int32_t)[" << avx512_int32vec_t::size() << "]\n";
+    std::cout << "Max 2 vector(int32_t)[" << avx512_int32vec_t::size() << "]\n";
 
     read("input1", input1);
     read("input2", input2);
