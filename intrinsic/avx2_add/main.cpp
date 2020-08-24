@@ -45,15 +45,17 @@ int main()
     avx2_int32vec_t input1;
     avx2_int32vec_t input2;
 
-    read("input1", input1);
-    read("input2", input2);
+    std::cout << "Sum 2 vector[" << avx2_int32vec_t::size() << "]\n";
+
+    read("vector1", input1);
+    read("vector2", input2);
 
     auto avx1 = _mm256_load_si256(reinterpret_cast<craw_ptr>(&input1));
     auto avx2 = _mm256_load_si256(reinterpret_cast<craw_ptr>(&input2));
-    auto avx  = _mm256_add_epi32(avx1, avx2); 
+    auto avxr = _mm256_add_epi32(avx1, avx2);
 
     avx2_int32vec_t result;
-    _mm256_store_si256(reinterpret_cast<raw_ptr>(&result), avx);
+    _mm256_store_si256(reinterpret_cast<raw_ptr>(&result), avxr);
     trace("result", result);
 
     return 0;
