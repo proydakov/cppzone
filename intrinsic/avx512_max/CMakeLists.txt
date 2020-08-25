@@ -10,5 +10,5 @@ SET(SOURCE_FILES
 
 I_ADD_EXECUTABLE(intrinsic_avx512_max ${SOURCE_FILES})
 if(UNIX)
-    target_compile_options(intrinsic_avx512_max PRIVATE -march=skylake-avx512)
+    target_compile_options(intrinsic_avx512_max PRIVATE -mavx512f)
 endif()

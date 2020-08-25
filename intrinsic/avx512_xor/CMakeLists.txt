@@ -10,5 +10,5 @@ SET(SOURCE_FILES
 
 I_ADD_EXECUTABLE(intrinsic_avx512_xor ${SOURCE_FILES})
 if(UNIX)
-    target_compile_options(intrinsic_avx512_xor PRIVATE -march=skylake-avx512)
+    target_compile_options(intrinsic_avx512_xor PRIVATE -mavx512f)
 endif()

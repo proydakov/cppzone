@@ -10,5 +10,5 @@ SET(SOURCE_FILES
 
 I_ADD_EXECUTABLE(intrinsic_avx512_mullo ${SOURCE_FILES})
 if(UNIX)
-    target_compile_options(intrinsic_avx512_mullo PRIVATE -march=skylake-avx512)
+    target_compile_options(intrinsic_avx512_mullo PRIVATE -mavx512f)
 endif()
