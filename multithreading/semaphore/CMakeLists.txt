@@ -9,3 +9,6 @@ SET(SOURCE_FILES
     )
 
 I_ADD_EXECUTABLE(multithreading_semaphore ${SOURCE_FILES})
+IF(APPLE)
+    TARGET_COMPILE_OPTIONS(multithreading_semaphore PUBLIC -Wno-deprecated-declarations)
+ENDIF()

@@ -10,11 +10,11 @@ SET(GLOBAL_PROJECT_FOLDER "multithreading")
 
 IF(UNIX)
     ADD_SUBDIRECTORY(pthread)
+    ADD_SUBDIRECTORY(semaphore)
 ENDIF()
 
 IF(CMAKE_SYSTEM_NAME MATCHES "^Linux")
     ADD_SUBDIRECTORY(mutex_impl)
-    ADD_SUBDIRECTORY(semaphore)
 ENDIF()
 
 ADD_SUBDIRECTORY(cpu_load)
