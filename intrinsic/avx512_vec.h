@@ -1,25 +1,39 @@
 #include <immintrin.h>
 #include "avxvec_io.h"
 
-template<typename Type>
+template<typename T>
 struct alignas(64) avx512_t
 {
     static constexpr size_t size() noexcept
     {
-        return 64 / sizeof(Type);
+        return 64 / sizeof(T);
     }
 
-    __m512i* operator&()
+    auto operator&()
     {
-        return reinterpret_cast<__m512i*>(&val);
+        if constexpr (std::is_same_v<T, short> || std::is_same_v<T, int> || std::is_same_v<T, long> || std::is_same_v<T, unsigned short> || std::is_same_v<T, unsigned int> || std::is_same_v<T, unsigned long>)
+            return reinterpret_cast<__m512i*>(&val);
+        else if constexpr (std::is_same_v<T, float>)
+            return reinterpret_cast<__m512*>(&val);
+        else if constexpr (std::is_same_v<T, double>)
+            return reinterpret_cast<__m512d*>(&val);
+        else
+            static_assert(always_false_v<T>, "non-exhaustive visitor!");
     }
 
-    __m512i const* operator&() const
+    auto operator&() const
     {
-        return reinterpret_cast<__m512i const*>(&val);
+        if constexpr (std::is_same_v<T, short> || std::is_same_v<T, int> || std::is_same_v<T, long> || std::is_same_v<T, unsigned short> || std::is_same_v<T, unsigned int> || std::is_same_v<T, unsigned long>)
+            return reinterpret_cast<__m512i const*>(&val);
+        else if constexpr (std::is_same_v<T, float>)
+            return reinterpret_cast<__m512 const*>(&val);
+        else if constexpr (std::is_same_v<T, double>)
+            return reinterpret_cast<__m512d const*>(&val);
+        else
+            static_assert(always_false_v<T>, "non-exhaustive visitor!");
     }
 
-    Type val[size()];
+    T val[size()];
 
     static_assert(sizeof(val) == 64, "AVX512 require 64 byte alignment for data types.");
 };

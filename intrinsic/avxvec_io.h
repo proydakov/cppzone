@@ -20,3 +20,6 @@ void trace(char const * const name, AVXVEC const& vec)
     }
     std::cout << "\n";
 }
+
+template<class>
+inline constexpr bool always_false_v = false;
