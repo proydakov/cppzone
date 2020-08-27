@@ -4,7 +4,7 @@ int main()
 {
     avx2_int32vec_t input1;
 
-    std::cout << "Unsafe multiply 2 vector(int32_t)[" << avx2_int32vec_t::size() << "]\n";
+    std::cout << "Unsafe multiply vector(int32_t)[" << avx2_int32vec_t::size() << "] and scalar\n";
 
     read("input1", input1);
     std::int32_t scale;
