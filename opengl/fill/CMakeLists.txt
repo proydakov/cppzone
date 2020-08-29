@@ -9,4 +9,3 @@ SET(SOURCE_FILES
 
 I_ADD_EXECUTABLE(opengl_fill ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(opengl_fill application)
-TARGET_LINK_LIBRARIES(opengl_fill application)

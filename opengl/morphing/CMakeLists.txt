@@ -21,4 +21,3 @@ SET(SOURCE_FILES
 
 I_ADD_EXECUTABLE(opengl_morphing ${HEADER_FILES} ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(opengl_morphing application)
-TARGET_LINK_LIBRARIES(opengl_morphing application)
