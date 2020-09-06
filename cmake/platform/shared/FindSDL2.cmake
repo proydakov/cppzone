@@ -2,7 +2,7 @@
 # This module defines
 # SDL2_LIBRARY, the name of the library to link against
 # SDL2_FOUND, if false, do not try to link to SDL2
-# SDL2_INCLUDE_DIR, where to find SDL.h
+# SDL2_INCLUDE_DIRS, where to find SDL.h
 #
 # This module responds to the the flag:
 # SDL2_BUILDING_LIBRARY
@@ -74,33 +74,23 @@ FIND_PATH(SDL2_INCLUDE_DIR
   NAMES
     SDL2/SDL.h SDL.h
   HINTS
-    $ENV{SDL2DIR}
   PATH_SUFFIXES
     include include/SDL2
   PATHS
   ${PROJECT_SOURCE_DIR}/thirdparty/macosx
   ${PROJECT_SOURCE_DIR}/thirdparty/windows/SDL2
-  ~/Library/Frameworks
-  /Library/Frameworks
   /usr/local/include/SDL2
   /usr/include/SDL2
-  /sw # Fink
-  /opt/local # DarwinPorts
-  /opt/csw # Blastwave
-  /opt
 )
 
 FIND_LIBRARY(SDL2_LIBRARY_TEMP
   NAMES SDL2
   HINTS
-  PATH_SUFFIXES lib64 lib
+  PATH_SUFFIXES
+    lib lib64
   PATHS
   ${PROJECT_SOURCE_DIR}/thirdparty/macosx
   ${PROJECT_SOURCE_DIR}/thirdparty/windows/SDL2/lib/${GLOBAL_SEARCH_SUFFIX}
-  /sw
-  /opt/local
-  /opt/csw
-  /opt
 )
 
 IF(NOT SDL2_BUILDING_LIBRARY)
@@ -115,11 +105,8 @@ IF(NOT SDL2_BUILDING_LIBRARY)
       $ENV{SDL2DIR}
       PATH_SUFFIXES lib64 lib
       PATHS
+      ${PROJECT_SOURCE_DIR}/thirdparty/macosx
       ${PROJECT_SOURCE_DIR}/thirdparty/windows/SDL2/lib/${GLOBAL_SEARCH_SUFFIX}
-      /sw
-      /opt/local
-      /opt/csw
-      /opt
     )
   ENDIF(NOT ${SDL2_INCLUDE_DIR} MATCHES ".framework")
 ENDIF(NOT SDL2_BUILDING_LIBRARY)
@@ -131,13 +118,6 @@ ENDIF(NOT SDL2_BUILDING_LIBRARY)
 IF(NOT APPLE)
   FIND_PACKAGE(Threads)
 ENDIF(NOT APPLE)
-
-# MinGW needs an additional library, mwindows
-# It's total link flags should look like -lmingw32 -lSDL2main -lSDL2 -lmwindows
-# (Actually on second look, I think it only needs one of the m* libraries.)
-IF(MINGW)
-  SET(MINGW32_LIBRARY mingw32 CACHE STRING "mwindows for MinGW")
-ENDIF(MINGW)
 
 SET(SDL2_FOUND "NO")
 IF(SDL2_LIBRARY_TEMP)
@@ -165,11 +145,6 @@ IF(SDL2_LIBRARY_TEMP)
     SET(SDL2_LIBRARY_TEMP ${SDL2_LIBRARY_TEMP} ${CMAKE_THREAD_LIBS_INIT})
   ENDIF(NOT APPLE)
 
-  # For MinGW library
-  IF(MINGW)
-    SET(SDL2_LIBRARY_TEMP ${MINGW32_LIBRARY} ${SDL2_LIBRARY_TEMP})
-  ENDIF(MINGW)
-
   # Set the final string here so the GUI reflects the final state.
   SET(SDL2_LIBRARY ${SDL2_LIBRARY_TEMP} CACHE STRING "Where the SDL2 Library can be found")
   # Set the temp variable to INTERNAL so it is not seen in the CMake GUI
@@ -181,3 +156,5 @@ ENDIF(SDL2_LIBRARY_TEMP)
 INCLUDE(FindPackageHandleStandardArgs)
 
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2 REQUIRED_VARS SDL2_LIBRARY SDL2_INCLUDE_DIR)
+
+set(SDL2_INCLUDE_DIRS ${SDL2_INCLUDE_DIR} "${SDL2_INCLUDE_DIR}/SDL2")
