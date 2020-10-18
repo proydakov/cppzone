@@ -1,8 +1,8 @@
 # cppzone
 
-[![Travis CI Status](https://travis-ci.org/proydakov/cpplabs.svg?branch=master)](https://travis-ci.org/proydakov/cpplabs)
-[![Appveyor CI status](https://ci.appveyor.com/api/projects/status/github/proydakov/cpplabs?svg=true)](https://ci.appveyor.com/project/proydakov/cpplabs)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/proydakov/cpplabs/blob/master/COPYING)
+[![Travis CI Status](https://travis-ci.org/proydakov/cppzone.svg?branch=master)](https://travis-ci.org/proydakov/cppzone)
+[![Appveyor CI status](https://ci.appveyor.com/api/projects/status/github/proydakov/cppzone?svg=true)](https://ci.appveyor.com/project/proydakov/cppzone)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/proydakov/cppzone/blob/master/COPYING)
 
 My C/C++/Intrinsic, OpenGL experiments for desktop computer. Platforms: Windows, MacOSX, Linux.
 
