@@ -126,8 +126,11 @@ int application::run()
         auto now = std::chrono::high_resolution_clock::now();
         auto const delta = std::chrono::duration_cast<std::chrono::microseconds>(now - m_last);
 
-        update(delta);
-        draw();
+        if (delta < std::chrono::milliseconds(100))
+        {
+            update(delta);
+            draw();
+        }
 
         m_last = now;
         SDL_GL_SwapWindow(m_window);
@@ -137,7 +140,6 @@ int application::run()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
 
 keyboard_press_guard::keyboard_press_guard(SDL_Keycode code, std::function<void()>&& lambda)
     : m_code(code)
