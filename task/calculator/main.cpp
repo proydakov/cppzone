@@ -398,7 +398,7 @@ private:
     void to_rpn_tokens()
     {
         token::type last_type = token::type::none;
-        for (auto const t : m_raw_tokens)
+        for (auto const& t : m_raw_tokens)
         {
             switch (t.get_type())
             {
