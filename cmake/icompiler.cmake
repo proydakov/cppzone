@@ -16,7 +16,6 @@ endmacro(COMPILER_SET_MAX_WARNING_LEVEL)
 ###############################################################################
 
 MACRO(SETUP_COMPILER_FLAGS)
-
     set(CMAKE_C_STANDARD 11)
     set(CMAKE_CXX_STANDARD 17)
     set(CMAKE_CXX_EXTENSIONS 0)
@@ -50,7 +49,6 @@ MACRO(SETUP_COMPILER_FLAGS)
     endif()
 
     COMPILER_SET_MAX_WARNING_LEVEL()
-
 ENDMACRO(SETUP_COMPILER_FLAGS)
 
 ###############################################################################
