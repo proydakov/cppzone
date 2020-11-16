@@ -2,7 +2,6 @@
 # Copyright (c) 2012 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${TEXTURE_LOADER_PIRECTORY})
 
 CONFIGURE_FILE(config.opengl.texture.cube.h.cmake ${CMAKE_CURRENT_SOURCE_DIR}/config_opengl_texture_cube.h)

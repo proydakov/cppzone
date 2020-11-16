@@ -27,7 +27,7 @@
 #include <texture/texture_loader.h>
 #include <application/application.h>
 
-#include <config_opengl_texture_cube.h>
+#include "config_opengl_texture_cube.h"
 
 #define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
 #define GL_TEXTURE_MAX_ANISOTROPY_EXT     0x84FE

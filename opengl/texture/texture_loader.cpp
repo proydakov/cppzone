@@ -20,7 +20,7 @@
  *  THE SOFTWARE.
  */
 
-#include "texture_loader.h"
+#include "texture/texture_loader.h"
 
 #include <SDL2/SDL_surface.h>
 

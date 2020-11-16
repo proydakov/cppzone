@@ -1,7 +1,7 @@
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+#==============================================================================
+# Copyright (c) 2016 Evgeny Proydakov <lord.tiran@gmail.com>
+#==============================================================================
 
-SET(SOURCE_FILES
-    main.cpp
-)
+SET(SOURCE_FILES main.cpp)
 
 I_ADD_EXECUTABLE(syntax_constructor ${SOURCE_FILES})
