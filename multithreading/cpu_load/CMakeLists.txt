@@ -2,8 +2,6 @@
 # Copyright (c) 2018 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
-SET(SOURCE_FILES
-    main.cpp
-    )
+SET(SOURCE_FILES main.cpp)
 
 I_ADD_EXECUTABLE(system_cpu_load ${SOURCE_FILES})

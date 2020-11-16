@@ -4,6 +4,4 @@
 
 I_ADD_EXECUTABLE(linux_udp_benchmark_client client.c)
 
-#==============================================================================
-
 I_ADD_EXECUTABLE(linux_udp_benchmark_server server.c)
