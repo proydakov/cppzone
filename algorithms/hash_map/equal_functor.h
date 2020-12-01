@@ -9,3 +9,13 @@ public:
         return k1 == k2;
     }
 };
+
+template<>
+class equal_functor<std::string>
+{
+public:
+    bool operator()(std::string const& k1, std::string const& k2) const
+    {
+        return k1 == k2;
+    }
+};

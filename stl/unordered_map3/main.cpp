@@ -16,7 +16,7 @@ int main()
             table.insert(std::make_pair(i, i));
             auto end = clock.now();
             std::cout << "bucket_count: " << table.bucket_count() << " time:    "
-                      << std::chrono::duration_cast<std::chrono::seconds>(end - start).count()
+                      << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()
                       << " microseconds" << std::endl;
         }
         else {

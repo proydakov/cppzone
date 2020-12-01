@@ -3,8 +3,6 @@
 template<class key>
 class hash_functor
 {
-public:
-    size_t operator()(key) const;
 };
 
 template<>
@@ -31,7 +29,7 @@ template<>
 class hash_functor<std::string>
 {
 public:
-    size_t operator()(const std::string& k) const
+    size_t operator()(std::string const& k) const
     {
         size_t hash = 5381;
         for(size_t i = 0; i < k.size(); i++) {

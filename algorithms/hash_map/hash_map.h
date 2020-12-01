@@ -10,8 +10,6 @@
 #include <hash_functor.h>
 #include <equal_functor.h>
 
-
-
 template<class key, class value, class hash = hash_functor<key>, class equal = equal_functor<key>>
 class hash_map
 {
@@ -55,11 +53,11 @@ public:
     bool insert(const value_type& v);
     bool erase(const key_type& k);
 
-    value& operator[](const key_type& k);
+    value& operator[](const key& k);
 
     size_type size() const;
     size_type bucket_count() const;
-    
+
     float load_factor() const;
     float max_load_factor() const;
 
@@ -230,7 +228,7 @@ template<class key, class value, class hash, class equal>
 typename hash_map<key, value, hash, equal>::size_type hash_map<key, value, hash, equal>::get_index(const key_type& k)
 {
     const size_type raw_index = m_hf(k);
-    const size_type res_index = raw_index % m_data.size();
+    const size_type res_index = raw_index & (m_data.size() - 1);
     return res_index;
 }
 
