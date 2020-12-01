@@ -17,5 +17,7 @@ ADD_SUBDIRECTORY(function_storage)
 ADD_SUBDIRECTORY(std_for_each)
 ADD_SUBDIRECTORY(unordered_map)
 ADD_SUBDIRECTORY(unordered_map2)
+ADD_SUBDIRECTORY(unordered_map3)
+ADD_SUBDIRECTORY(vector_vs_list)
 
 MESSAGE("")

@@ -1,7 +1,7 @@
 #==============================================================================
-# Copyright (c) 2011 Evgeny Proydakov <lord.tiran@gmail.com>
+# Copyright (c) 2017 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
 SET(SOURCE_FILES main.cpp)
 
-I_ADD_EXECUTABLE(algorithms_sort_memory ${HEADER_FILES} ${SOURCE_FILES})
+I_ADD_EXECUTABLE(stl_unordered_map3 ${SOURCE_FILES})

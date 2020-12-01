@@ -1,7 +1,7 @@
 #==============================================================================
-# Copyright (c) 2017 Evgeny Proydakov <lord.tiran@gmail.com>
+# Copyright (c) 2013 Evgeny Proydakov <lord.tiran@gmail.com>
 #==============================================================================
 
 SET(SOURCE_FILES main.cpp)
 
-I_ADD_EXECUTABLE(algorithms_hashtable ${SOURCE_FILES})
+I_ADD_EXECUTABLE(stl_vector_vs_list ${SOURCE_FILES})
