@@ -1,0 +1,15 @@
+#==============================================================================
+# Copyright (c) 2021 Evgeny Proydakov <lord.tiran@gmail.com>
+#==============================================================================    
+
+MESSAGE(STATUS "BUILD  OPENGLES_V2\n")
+
+SET(GLOBAL_PROJECT_FOLDER "openglesv2")
+
+SET(TEXTURE_LOADER_PIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+ADD_SUBDIRECTORY(opengles2_sdk)
+
+#ADD_SUBDIRECTORY(triangle)
+
+MESSAGE("")
