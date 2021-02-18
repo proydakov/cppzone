@@ -82,26 +82,26 @@ GLuint opengles2_program::get_id() const
     return m_program;
 }
 
-int opengles2_program::get_attribute_location(const std::string& attribute) const
+GLuint opengles2_program::get_attribute_location(const std::string& attribute) const
 {
     auto it = std::lower_bound(m_attributes.begin(), m_attributes.end(), attribute, [](const auto& pair, auto const& str){
         return pair.first < str;
     });
-    int location = -1;
+    GLuint location = 0;
     if(it != m_attributes.end() && it->first == attribute) {
-        location = it->second;
+        location = static_cast<GLuint>(it->second);
     }
     return location;
 }
 
-int opengles2_program::get_uniform_location(const std::string& uniform) const
+GLuint opengles2_program::get_uniform_location(const std::string& uniform) const
 {
     auto it = std::lower_bound(m_uniforms.begin(), m_uniforms.end(), uniform, [](const auto& pair, auto const& str){
         return pair.first < str;
     });    
-    int location = -1;
+    GLuint location = 0;
     if(it != m_uniforms.end() && it->first == uniform) {
-        location = it->second;
+        location = static_cast<GLuint>(it->second);
     }
     return location;
 }

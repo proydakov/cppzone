@@ -20,8 +20,8 @@ public:
     void unload();
 
     GLuint get_id() const;
-    int get_attribute_location(const std::string& attribute) const;
-    int get_uniform_location(const std::string& uniform) const;
+    GLuint get_attribute_location(const std::string& attribute) const;
+    GLuint get_uniform_location(const std::string& uniform) const;
 
 private:
     GLuint load_shader(GLenum type, const char* shaderSrc);

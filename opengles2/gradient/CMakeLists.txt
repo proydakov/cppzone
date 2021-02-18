@@ -5,5 +5,5 @@
 SET(SOURCE_FILES main.cpp)
 
 CONFIGURE_FILE(resource.h.tmpl ${CMAKE_CURRENT_SOURCE_DIR}/resource.h)
-I_ADD_EXECUTABLE(opengles2_triangle ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(opengles2_triangle opengles2_sdk)
+I_ADD_EXECUTABLE(opengles2_gradient ${SOURCE_FILES})
+TARGET_LINK_LIBRARIES(opengles2_gradient opengles2_sdk)

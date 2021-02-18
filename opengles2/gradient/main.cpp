@@ -52,12 +52,12 @@ void tcapplication::init()
     auto vShaderStr = opengles2_application::load_resource(RESOURCE_DIRECTORY, "vshader.glsl");
     auto fShaderStr = opengles2_application::load_resource(RESOURCE_DIRECTORY, "fshader.glsl");
 
-    if (!m_program.load(vShaderStr.c_str(), fShaderStr.c_str(), {}, {}))
+    if (!m_program.load(vShaderStr.c_str(), fShaderStr.c_str(), {"vPosition", "vColor"}, {}))
     {
         panic();
     }
 
-    glClearColor( 0.0f, 0.0f, 1.0f, 0.0f );
+    glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 }
 
 void tcapplication::resize(std::size_t w, std::size_t h)
@@ -76,17 +76,30 @@ void tcapplication::draw()
                             -0.5f, -0.5f, 0.0f,
                              0.5f, -0.5f, 0.0f };
 
+    GLfloat vColors[] = {  1.0f, 0.0f, 0.0f, 
+                           0.0f, 1.0f, 0.0f,
+                           0.0f, 0.0f, 1.0f };
+
     // Clear the color buffer
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Use the program object
     glUseProgram(m_program.get_id());
 
+    const auto vPositionAttr = m_program.get_attribute_location("vPosition");
+    const auto vColorAttr = m_program.get_attribute_location("vColor");
+
+    glEnableVertexAttribArray(vPositionAttr);
+    glEnableVertexAttribArray(vColorAttr);
+
     // Load the vertex data
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vVertices);
-    glEnableVertexAttribArray( 0 );
+    glVertexAttribPointer(vPositionAttr, 3, GL_FLOAT, GL_FALSE, 0, vVertices);
+    glVertexAttribPointer(vColorAttr, 3, GL_FLOAT, GL_FALSE, 0, vColors);
 
     glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    glDisableVertexAttribArray(vPositionAttr);
+    glDisableVertexAttribArray(vPositionAttr);
 }
 
 int main(int argc, char* argv[])
