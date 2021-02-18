@@ -12,5 +12,6 @@ ADD_SUBDIRECTORY(opengles2_sdk)
 
 ADD_SUBDIRECTORY(triangle)
 ADD_SUBDIRECTORY(gradient)
+ADD_SUBDIRECTORY(texture)
 
 MESSAGE("")

@@ -8,7 +8,7 @@ public:
     opengles2_texture();
     ~opengles2_texture();
 
-    bool load(int width, int height, GLvoid* pixels);
+    bool load(int width, int height, GLint internalformat, GLenum format, GLenum type, GLvoid* pixels);
     void unload();
 
     GLuint get_id() const;

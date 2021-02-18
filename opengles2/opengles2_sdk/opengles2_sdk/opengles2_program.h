@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <optional>
 
 #include "opengles2.h"
 
@@ -20,8 +21,8 @@ public:
     void unload();
 
     GLuint get_id() const;
-    GLuint get_attribute_location(const std::string& attribute) const;
-    GLuint get_uniform_location(const std::string& uniform) const;
+    std::optional<GLuint> get_attribute_location(const std::string& attribute) const;
+    std::optional<GLint>  get_uniform_location(const std::string& uniform) const;
 
 private:
     GLuint load_shader(GLenum type, const char* shaderSrc);
