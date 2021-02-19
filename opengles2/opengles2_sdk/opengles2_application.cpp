@@ -25,15 +25,16 @@ std::string opengles2_application::load_resource(std::string const& folder, std:
 }
 
 //
+//    http://www.opennet.ru/docs/formats/targa.pdf
+//
 //    Loads a 24-bit TGA image from a file. This is probably the simplest TGA loader ever.
-//    Does not support loading of compressed TGAs nor TGAa with alpha channel.
+//    Does not support loading of compressed TGAs.
 //
 
-std::optional<std::vector<std::byte>> opengles2_application::load_tga(std::string const& fpath, int& width, int& height)
+std::optional<std::vector<std::byte>> opengles2_application::load_tga(std::string const& fpath, int& width, int& height, GLint& internal, GLenum& format)
 {
     char tgaheader[12];
     char attributes[6];
-    unsigned int imagesize{};
 
     std::ifstream input(fpath, std::ios::binary);
     if (!input.read(tgaheader, sizeof(tgaheader)) || !input.read(attributes, sizeof(attributes)))
@@ -42,14 +43,31 @@ std::optional<std::vector<std::byte>> opengles2_application::load_tga(std::strin
         return std::nullopt;
     }
 
+    auto const channels = static_cast<unsigned>(attributes[4]) / 8;
+    if (channels != 3 && channels != 4)
+    {
+        std::cerr << "unsupported channels count in TGA: " << channels << std::endl;
+        return std::nullopt;
+    }
+
     width = static_cast<int>(attributes[1]) * 256 + static_cast<int>(attributes[0]);
     height = static_cast<int>(attributes[3]) * 256 + (attributes[2]);
-    imagesize = static_cast<unsigned>(attributes[4]) / 8 * static_cast<unsigned>(width * height);
+    unsigned imagesize = channels * static_cast<unsigned>(width * height);
 
     std::vector<std::byte> buffer(imagesize);
     if(input.read(reinterpret_cast<char*>(buffer.data()), imagesize))
     {
         std::cout << "loaded: " << fpath << " width: " << width << " height: " << height << " bytes: " << imagesize << std::endl;
+        if (channels == 3)
+        {
+            internal = GL_RGB;
+            format = GL_BGR;
+        }
+        else if (channels == 4)
+        {
+            internal = GL_RGBA;
+            format = GL_BGRA;
+        }
         return buffer;
     }
     else
@@ -59,11 +77,11 @@ std::optional<std::vector<std::byte>> opengles2_application::load_tga(std::strin
     }
 }
 
-std::optional<std::vector<std::byte>> opengles2_application::load_tga(const std::string& folder, std::string const& name, int& width, int& height)
+std::optional<std::vector<std::byte>> opengles2_application::load_tga(const std::string& folder, std::string const& name, int& width, int& height, GLint& internal, GLenum& format)
 {
     auto const fileName(folder + "/" + name);
 
-    return opengles2_application::load_tga(fileName, width, height);
+    return opengles2_application::load_tga(fileName, width, height, internal, format);
 }
 
 opengles2_application::opengles2_application(int, char* argv[], size_t width, size_t height) :
@@ -168,15 +186,16 @@ int opengles2_application::run()
                 break;
 
             case SDL_WINDOWEVENT:
-                    switch (e.window.event) {
-                    case SDL_WINDOWEVENT_RESIZED:
-                    {
-                        m_width = size_t(e.window.data1);
-                        m_height = size_t(e.window.data2);
-                        resize(m_width, m_height);
-                    }
-                        break;
-                    }
+                switch (e.window.event)
+                {
+                case SDL_WINDOWEVENT_RESIZED:
+                {
+                    m_width = size_t(e.window.data1);
+                    m_height = size_t(e.window.data2);
+                    resize(m_width, m_height);
+                }
+                    break;
+                }
                 break;
 
             case SDL_QUIT:

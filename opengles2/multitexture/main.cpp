@@ -32,7 +32,7 @@
 class tcapplication : public opengles2_application
 {
 public:
-    tcapplication(int argc, char* argv[], std::size_t w, std::size_t h, const char* const path);
+    tcapplication(int argc, char* argv[], std::size_t w, std::size_t h);
 
     void init() override;
     void resize(std::size_t w, std::size_t h) override;
@@ -44,39 +44,49 @@ private:
 
 private:
     opengles2_program m_program;
-    opengles2_texture m_texture;
-    std::string m_path;
+    opengles2_texture m_object_texture;
+    opengles2_texture m_text_texture;
 };
 
-tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t h, const char* const path)
+tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t h)
     : opengles2_application(argc, argv, w, h)
-    , m_path(path)
 {
 }
 
 void tcapplication::init()
 {
-    auto vShaderStr = opengles2_application::load_resource(RESOURCE_DIRECTORY, "vshader.glsl");
-    auto fShaderStr = opengles2_application::load_resource(RESOURCE_DIRECTORY, "fshader.glsl");
+    auto vShaderStr = opengles2_application::load_resource(SHADERS_DIRECTORY, "vshader.glsl");
+    auto fShaderStr = opengles2_application::load_resource(SHADERS_DIRECTORY, "fshader.glsl");
 
-    if (!m_program.load(vShaderStr.c_str(), fShaderStr.c_str(), {"vPosition", "vTexCoord"}, {"fTexture"}))
+    if (!m_program.load(vShaderStr.c_str(), fShaderStr.c_str(), {"vPosition", "vTexCoord"}, {"fTexture0", "fTexture1"}))
     {
         panic();
     }
 
-    int width{};
-    int height{};
-    GLint internal{};
-    GLenum format{};
-    auto const tga = opengles2_application::load_tga(m_path, width, height, internal, format);
-    if (!tga)
     {
-        panic();
+        int width{};
+        int height{};
+        GLint internal{};
+        GLenum format{};
+        auto const buffer = opengles2_application::load_tga(TEXTURES_DIRECTORY, "mountain.tga", width, height, internal, format);
+
+        if (!buffer or !m_object_texture.load(width, height, internal, format, GL_UNSIGNED_BYTE, reinterpret_cast<const void*>(buffer->data())))
+        {
+            panic();
+        }
     }
 
-    if (!m_texture.load(width, height, internal, format, GL_UNSIGNED_BYTE, reinterpret_cast<const void*>(tga->data())))
     {
-        panic();
+        int width{};
+        int height{};
+        GLint internal{};
+        GLenum format{};
+        auto const buffer = opengles2_application::load_tga(TEXTURES_DIRECTORY, "text.tga", width, height, internal, format);
+
+        if (!buffer or !m_text_texture.load(width, height, internal, format, GL_UNSIGNED_BYTE, reinterpret_cast<const void*>(buffer->data())))
+        {
+            panic();
+        }
     }
 
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -94,7 +104,7 @@ void tcapplication::update(std::chrono::microseconds)
 
 void tcapplication::draw()
 {
-    GLfloat vVertices[] = { -0.5f,  0.5f, 0.0f,  // Position 0
+   GLfloat vVertices[] = { -0.5f,  0.5f, 0.0f,  // Position 0
                             0.0f,  0.0f,        // TexCoord 0 
                            -0.5f, -0.5f, 0.0f,  // Position 1
                             0.0f,  1.0f,        // TexCoord 1
@@ -109,10 +119,11 @@ void tcapplication::draw()
     // Get the attribute locations
     auto const positionLoc = m_program.get_attribute_location("vPosition").value();
     auto const texCoordLoc = m_program.get_attribute_location("vTexCoord").value();
-
-    // Get the sampler location
-    auto const samplerLoc = m_program.get_uniform_location("fTexture").value();
    
+    // Get the sampler location
+    auto const fTexture0 = m_program.get_uniform_location("fTexture0").value();
+    auto const fTexture1 = m_program.get_uniform_location("fTexture1").value();
+
     // Clear the color buffer
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -130,23 +141,24 @@ void tcapplication::draw()
 
     // Bind the texture
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_texture.get_id());
+    glBindTexture(GL_TEXTURE_2D, m_object_texture.get_id());
 
     // Set the sampler texture unit to 0
-    glUniform1i(samplerLoc, 0);
+    glUniform1i(fTexture0, 0);
+
+    // Bind the texture
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, m_text_texture.get_id());
+
+    // Set the sampler texture unit to 1
+    glUniform1i(fTexture1, 1);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
 int main(int argc, char* argv[])
 {
-    if (argc != 2)
-    {
-        std::cout << "usage: tga_viewer <path/to/file>" << std::endl;
-        return 0;
-    }
-
-    tcapplication app(argc, argv, 640, 640, argv[1]);
+    tcapplication app(argc, argv, 640, 640);
 
     return app.run();
 }

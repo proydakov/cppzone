@@ -28,8 +28,10 @@ class opengles2_application
 {
 public:
     static std::string load_resource(std::string const& folder, std::string const& name);
-    static std::optional<std::vector<std::byte>> load_tga(std::string const& fpath, int& width, int& height);
-    static std::optional<std::vector<std::byte>> load_tga(std::string const& folder, std::string const& name, int& width, int& height);
+    static std::optional<std::vector<std::byte>> load_tga(std::string const& fpath,
+        int& width, int& height, GLint& internal, GLenum& format);
+    static std::optional<std::vector<std::byte>> load_tga(std::string const& folder,
+        std::string const& name, int& width, int& height, GLint& internal, GLenum& format);
 
     opengles2_application(int argc, char* argv[], std::size_t width, std::size_t height);
     virtual ~opengles2_application();
