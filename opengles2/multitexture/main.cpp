@@ -25,6 +25,7 @@
 
 #include "resource.h"
 
+#include <opengles2_sdk/opengles2_shader.h>
 #include <opengles2_sdk/opengles2_texture.h>
 #include <opengles2_sdk/opengles2_program.h>
 #include <opengles2_sdk/opengles2_application.h>
@@ -43,6 +44,8 @@ private:
     GLuint create_simple_texture2d();
 
 private:
+    opengles2_shader m_vertex_shader;
+    opengles2_shader m_fragment_shader;
     opengles2_program m_program;
     opengles2_texture m_object_texture;
     opengles2_texture m_text_texture;
@@ -58,7 +61,13 @@ void tcapplication::init()
     auto vShaderStr = opengles2_application::load_resource(SHADERS_DIRECTORY, "vshader.glsl");
     auto fShaderStr = opengles2_application::load_resource(SHADERS_DIRECTORY, "fshader.glsl");
 
-    if (!m_program.load(vShaderStr.c_str(), fShaderStr.c_str(), {"vPosition", "vTexCoord"}, {"fTexture0", "fTexture1"}))
+    if (!m_vertex_shader.load(GL_VERTEX_SHADER, vShaderStr.c_str()) ||
+        !m_fragment_shader.load(GL_FRAGMENT_SHADER, fShaderStr.c_str()))
+    {
+        panic();
+    }
+
+    if (!m_program.load(m_vertex_shader, m_fragment_shader))
     {
         panic();
     }
@@ -89,7 +98,7 @@ void tcapplication::init()
         }
     }
 
-    glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void tcapplication::resize(std::size_t w, std::size_t h)
@@ -119,7 +128,7 @@ void tcapplication::draw()
     // Get the attribute locations
     auto const positionLoc = m_program.get_attribute_location("vPosition").value();
     auto const texCoordLoc = m_program.get_attribute_location("vTexCoord").value();
-   
+
     // Get the sampler location
     auto const fTexture0 = m_program.get_uniform_location("fTexture0").value();
     auto const fTexture1 = m_program.get_uniform_location("fTexture1").value();

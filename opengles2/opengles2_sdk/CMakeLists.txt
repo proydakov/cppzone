@@ -18,6 +18,7 @@ SET(HEADER_FILES
 SET(SOURCE_FILES
     opengles2_application.cpp
     opengles2_program.cpp
+    opengles2_shader.cpp
     opengles2_texture.cpp
     )
 

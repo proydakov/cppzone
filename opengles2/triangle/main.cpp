@@ -25,6 +25,7 @@
 
 #include "resource.h"
 
+#include <opengles2_sdk/opengles2_shader.h>
 #include <opengles2_sdk/opengles2_program.h>
 #include <opengles2_sdk/opengles2_application.h>
 
@@ -39,7 +40,9 @@ public:
     void draw() override;
 
 private:
-   opengles2_program m_program;
+    opengles2_shader m_vertex_shader;
+    opengles2_shader m_fragment_shader;
+    opengles2_program m_program;
 };
 
 tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t h)
@@ -52,12 +55,18 @@ void tcapplication::init()
     auto vShaderStr = opengles2_application::load_resource(RESOURCE_DIRECTORY, "vshader.glsl");
     auto fShaderStr = opengles2_application::load_resource(RESOURCE_DIRECTORY, "fshader.glsl");
 
-    if (!m_program.load(vShaderStr.c_str(), fShaderStr.c_str(), {}, {}))
+    if (!m_vertex_shader.load(GL_VERTEX_SHADER, vShaderStr.c_str()) ||
+        !m_fragment_shader.load(GL_FRAGMENT_SHADER, fShaderStr.c_str()))
     {
         panic();
     }
 
-    glClearColor( 0.0f, 0.0f, 1.0f, 0.0f );
+    if (!m_program.load(m_vertex_shader, m_fragment_shader))
+    {
+        panic();
+    }
+
+    glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
 }
 
 void tcapplication::resize(std::size_t w, std::size_t h)
@@ -72,7 +81,7 @@ void tcapplication::update(std::chrono::microseconds)
 
 void tcapplication::draw()
 {
-    GLfloat vVertices[] = {  0.0f,  0.5f, 0.0f, 
+    GLfloat vVertices[] = {  0.0f,  0.5f, 0.0f,
                             -0.5f, -0.5f, 0.0f,
                              0.5f, -0.5f, 0.0f };
 

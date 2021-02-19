@@ -25,6 +25,7 @@
 
 #include "resource.h"
 
+#include <opengles2_sdk/opengles2_shader.h>
 #include <opengles2_sdk/opengles2_texture.h>
 #include <opengles2_sdk/opengles2_program.h>
 #include <opengles2_sdk/opengles2_application.h>
@@ -43,6 +44,8 @@ private:
     GLuint create_simple_texture2d();
 
 private:
+    opengles2_shader m_vertex_shader;
+    opengles2_shader m_fragment_shader;
     opengles2_program m_program;
     opengles2_texture m_texture;
     std::string m_path;
@@ -59,7 +62,13 @@ void tcapplication::init()
     auto vShaderStr = opengles2_application::load_resource(RESOURCE_DIRECTORY, "vshader.glsl");
     auto fShaderStr = opengles2_application::load_resource(RESOURCE_DIRECTORY, "fshader.glsl");
 
-    if (!m_program.load(vShaderStr.c_str(), fShaderStr.c_str(), {"vPosition", "vTexCoord"}, {"fTexture"}))
+    if (!m_vertex_shader.load(GL_VERTEX_SHADER, vShaderStr.c_str()) ||
+        !m_fragment_shader.load(GL_FRAGMENT_SHADER, fShaderStr.c_str()))
+    {
+        panic();
+    }
+
+    if (!m_program.load(m_vertex_shader, m_fragment_shader))
     {
         panic();
     }

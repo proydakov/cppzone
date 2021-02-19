@@ -1,35 +1,31 @@
 #pragma once
 
-#include <set>
-#include <string>
-#include <vector>
-#include <utility>
 #include <optional>
 
 #include "opengles2.h"
 
+class opengles2_shader;
+
 class opengles2_program final
 {
 public:
-    opengles2_program();
+    opengles2_program() noexcept;
     ~opengles2_program();
 
-    bool load(const char * const vertex_shader,
-              const char * const fragment_shader,
-              const std::set<std::string>& attributes,
-              const std::set<std::string>& uniforms);
-    void unload();
+    bool load(const opengles2_shader& vertex_shader, const opengles2_shader& fragment_shader) noexcept;
+    void unload() noexcept;
 
-    GLuint get_id() const;
-    std::optional<GLuint> get_attribute_location(const std::string& attribute) const;
-    std::optional<GLint>  get_uniform_location(const std::string& uniform) const;
+    std::optional<GLuint> get_attribute_location(const char* const attribute) const noexcept;
+    std::optional<GLint> get_uniform_location(const char* const uniform) const noexcept;
+
+    GLuint get_id() const noexcept
+    {
+        return m_program;
+    }
 
 private:
-    GLuint load_shader(GLenum type, const char* shaderSrc);
+    GLuint load_shader(GLenum type, const char* shaderSrc) noexcept;
 
 private:
     GLuint m_program;
-
-    std::vector<std::pair<std::string, int>> m_attributes;
-    std::vector<std::pair<std::string, int>> m_uniforms;
 };
