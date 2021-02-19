@@ -3,6 +3,8 @@
 #include <chrono>
 #include <fstream>
 #include <iostream>
+#include <unistd.h>
+#include <execinfo.h>
 
 namespace
 {
@@ -20,6 +22,48 @@ std::string opengles2_application::load_resource(std::string const& folder, std:
     std::ifstream ifs(folder + "/" + name);
     std::string content( (std::istreambuf_iterator<char>(ifs) ), (std::istreambuf_iterator<char>() ) );
     return content;
+}
+
+//
+//    Loads a 24-bit TGA image from a file. This is probably the simplest TGA loader ever.
+//    Does not support loading of compressed TGAs nor TGAa with alpha channel.
+//
+
+std::optional<std::vector<std::byte>> opengles2_application::load_tga(std::string const& fpath, int& width, int& height)
+{
+    char tgaheader[12];
+    char attributes[6];
+    unsigned int imagesize{};
+
+    std::ifstream input(fpath, std::ios::binary);
+    if (!input.read(tgaheader, sizeof(tgaheader)) || !input.read(attributes, sizeof(attributes)))
+    {
+        std::cerr << "can't read TGA header & attributes" << std::endl;
+        return std::nullopt;
+    }
+
+    width = static_cast<int>(attributes[1]) * 256 + static_cast<int>(attributes[0]);
+    height = static_cast<int>(attributes[3]) * 256 + (attributes[2]);
+    imagesize = static_cast<unsigned>(attributes[4]) / 8 * static_cast<unsigned>(width * height);
+
+    std::vector<std::byte> buffer(imagesize);
+    if(input.read(reinterpret_cast<char*>(buffer.data()), imagesize))
+    {
+        std::cout << "loaded: " << fpath << " width: " << width << " height: " << height << " bytes: " << imagesize << std::endl;
+        return buffer;
+    }
+    else
+    {
+        std::cerr << "can't read TGA data" << std::endl;
+        return std::nullopt;
+    }
+}
+
+std::optional<std::vector<std::byte>> opengles2_application::load_tga(const std::string& folder, std::string const& name, int& width, int& height)
+{
+    auto const fileName(folder + "/" + name);
+
+    return opengles2_application::load_tga(fileName, width, height);
 }
 
 opengles2_application::opengles2_application(int, char* argv[], size_t width, size_t height) :
@@ -67,6 +111,15 @@ void opengles2_application::on_event(SDL_Event const&)
 
 void opengles2_application::panic()
 {
+    void *array[32];
+
+    // get void*'s for all entries on the stack
+    int size = backtrace(array, std::size(array));
+
+    // print out all the frames to stderr
+    fprintf(stderr, "panic:\n");
+    backtrace_symbols_fd(array, size, STDERR_FILENO);
+
     ::abort();
 }
 

@@ -1,8 +1,10 @@
 #pragma once
 
 #include <chrono>
+#include <vector>
 #include <cstdint>
 #include <ostream>
+#include <optional>
 #include <functional>
 
 #include "opengles2.h"
@@ -26,6 +28,8 @@ class opengles2_application
 {
 public:
     static std::string load_resource(std::string const& folder, std::string const& name);
+    static std::optional<std::vector<std::byte>> load_tga(std::string const& fpath, int& width, int& height);
+    static std::optional<std::vector<std::byte>> load_tga(std::string const& folder, std::string const& name, int& width, int& height);
 
     opengles2_application(int argc, char* argv[], std::size_t width, std::size_t height);
     virtual ~opengles2_application();

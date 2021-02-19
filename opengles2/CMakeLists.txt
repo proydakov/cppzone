@@ -13,5 +13,7 @@ ADD_SUBDIRECTORY(opengles2_sdk)
 ADD_SUBDIRECTORY(triangle)
 ADD_SUBDIRECTORY(gradient)
 ADD_SUBDIRECTORY(texture)
+ADD_SUBDIRECTORY(tga_viewer)
+#ADD_SUBDIRECTORY(multitexture)
 
 MESSAGE("")

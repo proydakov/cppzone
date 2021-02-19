@@ -32,7 +32,7 @@
 class tcapplication : public opengles2_application
 {
 public:
-    tcapplication(int argc, char* argv[], std::size_t w, std::size_t h);
+    tcapplication(int argc, char* argv[], std::size_t w, std::size_t h, const char* const path);
 
     void init() override;
     void resize(std::size_t w, std::size_t h) override;
@@ -43,12 +43,14 @@ private:
     GLuint create_simple_texture2d();
 
 private:
-   opengles2_program m_program;
-   opengles2_texture m_texture;
+    opengles2_program m_program;
+    opengles2_texture m_texture;
+    std::string m_path;
 };
 
-tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t h)
+tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t h, const char* const path)
     : opengles2_application(argc, argv, w, h)
+    , m_path(path)
 {
 }
 
@@ -62,16 +64,15 @@ void tcapplication::init()
         panic();
     }
 
-    // 2x2 Image, 3 bytes per pixel (R, G, B)
-    GLubyte pixels[4 * 3] =
-    {  
-        255,   0,   0, // Red
-          0, 255,   0, // Green
-          0,   0, 255, // Blue
-        255, 255,   0  // Yellow
-    };
+    int width{};
+    int height{};
+    auto const tga = opengles2_application::load_tga(m_path, width, height);
+    if (!tga)
+    {
+        panic();
+    }
 
-    if (!m_texture.load(2, 2, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, pixels))
+    if (!m_texture.load(width, height, GL_RGB, GL_BGR, GL_UNSIGNED_BYTE, reinterpret_cast<const void*>(tga->data())))
     {
         panic();
     }
@@ -91,7 +92,7 @@ void tcapplication::update(std::chrono::microseconds)
 
 void tcapplication::draw()
 {
-   GLfloat vVertices[] = { -0.5f,  0.5f, 0.0f,  // Position 0
+    GLfloat vVertices[] = { -0.5f,  0.5f, 0.0f,  // Position 0
                             0.0f,  0.0f,        // TexCoord 0 
                            -0.5f, -0.5f, 0.0f,  // Position 1
                             0.0f,  1.0f,        // TexCoord 1
@@ -101,43 +102,49 @@ void tcapplication::draw()
                             1.0f,  0.0f         // TexCoord 3
     };
 
-   GLushort indices[] = { 0, 1, 2, 0, 2, 3 };
+    GLushort indices[] = { 0, 1, 2, 0, 2, 3 };
 
-   // Get the attribute locations
-   auto const positionLoc = m_program.get_attribute_location("vPosition").value();
-   auto const texCoordLoc = m_program.get_attribute_location("vTexCoord").value();
+    // Get the attribute locations
+    auto const positionLoc = m_program.get_attribute_location("vPosition").value();
+    auto const texCoordLoc = m_program.get_attribute_location("vTexCoord").value();
+
+    // Get the sampler location
+    auto const samplerLoc = m_program.get_uniform_location("fTexture").value();
    
-   // Get the sampler location
-   auto const samplerLoc = m_program.get_uniform_location("fTexture").value();
-   
-   // Clear the color buffer
-   glClear(GL_COLOR_BUFFER_BIT);
+    // Clear the color buffer
+    glClear(GL_COLOR_BUFFER_BIT);
 
-   // Use the program object
-   glUseProgram(m_program.get_id());
+    // Use the program object
+    glUseProgram(m_program.get_id());
 
-   // Load the vertex position
-   glVertexAttribPointer(positionLoc, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), vVertices);
+    // Load the vertex position
+    glVertexAttribPointer(positionLoc, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), vVertices);
 
-   // Load the texture coordinate
-   glVertexAttribPointer(texCoordLoc, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), &vVertices[3]);
+    // Load the texture coordinate
+    glVertexAttribPointer(texCoordLoc, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), &vVertices[3]);
 
-   glEnableVertexAttribArray(positionLoc);
-   glEnableVertexAttribArray(texCoordLoc);
+    glEnableVertexAttribArray(positionLoc);
+    glEnableVertexAttribArray(texCoordLoc);
 
-   // Bind the texture
-   glActiveTexture(GL_TEXTURE0);
-   glBindTexture(GL_TEXTURE_2D, m_texture.get_id());
+    // Bind the texture
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_texture.get_id());
 
-   // Set the sampler texture unit to 0
-   glUniform1i(samplerLoc, 0);
+    // Set the sampler texture unit to 0
+    glUniform1i(samplerLoc, 0);
 
-   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
 int main(int argc, char* argv[])
 {
-    tcapplication app(argc, argv, 640, 640);
+    if (argc != 2)
+    {
+        std::cout << "usage: tga_viewer <path/to/file>" << std::endl;
+        return 0;
+    }
+
+    tcapplication app(argc, argv, 640, 640, argv[1]);
 
     return app.run();
 }

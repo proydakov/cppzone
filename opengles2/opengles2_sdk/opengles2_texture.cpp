@@ -10,7 +10,7 @@ opengles2_texture::~opengles2_texture()
     unload();
 }
 
-bool opengles2_texture::load(int width, int height, GLint internal, GLenum format, GLenum type, GLvoid* pixels)
+bool opengles2_texture::load(int width, int height, GLint internal, GLenum format, GLenum type, const GLvoid* pixels)
 {
     unload();
 
@@ -29,6 +29,8 @@ bool opengles2_texture::load(int width, int height, GLint internal, GLenum forma
     // Set the filtering mode
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     return true;
 }
