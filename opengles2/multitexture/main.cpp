@@ -72,30 +72,14 @@ void tcapplication::init()
         panic();
     }
 
+    if (!opengles2_application::load_tga(m_object_texture, TEXTURES_DIRECTORY, "mountain.tga"))
     {
-        int width{};
-        int height{};
-        GLint internal{};
-        GLenum format{};
-        auto const buffer = opengles2_application::load_tga(TEXTURES_DIRECTORY, "mountain.tga", width, height, internal, format);
-
-        if (!buffer or !m_object_texture.load(width, height, internal, format, GL_UNSIGNED_BYTE, reinterpret_cast<const void*>(buffer->data())))
-        {
-            panic();
-        }
+        panic();
     }
 
+    if (!opengles2_application::load_tga(m_text_texture, TEXTURES_DIRECTORY, "text.tga"))
     {
-        int width{};
-        int height{};
-        GLint internal{};
-        GLenum format{};
-        auto const buffer = opengles2_application::load_tga(TEXTURES_DIRECTORY, "text.tga", width, height, internal, format);
-
-        if (!buffer or !m_text_texture.load(width, height, internal, format, GL_UNSIGNED_BYTE, reinterpret_cast<const void*>(buffer->data())))
-        {
-            panic();
-        }
+        panic();
     }
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

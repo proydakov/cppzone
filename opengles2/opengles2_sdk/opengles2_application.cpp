@@ -1,4 +1,5 @@
 #include "opengles2_sdk/opengles2_application.h"
+#include "opengles2_sdk/opengles2_texture.h"
 
 #include <chrono>
 #include <fstream>
@@ -31,7 +32,7 @@ std::string opengles2_application::load_resource(std::string const& folder, std:
 //    Does not support loading of compressed TGAs.
 //
 
-std::optional<std::vector<std::byte>> opengles2_application::load_tga(std::string const& fpath, int& width, int& height, GLint& internal, GLenum& format)
+bool opengles2_application::load_tga(opengles2_texture& texture, std::string const& fpath)
 {
     char tgaheader[12];
     char attributes[6];
@@ -40,24 +41,28 @@ std::optional<std::vector<std::byte>> opengles2_application::load_tga(std::strin
     if (!input.read(tgaheader, sizeof(tgaheader)) || !input.read(attributes, sizeof(attributes)))
     {
         std::cerr << "can't read TGA header & attributes" << std::endl;
-        return std::nullopt;
+        return false;
     }
 
     auto const channels = static_cast<unsigned>(attributes[4]) / 8;
     if (channels != 3 && channels != 4)
     {
         std::cerr << "unsupported channels count in TGA: " << channels << std::endl;
-        return std::nullopt;
+        return false;
     }
 
-    width = static_cast<int>(attributes[1]) * 256 + static_cast<int>(attributes[0]);
-    height = static_cast<int>(attributes[3]) * 256 + (attributes[2]);
+    int width = static_cast<int>(attributes[1]) * 256 + static_cast<int>(attributes[0]);
+    int height = static_cast<int>(attributes[3]) * 256 + (attributes[2]);
     unsigned imagesize = channels * static_cast<unsigned>(width * height);
 
     std::vector<std::byte> buffer(imagesize);
     if(input.read(reinterpret_cast<char*>(buffer.data()), imagesize))
     {
         std::cout << "loaded: " << fpath << " width: " << width << " height: " << height << " bytes: " << imagesize << std::endl;
+
+        GLint internal{};
+        GLenum format{};
+
         if (channels == 3)
         {
             internal = GL_RGB;
@@ -68,20 +73,21 @@ std::optional<std::vector<std::byte>> opengles2_application::load_tga(std::strin
             internal = GL_RGBA;
             format = GL_BGRA;
         }
-        return buffer;
+
+        return texture.load(width, height, internal, format, GL_UNSIGNED_BYTE, reinterpret_cast<const void*>(buffer.data()));
     }
     else
     {
         std::cerr << "can't read TGA data" << std::endl;
-        return std::nullopt;
+        return false;
     }
 }
 
-std::optional<std::vector<std::byte>> opengles2_application::load_tga(const std::string& folder, std::string const& name, int& width, int& height, GLint& internal, GLenum& format)
+bool opengles2_application::load_tga(opengles2_texture& texture, const std::string& folder, std::string const& name)
 {
     auto const fileName(folder + "/" + name);
 
-    return opengles2_application::load_tga(fileName, width, height, internal, format);
+    return opengles2_application::load_tga(texture, fileName);
 }
 
 opengles2_application::opengles2_application(int, char* argv[], size_t width, size_t height) :

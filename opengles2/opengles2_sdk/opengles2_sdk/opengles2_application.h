@@ -4,13 +4,14 @@
 #include <vector>
 #include <cstdint>
 #include <ostream>
-#include <optional>
 #include <functional>
 
 #include "opengles2.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
+
+class opengles2_texture;
 
 class keyboard_press_guard
 {
@@ -28,10 +29,8 @@ class opengles2_application
 {
 public:
     static std::string load_resource(std::string const& folder, std::string const& name);
-    static std::optional<std::vector<std::byte>> load_tga(std::string const& fpath,
-        int& width, int& height, GLint& internal, GLenum& format);
-    static std::optional<std::vector<std::byte>> load_tga(std::string const& folder,
-        std::string const& name, int& width, int& height, GLint& internal, GLenum& format);
+    static bool load_tga(opengles2_texture&, std::string const& fpath);
+    static bool load_tga(opengles2_texture&, std::string const& folder, std::string const& name);
 
     opengles2_application(int argc, char* argv[], std::size_t width, std::size_t height);
     virtual ~opengles2_application();

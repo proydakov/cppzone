@@ -73,17 +73,7 @@ void tcapplication::init()
         panic();
     }
 
-    int width{};
-    int height{};
-    GLint internal{};
-    GLenum format{};
-    auto const tga = opengles2_application::load_tga(m_path, width, height, internal, format);
-    if (!tga)
-    {
-        panic();
-    }
-
-    if (!m_texture.load(width, height, internal, format, GL_UNSIGNED_BYTE, reinterpret_cast<const void*>(tga->data())))
+    if (!opengles2_application::load_tga(m_texture, m_path))
     {
         panic();
     }
