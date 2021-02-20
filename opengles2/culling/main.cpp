@@ -97,13 +97,13 @@ struct tprogram
 class tcapplication : public opengles2_application
 {
 public:
-    tcapplication(int argc, char* argv[], std::size_t w, std::size_t h);
+    tcapplication(int, char*[], std::size_t, std::size_t);
 
     void init() override;
-    void resize(std::size_t w, std::size_t h) override;
+    void resize(std::size_t, std::size_t) override;
     void update(std::chrono::microseconds) override;
     void draw() override;
-    void on_event(SDL_Event const& e) override;
+    void on_event(SDL_Event const&) override;
     void info(std::ostream&) override;
 
 private:
@@ -146,7 +146,7 @@ void tcapplication::update(std::chrono::microseconds delta)
     // Compute a rotation angle based on time to rotate the cube
     auto const count = static_cast<float>(delta.count()) / 1'000'000;
 
-    m_angle += ( count * 25.0f );
+    m_angle += (count * 25.0f);
     if( m_angle >= 360.0f ) {
         m_angle -= 360.0f;
     }
@@ -156,8 +156,8 @@ void tcapplication::update(std::chrono::microseconds delta)
 
     // Generate a perspective matrix with a 60 degree FOV
     opengles2_matrix perspective;
-    opengles2_matrix::load_identity( perspective );
-    opengles2_matrix::perspective(perspective, 60.0f, aspect, 1.0f, 20.0f );
+    opengles2_matrix::load_identity(perspective);
+    opengles2_matrix::perspective(perspective, 60.0f, aspect, 1.0f, 20.0f);
 
     // Generate a model view matrix to rotate/translate the cube
     opengles2_matrix modelview;
@@ -323,7 +323,7 @@ void tcapplication::info(std::ostream& os)
 
 int main(int argc, char* argv[])
 {
-    tcapplication app(argc, argv, 1280, 1280);
+    tcapplication app(argc, argv, 640, 640);
 
     return app.run();
 }
