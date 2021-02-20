@@ -5,10 +5,12 @@ precision mediump float;
 attribute vec4 vPosition;
 attribute vec2 vTexCoord;
 
+uniform mat4 vMvpMatrix;
+
 varying vec2 fTexCoord;
 
 void main()
 {
-    gl_Position = vPosition;
+    gl_Position = vMvpMatrix * vPosition;
     fTexCoord = vTexCoord;
 }

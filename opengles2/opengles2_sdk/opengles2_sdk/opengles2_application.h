@@ -1,7 +1,6 @@
 #pragma once
 
 #include <chrono>
-#include <vector>
 #include <cstdint>
 #include <ostream>
 #include <functional>
@@ -52,6 +51,16 @@ public:
     opengles2_application& operator=(opengles2_application &&) = delete;
 
 protected:
+    std::size_t getWidth() const noexcept
+    {
+        return m_width;
+    }
+
+    std::size_t getHeight() const noexcept
+    {
+        return m_height;
+    }
+
     void panic();
 
 private:

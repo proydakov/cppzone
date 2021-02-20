@@ -2,6 +2,7 @@
 #include "opengles2_sdk/opengles2_texture.h"
 
 #include <chrono>
+#include <vector>
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
@@ -151,7 +152,6 @@ void opengles2_application::default_info()
 {
     std::clog << "Press F11 for fullscreen.\n";
     std::clog << "Press ESC for exit.\n";
-    std::clog << "\n";
 }
 
 int opengles2_application::run()

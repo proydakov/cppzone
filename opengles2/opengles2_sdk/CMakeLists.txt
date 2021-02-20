@@ -16,10 +16,11 @@ SET(HEADER_FILES
     )
 
 SET(SOURCE_FILES
-    opengles2_application.cpp
-    opengles2_program.cpp
+    opengles2_math.cpp
     opengles2_shader.cpp
+    opengles2_program.cpp
     opengles2_texture.cpp
+    opengles2_application.cpp
     )
 
 ADD_LIBRARY(opengles2_sdk STATIC ${HEADER_FILES} ${SOURCE_FILES})
