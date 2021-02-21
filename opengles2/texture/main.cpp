@@ -80,7 +80,8 @@ void tcapplication::init()
         255, 255,   0  // Yellow
     };
 
-    if (!m_texture.load(2, 2, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, pixels))
+    opengles2_texture_filter const filter{GL_NEAREST, GL_NEAREST, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE};
+    if (!m_texture.load(2, 2, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, pixels, filter))
     {
         panic();
     }
