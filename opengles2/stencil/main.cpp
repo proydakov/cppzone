@@ -175,6 +175,7 @@ public:
     void init() override;
     void resize(std::size_t, std::size_t) override;
     void update(std::chrono::microseconds) override;
+    void on_event(SDL_Event const&) override;
     void draw() override;
 
 private:
@@ -208,6 +209,8 @@ private:
     opengles2_texture m_cube_texture;
 
     tprogram_outline m_outline_program;
+
+    bool m_show{true};
 };
 
 tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t h)
@@ -369,39 +372,66 @@ void tcapplication::draw()
 
     // outline
 
-    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-    glStencilMask(0x00);
-    glDisable(GL_DEPTH_TEST);
-
+    if (m_show)
     {
-        auto const positionLoc = m_outline_program.m_positionLoc;
-        auto const normalLoc = m_outline_program.m_normalLoc;
-        auto const vpLoc = m_outline_program.m_vpLoc;
-        auto const modelLoc = m_outline_program.m_modelLoc;
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        glStencilMask(0x00);
+        glDisable(GL_DEPTH_TEST);
 
-        glUseProgram(m_outline_program.m_program.get_id());
-
-        glUniformMatrix4fv(vpLoc, 1, GL_FALSE, m_vp_matrix.toUniform());
-
-        glEnableVertexAttribArray(positionLoc);
-        glEnableVertexAttribArray(normalLoc);
-
-        for(int i = 0; i < 2; i++)
         {
-            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, m_cube_model[i].toUniform());
-            glVertexAttribPointer(positionLoc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), opengles2_mesh::cubeVertices());
-            glVertexAttribPointer(normalLoc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), opengles2_mesh::cubeVertices());
+            auto const positionLoc = m_outline_program.m_positionLoc;
+            auto const normalLoc = m_outline_program.m_normalLoc;
+            auto const vpLoc = m_outline_program.m_vpLoc;
+            auto const modelLoc = m_outline_program.m_modelLoc;
 
-            glDrawElements(GL_TRIANGLES, opengles2_mesh::cubeIndicesSize(), GL_UNSIGNED_SHORT, opengles2_mesh::cubeIndices());
+            glUseProgram(m_outline_program.m_program.get_id());
+
+            glUniformMatrix4fv(vpLoc, 1, GL_FALSE, m_vp_matrix.toUniform());
+
+            glEnableVertexAttribArray(positionLoc);
+            glEnableVertexAttribArray(normalLoc);
+
+            for(int i = 0; i < 2; i++)
+            {
+                glUniformMatrix4fv(modelLoc, 1, GL_FALSE, m_cube_model[i].toUniform());
+                glVertexAttribPointer(positionLoc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), opengles2_mesh::cubeVertices());
+                glVertexAttribPointer(normalLoc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), opengles2_mesh::cubeVertices());
+
+                glDrawElements(GL_TRIANGLES, opengles2_mesh::cubeIndicesSize(), GL_UNSIGNED_SHORT, opengles2_mesh::cubeIndices());
+            }
+
+            glDisableVertexAttribArray(positionLoc);
+            glDisableVertexAttribArray(normalLoc);
         }
 
-        glDisableVertexAttribArray(positionLoc);
-        glDisableVertexAttribArray(normalLoc);
+        glStencilFunc(GL_ALWAYS, 0, 0xFF);
+        glStencilMask(0xFF);
+        glEnable(GL_DEPTH_TEST);
     }
+}
 
-    glStencilFunc(GL_ALWAYS, 0, 0xFF);
-    glStencilMask(0xFF);
-    glEnable(GL_DEPTH_TEST);
+void tcapplication::on_event(SDL_Event const& e)
+{
+    switch (e.type)
+    {
+        case SDL_KEYDOWN:
+        case SDL_KEYUP:
+            switch (e.key.keysym.sym)
+            {
+            case 'S':
+            case 's':
+                m_show = true;
+                break;
+
+            case 'H':
+            case 'h':
+                m_show = false;
+                break;
+
+            default:
+                break;
+        }
+    }
 }
 
 int main(int argc, char* argv[])
