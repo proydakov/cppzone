@@ -48,6 +48,11 @@ MACRO(SETUP_COMPILER_FLAGS)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std:c++17")
     endif()
 
+    if(UNIX AND SANITAZE_LINK)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ggdb -fno-omit-frame-pointer -fsanitize=address")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -fno-omit-frame-pointer -fsanitize=address")
+    endif()
+
     COMPILER_SET_MAX_WARNING_LEVEL()
 ENDMACRO(SETUP_COMPILER_FLAGS)
 
