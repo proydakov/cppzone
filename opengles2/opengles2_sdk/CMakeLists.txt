@@ -12,6 +12,7 @@ ENDIF()
 SET(HEADER_FILES
     include/opengles2_sdk/opengles2_application.h
     include/opengles2_sdk/opengles2_math.h
+    include/opengles2_sdk/opengles2_mesh.h
     include/opengles2_sdk/opengles2_shader.h
     include/opengles2_sdk/opengles2_program.h
     include/opengles2_sdk/opengles2_texture.h
@@ -19,6 +20,7 @@ SET(HEADER_FILES
 
 SET(SOURCE_FILES
     src/opengles2_math.cpp
+    src/opengles2_mesh.cpp
     src/opengles2_shader.cpp
     src/opengles2_program.cpp
     src/opengles2_texture.cpp

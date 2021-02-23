@@ -102,7 +102,7 @@ void tcapplication::update(std::chrono::microseconds)
 void tcapplication::draw()
 {
    GLfloat vVertices[] = { -0.5f,  0.5f, 0.0f,  // Position 0
-                            0.0f,  0.0f,        // TexCoord 0 
+                            0.0f,  0.0f,        // TexCoord 0
                            -0.5f, -0.5f, 0.0f,  // Position 1
                             0.0f,  1.0f,        // TexCoord 1
                             0.5f, -0.5f, 0.0f,  // Position 2

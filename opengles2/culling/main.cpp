@@ -26,6 +26,7 @@
 #include "resource.h"
 
 #include <opengles2_sdk/opengles2_math.h>
+#include <opengles2_sdk/opengles2_mesh.h>
 #include <opengles2_sdk/opengles2_shader.h>
 #include <opengles2_sdk/opengles2_texture.h>
 #include <opengles2_sdk/opengles2_program.h>
@@ -58,7 +59,7 @@ struct tprogram
         m_positionLoc = *positionLoc;
 
         auto const textureLoc = m_program.get_attribute_location("vTexCoord");
-        if (!positionLoc)
+        if (!textureLoc)
         {
             return false;
         }
@@ -190,78 +191,6 @@ void tcapplication::draw()
         auto const mvpLoc = m_cube_program.m_mvpLoc;
         auto const samplerLoc = m_cube_program.m_samplerLoc;
 
-        GLfloat const vertices[] =
-        {
-           -0.5f, -0.5f, -0.5f,
-           -0.5f, -0.5f,  0.5f,
-            0.5f, -0.5f,  0.5f,
-            0.5f, -0.5f, -0.5f,
-           -0.5f,  0.5f, -0.5f,
-           -0.5f,  0.5f,  0.5f,
-            0.5f,  0.5f,  0.5f,
-            0.5f,  0.5f, -0.5f,
-           -0.5f, -0.5f, -0.5f,
-           -0.5f,  0.5f, -0.5f,
-            0.5f,  0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-           -0.5f, -0.5f,  0.5f,
-           -0.5f,  0.5f,  0.5f,
-            0.5f,  0.5f,  0.5f,
-            0.5f, -0.5f,  0.5f,
-           -0.5f, -0.5f, -0.5f,
-           -0.5f, -0.5f,  0.5f,
-           -0.5f,  0.5f,  0.5f,
-           -0.5f,  0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f,  0.5f,
-            0.5f,  0.5f,  0.5f,
-            0.5f,  0.5f, -0.5f,
-        };
-
-       GLfloat const textures[] =
-       {
-            0.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            1.0f, 0.0f,
-            1.0f, 0.0f,
-            1.0f, 1.0f,
-            0.0f, 1.0f,
-            0.0f, 0.0f,
-            0.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            1.0f, 0.0f,
-        };
-
-        GLushort const indices[] =
-        {
-            0, 2, 1,
-            0, 3, 2,
-            4, 5, 6,
-            4, 6, 7,
-            8, 9, 10,
-            8, 10, 11,
-            12, 15, 14,
-            12, 14, 13,
-            16, 17, 18,
-            16, 18, 19,
-            20, 23, 22,
-            20, 22, 21,
-        };
-
         // Use the program object
         glUseProgram(m_cube_program.m_program.get_id());
 
@@ -277,10 +206,10 @@ void tcapplication::draw()
 
         glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, m_mvpMatrix.toUniform());
 
-        glVertexAttribPointer(positionLoc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), vertices);
-        glVertexAttribPointer(textureLoc, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), textures);
+        glVertexAttribPointer(positionLoc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), opengles2_mesh::cubeVertices());
+        glVertexAttribPointer(textureLoc, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), opengles2_mesh::cubeTextures());
 
-        glDrawElements(GL_TRIANGLES, std::size(indices), GL_UNSIGNED_SHORT, indices);
+        glDrawElements(GL_TRIANGLES, opengles2_mesh::cubeIndicesSize(), GL_UNSIGNED_SHORT, opengles2_mesh::cubeIndices());
 
         glDisableVertexAttribArray(positionLoc);
         glDisableVertexAttribArray(textureLoc);
@@ -324,6 +253,5 @@ void tcapplication::info(std::ostream& os)
 int main(int argc, char* argv[])
 {
     tcapplication app(argc, argv, 640, 640);
-
     return app.run();
 }
