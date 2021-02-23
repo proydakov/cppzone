@@ -94,7 +94,7 @@ bool opengles2_application::load_tga(opengles2_texture& texture, const std::stri
 opengles2_application::opengles2_application(int, char* argv[], size_t width, size_t height) :
     m_width(width),
     m_height(height),
-    m_flags(SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL),
+    m_flags(SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE),
     m_fullscreen(false),
     m_fs_functor(SDLK_F11, [this](){
         m_fullscreen = !m_fullscreen;
@@ -123,6 +123,7 @@ opengles2_application::opengles2_application(int, char* argv[], size_t width, si
         exit(EXIT_FAILURE);
     }
     m_context = SDL_GL_CreateContext(m_window);
+    SDL_MaximizeWindow(m_window);
 }
 
 opengles2_application::~opengles2_application()

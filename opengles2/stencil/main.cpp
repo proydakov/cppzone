@@ -406,6 +406,6 @@ void tcapplication::draw()
 
 int main(int argc, char* argv[])
 {
-    tcapplication app(argc, argv, 1280, 1024);
+    tcapplication app(argc, argv, 640, 480);
     return app.run();
 }
