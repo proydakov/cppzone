@@ -25,7 +25,7 @@ SET(SOURCE_FILES
 )
 
 I_ADD_EXECUTABLE(opengl_astar2d ${HEADER_FILES} ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(opengl_astar2d application)
+TARGET_LINK_LIBRARIES(opengl_astar2d opengl_sdk)
 
 if(MSVC)
     TARGET_COMPILE_OPTIONS(opengl_astar2d PRIVATE "/wd4458")

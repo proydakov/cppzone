@@ -22,10 +22,10 @@ SET(IMAGE_FILES
     )
 
 I_ADD_EXECUTABLE(opengl_texture_cube ${HEADER_FILES} ${SOURCE_FILES} ${IMAGE_FILES})
-ADD_DEPENDENCIES(opengl_texture_cube application)
+ADD_DEPENDENCIES(opengl_texture_cube opengl_sdk)
 ADD_DEPENDENCIES(opengl_texture_cube texture_loader)
 
-TARGET_LINK_LIBRARIES(opengl_texture_cube application)
+TARGET_LINK_LIBRARIES(opengl_texture_cube opengl_sdk)
 TARGET_LINK_LIBRARIES(opengl_texture_cube texture_loader)
 
 SOURCE_GROUP(images FILES ${IMAGE_FILES})

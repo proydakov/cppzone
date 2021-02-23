@@ -1,4 +1,4 @@
-#include "application/application.h"
+#include "opengl_sdk/application.h"
 
 #include <chrono>
 #include <iostream>
@@ -15,7 +15,7 @@ namespace
 }
 
 application::application(int, char* argv[], size_t width, size_t height) :
-    m_flags(SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL),
+    m_flags(SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE),
     m_width(width),
     m_height(height),
     m_fullscreen(false),
@@ -43,6 +43,7 @@ application::application(int, char* argv[], size_t width, size_t height) :
         exit(EXIT_FAILURE);
     }
     m_context = SDL_GL_CreateContext(m_window);
+    SDL_MaximizeWindow(m_window);
 }
 
 application::~application()

@@ -26,7 +26,7 @@
 #include <cassert>
 #include <iostream>
 
-#include <application/application.h>
+#include <opengl_sdk/application.h>
 
 #include <cube.h>
 #include <torus.h>

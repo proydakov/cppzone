@@ -5,4 +5,4 @@
 SET(SOURCE_FILES main.cpp)
 
 I_ADD_EXECUTABLE(opengl_blending ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(opengl_blending application)
+TARGET_LINK_LIBRARIES(opengl_blending opengl_sdk)

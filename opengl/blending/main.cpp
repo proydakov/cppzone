@@ -23,7 +23,7 @@
 #include <string>
 #include <iostream>
 
-#include <application/application.h>
+#include <opengl_sdk/application.h>
 
 constexpr char const* const COMMENT = "Press 'e' / 'd' to change the order of drawing objects. Press ESC for exit.";
 constexpr GLdouble OBJECT_SIDE = 1;

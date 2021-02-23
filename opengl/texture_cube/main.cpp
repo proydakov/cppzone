@@ -25,7 +25,7 @@
 #include <iostream>
 
 #include <texture/texture_loader.h>
-#include <application/application.h>
+#include <opengl_sdk/application.h>
 
 #include "config_opengl_texture_cube.h"
 

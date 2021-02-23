@@ -24,7 +24,7 @@
 #include <fstream>
 #include <iostream>
 
-#include <application/application.h>
+#include <opengl_sdk/application.h>
 
 class tcapplication : public application
 {
