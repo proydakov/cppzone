@@ -12,7 +12,7 @@ opengles2_shader::~opengles2_shader()
     unload();
 }
 
-bool opengles2_shader::load(GLenum type, const char * const shader_text) noexcept
+bool opengles2_shader::load(GLenum type, const char * const fpath, const char * const shader_text) noexcept
 {
     unload();
 
@@ -39,7 +39,7 @@ bool opengles2_shader::load(GLenum type, const char * const shader_text) noexcep
         if (infoLen > 1) {
             char* infoLog = new char[static_cast<size_t>(infoLen)]();
             glGetShaderInfoLog(shader, infoLen, nullptr, infoLog);
-            std::cerr << "Error compiling shader:\n" << infoLog << std::endl;
+            std::cerr << "Error compiling shader(" << fpath << "):\n" << infoLog << std::endl;
             delete [] infoLog;
         }
         glDeleteShader(shader);

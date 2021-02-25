@@ -27,7 +27,13 @@ private:
 class opengles2_application
 {
 public:
-    static std::string load_resource(std::string const& folder, std::string const& name);
+    struct text_resource
+    {
+        std::string fpath;
+        std::string content;
+    };
+
+    static text_resource load_text_resource(std::string const& folder, std::string const& name);
     static bool load_tga(opengles2_texture&, std::string const& fpath);
     static bool load_tga(opengles2_texture&, std::string const& folder, std::string const& name);
 

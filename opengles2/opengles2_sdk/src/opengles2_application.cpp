@@ -24,11 +24,12 @@ namespace
     }
 }
 
-std::string opengles2_application::load_resource(std::string const& folder, std::string const& name)
+opengles2_application::text_resource opengles2_application::load_text_resource(std::string const& folder, std::string const& name)
 {
-    std::ifstream ifs(folder + "/" + name);
+    auto const fpath = folder + "/" + name;
+    std::ifstream ifs(fpath);
     std::string content( (std::istreambuf_iterator<char>(ifs) ), (std::istreambuf_iterator<char>() ) );
-    return content;
+    return {fpath, content};
 }
 
 //

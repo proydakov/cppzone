@@ -8,7 +8,7 @@ public:
     opengles2_shader() noexcept;
     ~opengles2_shader();
 
-    bool load(GLenum type, const char* const shader_text) noexcept;
+    bool load(GLenum type, const char* const fpath, const char* const shader_text) noexcept;
     void unload() noexcept;
 
     GLuint get_id() const noexcept
