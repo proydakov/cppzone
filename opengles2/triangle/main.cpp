@@ -52,11 +52,8 @@ tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t 
 
 void tcapplication::init()
 {
-    auto [vShaderPath, vShaderStr] = opengles2_application::load_text_resource(RESOURCE_DIRECTORY, "vshader.glsl");
-    auto [fShaderPath, fShaderStr] = opengles2_application::load_text_resource(RESOURCE_DIRECTORY, "fshader.glsl");
-
-    if (!m_vertex_shader.load(GL_VERTEX_SHADER, vShaderPath.c_str(), vShaderStr.c_str()) ||
-        !m_fragment_shader.load(GL_FRAGMENT_SHADER, fShaderPath.c_str(), fShaderStr.c_str()))
+    if (!opengles2_application::load_vertex_shader(m_vertex_shader, RESOURCE_DIRECTORY, "vshader.glsl") ||
+        !opengles2_application::load_fragment_shader(m_fragment_shader, RESOURCE_DIRECTORY, "fshader.glsl"))
     {
         panic();
     }

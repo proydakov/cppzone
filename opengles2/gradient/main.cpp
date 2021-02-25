@@ -40,6 +40,9 @@ private:
     opengles2_shader m_vertex_shader;
     opengles2_shader m_fragment_shader;
     opengles2_program m_program;
+
+    GLuint m_vPositionAttr;
+    GLuint m_vColorAttr;
 };
 
 tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t h)
@@ -49,11 +52,8 @@ tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t 
 
 void tcapplication::init()
 {
-    auto [vShaderPath, vShaderStr] = opengles2_application::load_text_resource(RESOURCE_DIRECTORY, "vshader.glsl");
-    auto [fShaderPath, fShaderStr] = opengles2_application::load_text_resource(RESOURCE_DIRECTORY, "fshader.glsl");
-
-    if (!m_vertex_shader.load(GL_VERTEX_SHADER, vShaderPath.c_str(), vShaderStr.c_str()) ||
-        !m_fragment_shader.load(GL_FRAGMENT_SHADER, fShaderPath.c_str(), fShaderStr.c_str()))
+    if (!opengles2_application::load_vertex_shader(m_vertex_shader, RESOURCE_DIRECTORY, "vshader.glsl") ||
+        !opengles2_application::load_fragment_shader(m_fragment_shader, RESOURCE_DIRECTORY, "fshader.glsl"))
     {
         panic();
     }
@@ -62,6 +62,9 @@ void tcapplication::init()
     {
         panic();
     }
+
+    m_vPositionAttr = m_program.get_attribute_location("vPosition").value();
+    m_vColorAttr = m_program.get_attribute_location("vColor").value();
 
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 }
@@ -92,20 +95,17 @@ void tcapplication::draw()
     // Use the program object
     glUseProgram(m_program.get_id());
 
-    const auto vPositionAttr = m_program.get_attribute_location("vPosition").value();
-    const auto vColorAttr = m_program.get_attribute_location("vColor").value();
-
-    glEnableVertexAttribArray(vPositionAttr);
-    glEnableVertexAttribArray(vColorAttr);
+    glEnableVertexAttribArray(m_vPositionAttr);
+    glEnableVertexAttribArray(m_vColorAttr);
 
     // Load the vertex data
-    glVertexAttribPointer(vPositionAttr, 3, GL_FLOAT, GL_FALSE, 0, vVertices);
-    glVertexAttribPointer(vColorAttr, 3, GL_FLOAT, GL_FALSE, 0, vColors);
+    glVertexAttribPointer(m_vPositionAttr, 3, GL_FLOAT, GL_FALSE, 0, vVertices);
+    glVertexAttribPointer(m_vColorAttr, 3, GL_FLOAT, GL_FALSE, 0, vColors);
 
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
-    glDisableVertexAttribArray(vPositionAttr);
-    glDisableVertexAttribArray(vPositionAttr);
+    glDisableVertexAttribArray(m_vPositionAttr);
+    glDisableVertexAttribArray(m_vPositionAttr);
 }
 
 int main(int argc, char* argv[])

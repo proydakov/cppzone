@@ -49,6 +49,10 @@ private:
     opengles2_program m_program;
     opengles2_texture m_texture;
     std::string m_path;
+
+    GLuint m_positionLoc{};
+    GLuint m_texCoordLoc{};
+    GLint m_samplerLoc{};
 };
 
 tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t h, const char* const path)
@@ -59,11 +63,8 @@ tcapplication::tcapplication(int argc, char* argv[], std::size_t w, std::size_t 
 
 void tcapplication::init()
 {
-    auto [vShaderPath, vShaderStr] = opengles2_application::load_text_resource(RESOURCE_DIRECTORY, "vshader.glsl");
-    auto [fShaderPath, fShaderStr] = opengles2_application::load_text_resource(RESOURCE_DIRECTORY, "fshader.glsl");
-
-    if (!m_vertex_shader.load(GL_VERTEX_SHADER, vShaderPath.c_str(), vShaderStr.c_str()) ||
-        !m_fragment_shader.load(GL_FRAGMENT_SHADER, fShaderPath.c_str(), fShaderStr.c_str()))
+    if (!opengles2_application::load_vertex_shader(m_vertex_shader, RESOURCE_DIRECTORY, "vshader.glsl") ||
+        !opengles2_application::load_fragment_shader(m_fragment_shader, RESOURCE_DIRECTORY, "fshader.glsl"))
     {
         panic();
     }
@@ -72,6 +73,10 @@ void tcapplication::init()
     {
         panic();
     }
+
+    m_positionLoc = m_program.get_attribute_location("vPosition").value();
+    m_texCoordLoc = m_program.get_attribute_location("vTexCoord").value();
+    m_samplerLoc = m_program.get_uniform_location("fTexture").value();
 
     if (!opengles2_application::load_tga(m_texture, m_path))
     {
@@ -106,13 +111,6 @@ void tcapplication::draw()
 
     GLushort indices[] = { 0, 1, 2, 0, 2, 3 };
 
-    // Get the attribute locations
-    auto const positionLoc = m_program.get_attribute_location("vPosition").value();
-    auto const texCoordLoc = m_program.get_attribute_location("vTexCoord").value();
-
-    // Get the sampler location
-    auto const samplerLoc = m_program.get_uniform_location("fTexture").value();
-   
     // Clear the color buffer
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -120,20 +118,20 @@ void tcapplication::draw()
     glUseProgram(m_program.get_id());
 
     // Load the vertex position
-    glVertexAttribPointer(positionLoc, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), vVertices);
+    glVertexAttribPointer(m_positionLoc, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), vVertices);
 
     // Load the texture coordinate
-    glVertexAttribPointer(texCoordLoc, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), &vVertices[3]);
+    glVertexAttribPointer(m_texCoordLoc, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), &vVertices[3]);
 
-    glEnableVertexAttribArray(positionLoc);
-    glEnableVertexAttribArray(texCoordLoc);
+    glEnableVertexAttribArray(m_positionLoc);
+    glEnableVertexAttribArray(m_texCoordLoc);
 
     // Bind the texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_texture.get_id());
 
     // Set the sampler texture unit to 0
-    glUniform1i(samplerLoc, 0);
+    glUniform1i(m_samplerLoc, 0);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }

@@ -1,4 +1,5 @@
 #include "opengles2_sdk/opengles2_application.h"
+#include "opengles2_sdk/opengles2_shader.h"
 #include "opengles2_sdk/opengles2_texture.h"
 
 #include <chrono>
@@ -24,19 +25,56 @@ namespace
     }
 }
 
-opengles2_application::text_resource opengles2_application::load_text_resource(std::string const& folder, std::string const& name)
+opengles2_application::text_resource opengles2_application::load_text_resource(std::string const& fpath)
 {
-    auto const fpath = folder + "/" + name;
     std::ifstream ifs(fpath);
     std::string content( (std::istreambuf_iterator<char>(ifs) ), (std::istreambuf_iterator<char>() ) );
     return {fpath, content};
 }
 
+opengles2_application::text_resource opengles2_application::load_text_resource(std::string const& folder, std::string const& name)
+{
+    auto const fpath = folder + "/" + name;
+    return opengles2_application::load_text_resource(fpath);
+}
+
+bool opengles2_application::load_vertex_shader(opengles2_shader& shader, std::string const& fpath)
+{
+    return opengles2_application::load_shader(shader, fpath, GL_VERTEX_SHADER);
+}
+
+bool opengles2_application::load_vertex_shader(opengles2_shader& shader, std::string const& folder, std::string const& name)
+{
+    return opengles2_application::load_shader(shader, folder, name, GL_VERTEX_SHADER);
+}
+
+bool opengles2_application::load_fragment_shader(opengles2_shader& shader, std::string const& fpath)
+{
+    return opengles2_application::load_shader(shader,   fpath, GL_FRAGMENT_SHADER);
+}
+
+bool opengles2_application::load_fragment_shader(opengles2_shader& shader, std::string const& folder, std::string const& name)
+{
+    return opengles2_application::load_shader(shader, folder, name, GL_FRAGMENT_SHADER);
+}
+
+bool opengles2_application::load_shader(opengles2_shader& shader, std::string const& fpath, GLenum type)
+{
+    auto const [shaderPath, shaderStr] = opengles2_application::load_text_resource(fpath);
+    return shader.load(type, shaderPath.c_str(), shaderStr.c_str());
+}
+
+bool opengles2_application::load_shader(opengles2_shader& shader, std::string const& folder, std::string const& name, GLenum type)
+{
+    auto const fileName(folder + "/" + name);
+    return opengles2_application::load_shader(shader, fileName, type);
+}
+
 //
-//    http://www.opennet.ru/docs/formats/targa.pdf
+// http://www.opennet.ru/docs/formats/targa.pdf
 //
-//    Loads a 24-bit TGA image from a file. This is probably the simplest TGA loader ever.
-//    Does not support loading of compressed TGAs.
+// Loads a 24-bit TGA image from a file. This is probably the simplest TGA loader ever.
+// Does not support loading of compressed TGAs.
 //
 
 bool opengles2_application::load_tga(opengles2_texture& texture, std::string const& fpath)

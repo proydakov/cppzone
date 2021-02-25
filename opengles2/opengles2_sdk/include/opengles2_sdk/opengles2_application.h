@@ -10,6 +10,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 
+class opengles2_shader;
 class opengles2_texture;
 
 class keyboard_press_guard
@@ -27,16 +28,6 @@ private:
 class opengles2_application
 {
 public:
-    struct text_resource
-    {
-        std::string fpath;
-        std::string content;
-    };
-
-    static text_resource load_text_resource(std::string const& folder, std::string const& name);
-    static bool load_tga(opengles2_texture&, std::string const& fpath);
-    static bool load_tga(opengles2_texture&, std::string const& folder, std::string const& name);
-
     opengles2_application(int argc, char* argv[], std::size_t width, std::size_t height);
     virtual ~opengles2_application();
 
@@ -56,6 +47,26 @@ public:
     opengles2_application& operator=(opengles2_application const&) = delete;
     opengles2_application& operator=(opengles2_application &&) = delete;
 
+    // static methods
+
+    struct text_resource
+    {
+        std::string fpath;
+        std::string content;
+    };
+
+    static text_resource load_text_resource(std::string const& fpath);
+    static text_resource load_text_resource(std::string const& folder, std::string const& name);
+
+    static bool load_vertex_shader(opengles2_shader&, std::string const& fpath);
+    static bool load_vertex_shader(opengles2_shader&, std::string const& folder, std::string const& name);
+
+    static bool load_fragment_shader(opengles2_shader&, std::string const& fpath);
+    static bool load_fragment_shader(opengles2_shader&, std::string const& folder, std::string const& name);
+
+    static bool load_tga(opengles2_texture&, std::string const& fpath);
+    static bool load_tga(opengles2_texture&, std::string const& folder, std::string const& name);
+
     static void panic_impl(const char* name, int line, const char* function);
 
 protected:
@@ -71,6 +82,9 @@ protected:
 
 private:
     void default_info();
+
+    static bool load_shader(opengles2_shader&, std::string const& fpath, GLenum type);
+    static bool load_shader(opengles2_shader&, std::string const& folder, std::string const& name, GLenum type);
 
 private:
     SDL_Window*   m_window;
