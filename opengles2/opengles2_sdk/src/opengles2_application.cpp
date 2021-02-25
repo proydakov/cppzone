@@ -47,14 +47,14 @@ bool opengles2_application::load_tga(opengles2_texture& texture, std::string con
     std::ifstream input(fpath, std::ios::binary);
     if (!input.read(tgaheader, sizeof(tgaheader)) || !input.read(attributes, sizeof(attributes)))
     {
-        std::cerr << "can't read TGA header & attributes" << std::endl;
+        std::cerr << "can't read TGA header & attributes at: " << fpath << std::endl;
         return false;
     }
 
     auto const channels = static_cast<unsigned>(attributes[4]) / 8;
     if (channels != 3 && channels != 4)
     {
-        std::cerr << "unsupported channels count in TGA: " << channels << std::endl;
+        std::cerr << "unsupported channels count in TGA: " << channels << " at: " << fpath << std::endl;
         return false;
     }
 
@@ -85,7 +85,7 @@ bool opengles2_application::load_tga(opengles2_texture& texture, std::string con
     }
     else
     {
-        std::cerr << "can't read TGA data" << std::endl;
+        std::cerr << "can't read TGA data from: " << fpath << std::endl;
         return false;
     }
 }
@@ -111,7 +111,7 @@ opengles2_application::opengles2_application(int, char* argv[], size_t width, si
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         std::cerr << "Unable to init SDL, error: " << SDL_GetError() << std::endl;
-        exit(1);
+        panic();
     }
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -126,7 +126,7 @@ opengles2_application::opengles2_application(int, char* argv[], size_t width, si
     if(nullptr == m_window)
     {
         std::cerr << "invalid window" << std::endl;
-        exit(EXIT_FAILURE);
+        panic();
     }
     m_context = SDL_GL_CreateContext(m_window);
     SDL_MaximizeWindow(m_window);
