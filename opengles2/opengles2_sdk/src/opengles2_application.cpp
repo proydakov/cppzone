@@ -5,8 +5,13 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+
 #include <unistd.h>
 #include <execinfo.h>
+
+struct panic_exception
+{
+};
 
 namespace
 {
@@ -138,18 +143,20 @@ void opengles2_application::on_event(SDL_Event const&)
 {
 }
 
-void opengles2_application::panic()
+void opengles2_application::panic_impl(const char* name, int line, const char* function)
 {
-    void *array[32];
+    void *array[64];
 
     // get void*'s for all entries on the stack
-    int size = backtrace(array, std::size(array));
+    int const size = backtrace(array, std::size(array));
 
     // print out all the frames to stderr
-    fprintf(stderr, "panic:\n");
+    fprintf(stderr, "panic at:\n");
+    fprintf(stderr, "%s:%d %s\n\n", name, line, function);
+    fprintf(stderr, "raw backtrace:\n");
     backtrace_symbols_fd(array, size, STDERR_FILENO);
 
-    ::abort();
+    throw panic_exception();
 }
 
 void opengles2_application::default_info()

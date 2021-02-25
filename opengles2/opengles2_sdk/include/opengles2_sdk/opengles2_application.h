@@ -50,6 +50,8 @@ public:
     opengles2_application& operator=(opengles2_application const&) = delete;
     opengles2_application& operator=(opengles2_application &&) = delete;
 
+    static void panic_impl(const char* name, int line, const char* function);
+
 protected:
     std::size_t getWidth() const noexcept
     {
@@ -60,8 +62,6 @@ protected:
     {
         return m_height;
     }
-
-    void panic();
 
 private:
     void default_info();
@@ -77,3 +77,5 @@ private:
 
     keyboard_press_guard m_fs_functor;
 };
+
+#define panic() opengles2_application::panic_impl(__FILE__, __LINE__, __PRETTY_FUNCTION__);
