@@ -1,5 +1,6 @@
 #include <ctime>
 #include <mutex>
+#include <atomic>
 #include <chrono>
 #include <cstdio>
 #include <string>
@@ -7,8 +8,8 @@
 #include <thread>
 #include <cstdlib>
 #include <fstream>
-#include <sstream>
 #include <iostream>
+#include <condition_variable>
 
 constexpr double GB_SIZE = 1024.0 * 1024.0 * 1024.0;
 
@@ -22,70 +23,105 @@ template<class T>
 class cstorage
 {
 public:
-    void push(T&& data)
+    cstorage()
+        : done_(false)
     {
-        std::lock_guard<std::mutex> guard(mutex_);
-        vector_.push_back(std::move(data));
+    }
+
+    bool push(T&& data)
+    {
+        {
+            std::lock_guard<std::mutex> guard(mutex_);
+            if (vector_.size() > 32 * 1024)
+            {
+                return false;
+            }
+            vector_.emplace_back(std::move(data));
+        }
+        cv_.notify_one();
+        return true;
     }
 
     void swap(std::vector<T>& vector)
     {
-        std::lock_guard<std::mutex> guard(mutex_);
+        std::unique_lock<std::mutex> guard(mutex_);
+        cv_.wait(guard, [this](){
+            return not vector_.empty() or is_done();
+        });
         vector_.swap(vector);
+    }
+
+    void done()
+    {
+        done_.store(true);
+        cv_.notify_one();
+    }
+
+    bool is_done() const
+    {
+        return done_.load(std::memory_order_relaxed);
     }
 
 private:
     std::mutex mutex_;
+    std::condition_variable cv_;
     std::vector<T> vector_;
+    std::atomic<bool> done_;
 };
 
-void producer(cstorage<std::vector<std::string>>& storage, double size)
+void producer(cstorage<std::vector<std::string>>& storage, double segment_size)
 {
-    const size_t batch = 4096;
+    constexpr size_t BATCH_SIZE = 4096;
     std::vector<std::string> data;
 
     double generated = 0;
-    while(generated < size) {
+    while(generated < segment_size) {
         int email = rand() % 10000000;
         int count = rand() % 10000;
 
-        std::stringstream sstream;
-        sstream << email << "@yandex.ru " << count << "\n";
+        std::string buffer;
+        buffer.append(std::to_string(email));
+        buffer.append("@yandex.ru ");
+        buffer.append(std::to_string(count));
 
-        std::string buffer(sstream.str());
-        generated += double(buffer.size());
+        // consumer is going to write \n symbol
+        generated += double(buffer.size()) + 1;
 
-        data.push_back(buffer);
-        if(data.size() >= batch) {
-            storage.push(std::move(data));
+        data.emplace_back(buffer);
+        if(data.size() >= BATCH_SIZE) {
+            while(!storage.push(std::move(data)))
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            }
+            data.reserve(BATCH_SIZE);
         }
     }
     storage.push(std::move(data));
 }
 
-void consumer(const std::string& file, cstorage<std::vector<std::string>>& storage, bool& done)
+void consumer(const std::string& file, cstorage<std::vector<std::string>>& storage)
 {
     std::ofstream output(file);
+    std::vector<std::vector<std::string>> buffer;
 
-    std::vector< std::vector<std::string> > buffer;
-    while(true) {
+    auto save = [&storage, &output, &buffer](){
         storage.swap(buffer);
 
-        if(buffer.empty()) {
-            if(done){
-                break;
-            }
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
-        else {
-            for(size_t i = 0; i < buffer.size(); i++) {
-                for(size_t j = 0; j < buffer[i].size(); j++) {
-                    output << buffer[i][j];
+        if(not buffer.empty()) {
+            for(auto const& active_buffer : buffer) {
+                for(auto const& active_element : active_buffer) {
+                    output << active_element << "\n";
                 }
             }
             buffer.clear();
         }
+    };
+
+    while(not storage.is_done()) {
+        save();
     }
+
+    save();
 }
 
 int main(int argc, char* argv[])
@@ -93,7 +129,7 @@ int main(int argc, char* argv[])
     std::ios::sync_with_stdio(false);
 
     if (argc < 3) {
-        std::cout << "usage: " << argv[0] << " path/to/file size (GB)" << std::endl;
+        std::cout << "usage: " << argv[0] << " <path/to/file> <size> (GB)" << std::endl;
         return 1;
     }
 
@@ -106,7 +142,7 @@ int main(int argc, char* argv[])
 
     srand(static_cast<unsigned>(time(NULL)));
 
-    std::vector<std::thread> threads;
+    std::vector<std::thread> producers;
 
     const size_t hardware_concurrency = std::thread::hardware_concurrency();
     double segment_size = target / double(hardware_concurrency);
@@ -114,22 +150,20 @@ int main(int argc, char* argv[])
     cstorage<std::vector<std::string>> storage;
 
     for(size_t i = 0; i < hardware_concurrency; i++) {
-        threads.push_back(std::thread([&storage, segment_size](){
+        producers.push_back(std::thread([&storage, segment_size](){
             producer(storage, segment_size);
         }));
     }
 
-    bool done = false;
-
-    std::thread consumer_thread([&file, &storage, &done](){
-        consumer(file, storage, done);
+    std::thread consumer_thread([&file, &storage](){
+        consumer(file, storage);
     });
 
-    for(size_t i = 0; i < hardware_concurrency; i++) {
-        threads[i].join();
+    for(auto& iproducer : producers) {
+        iproducer.join();
     }
 
-    done = true;
+    storage.done();
 
     consumer_thread.join();
 
