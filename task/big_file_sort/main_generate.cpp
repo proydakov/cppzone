@@ -46,7 +46,7 @@ public:
     {
         std::unique_lock<std::mutex> guard(mutex_);
         cv_.wait(guard, [this](){
-            return not vector_.empty() or is_done();
+            return !vector_.empty() || is_done();
         });
         vector_.swap(vector);
     }
@@ -107,7 +107,7 @@ void consumer(const std::string& file, cstorage<std::vector<std::string>>& stora
     auto save = [&storage, &output, &buffer](){
         storage.swap(buffer);
 
-        if(not buffer.empty()) {
+        if(!buffer.empty()) {
             for(auto const& active_buffer : buffer) {
                 for(auto const& active_element : active_buffer) {
                     output << active_element << "\n";
@@ -117,7 +117,7 @@ void consumer(const std::string& file, cstorage<std::vector<std::string>>& stora
         }
     };
 
-    while(not storage.is_done()) {
+    while(!storage.is_done()) {
         save();
     }
 
