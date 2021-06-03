@@ -9,6 +9,6 @@ varying vec2 fTexCoord;
 
 void main()
 {
-	gl_Position = vPosition;
+    gl_Position = vPosition;
     fTexCoord = vTexCoord;
 }
