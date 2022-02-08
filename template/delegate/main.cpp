@@ -22,84 +22,91 @@
 
 #include <utility>
 
+//
 // delegate code
+//
+// This code based of my experience and some code from LLVM: https://llvm.org/doxygen/STLFunctionalExtras_8h_source.html
+//
 
 template<typename T>
 class delegate;
 
 template<typename RETURN, typename ... INPUTS>
-class delegate<RETURN(INPUTS ...)>
+class delegate<RETURN(INPUTS ...)> final
 {
 public:
     template<RETURN(*func)(INPUTS...)>
-    static delegate function()
+    constexpr static delegate function() noexcept
     {
         return delegate(&call_function<func>);
     }
 
     template<class T, RETURN(T::*meth)(INPUTS...)>
-    static delegate method(T* obj)
+    constexpr static delegate method(T* obj) noexcept
     {
         return delegate(obj, &call_method<T, meth>);
     }
 
     template<class T, RETURN(T::*meth)(INPUTS...) const>
-    static delegate const_method(T* obj)
+    constexpr static delegate const_method(T* obj) noexcept
     {
         return delegate(obj, &call_const_method<T, meth>);
     }
 
     template<class T, RETURN(T::*meth)(INPUTS...) const>
-    static delegate const_method(T const* obj)
+    constexpr static delegate const_method(T const* obj) noexcept
     {
-        return delegate((void*)(obj), &call_const_method<T, meth>);
+        return delegate(obj, &call_const_method<T, meth>);
     }
 
     template<class T>
-    static delegate functor(T* obj)
+    constexpr static delegate functor(T* obj) noexcept
     {
         return delegate(obj, &call_method<T, &T::operator()>);
     }
 
     template<class T>
-    static delegate const_functor(T* obj)
+    constexpr static delegate const_functor(T* obj) noexcept
     {
         return delegate(obj, &call_const_method<T, &T::operator()>);
     }
 
     template<class T>
-    static delegate const_functor(T const* obj)
+    constexpr static delegate const_functor(T const* obj) noexcept
     {
-        return delegate((void*)(obj), &call_const_method<T, &T::operator()>);
+        return delegate(obj, &call_const_method<T, &T::operator()>);
     }
 
-    RETURN operator()(INPUTS ... params) const
+    constexpr RETURN operator()(INPUTS ... params) const
     {
         return (*m_func)(m_obj, std::forward<INPUTS>(params) ...);
     }
 
-    operator bool() const noexcept
+    constexpr explicit operator bool() const noexcept
     {
         return m_func != nullptr;
     }
 
-    bool operator !() const noexcept
-    {
-        return !(operator bool());
-    }
-
-    constexpr delegate() noexcept : m_func(nullptr), m_obj(nullptr)
+    constexpr delegate() noexcept
+        : m_func(nullptr)
+        , m_obj(nullptr)
     {
     }
 
-    ~delegate() noexcept
+    constexpr delegate(std::nullptr_t) noexcept
+        : m_func(nullptr)
+        , m_obj(nullptr)
+    {
+    }
+
+    constexpr ~delegate()
     {
         m_func = nullptr;
         m_obj = nullptr;
     }
 
     constexpr delegate(delegate const&) noexcept = default;
-    delegate& operator=(delegate const&) noexcept = default;
+    constexpr delegate& operator=(delegate const&) noexcept = default;
 
     constexpr delegate(delegate&& other) noexcept
         : m_obj(other.m_obj)
@@ -109,7 +116,7 @@ public:
         other.m_func = nullptr;
     }
 
-    delegate& operator=(delegate&& other) noexcept
+    constexpr delegate& operator=(delegate&& other) noexcept
     {
         if (&other != this)
         {
@@ -123,40 +130,48 @@ public:
     }
 
 private:
-    using FuncPtr = RETURN(*)(void * obj, INPUTS...);
+    using CallablePtr = void*;
+    using CallableConstPtr = void const*;
+    using FunctionPtr = RETURN(*)(CallablePtr, INPUTS...);
 
-    void* m_obj;
-    FuncPtr m_func;
+    CallablePtr m_obj;
+    FunctionPtr m_func;
 
-    constexpr delegate(FuncPtr func) noexcept
+    constexpr delegate(FunctionPtr func) noexcept
         : m_obj(nullptr)
         , m_func(func)
     {
     }
 
-    constexpr delegate(void* obj, FuncPtr func) noexcept
+    constexpr delegate(CallablePtr obj, FunctionPtr func) noexcept
         : m_obj(obj)
         , m_func(func)
     {
     }
 
+    constexpr delegate(CallableConstPtr obj, FunctionPtr func) noexcept
+        : m_obj(const_cast<CallablePtr>(obj))
+        , m_func(func)
+    {
+    }
+
     template<RETURN(*function)(INPUTS...)>
-    static RETURN call_function(void*, INPUTS... params)
+    constexpr static RETURN call_function(CallablePtr, INPUTS... params)
     {
         return (*function)(std::forward<INPUTS>(params)...);
     }
 
     template<class T, RETURN(T::*method)(INPUTS...)>
-    static RETURN call_method(void* obj, INPUTS... params)
+    constexpr static RETURN call_method(CallablePtr obj, INPUTS... params)
     {
-        T * p = static_cast<T*>(obj);
+        auto p = reinterpret_cast<T*>(obj);
         return (p->*method)(std::forward<INPUTS>(params)...);
     }
 
     template<class T, RETURN(T::*method)(INPUTS...) const>
-    static RETURN call_const_method(void* obj, INPUTS... params)
+    constexpr static RETURN call_const_method(CallablePtr obj, INPUTS... params)
     {
-        T const * p = static_cast<T*>(obj);
+        auto p = reinterpret_cast<const T*>(obj);
         return (p->*method)(std::forward<INPUTS>(params)...);
     }
 };
@@ -215,6 +230,12 @@ void const_method_test()
     {
         struct IObjectConstCall
         {
+            void call(int val)
+            {
+                std::cout << "IObjectConstCall ptr mutable call: " << val << std::endl;
+                ::abort();
+            }
+
             void call(int val) const
             {
                 std::cout << "IObjectConstCall ptr: " << val << std::endl;
@@ -298,7 +319,6 @@ void const_functor_test()
             delayed_call(i);
         }
     }
-
 }
 
 // perf test
