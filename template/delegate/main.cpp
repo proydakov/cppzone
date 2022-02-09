@@ -48,12 +48,6 @@ public:
     }
 
     template<class T, RETURN(T::*meth)(INPUTS...) const>
-    constexpr static delegate const_method(T* obj) noexcept
-    {
-        return delegate(obj, &call_const_method<T, meth>);
-    }
-
-    template<class T, RETURN(T::*meth)(INPUTS...) const>
     constexpr static delegate const_method(T const* obj) noexcept
     {
         return delegate(obj, &call_const_method<T, meth>);
@@ -63,12 +57,6 @@ public:
     constexpr static delegate functor(T* obj) noexcept
     {
         return delegate(obj, &call_method<T, &T::operator()>);
-    }
-
-    template<class T>
-    constexpr static delegate const_functor(T* obj) noexcept
-    {
-        return delegate(obj, &call_const_method<T, &T::operator()>);
     }
 
     template<class T>
