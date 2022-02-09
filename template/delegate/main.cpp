@@ -42,27 +42,27 @@ public:
     }
 
     template<class T, RETURN(T::*meth)(INPUTS...)>
-    constexpr static delegate method(T* obj) noexcept
+    constexpr static delegate method(T& obj) noexcept
     {
-        return delegate(obj, &call_method<T, meth>);
+        return delegate(&obj, &call_method<T, meth>);
     }
 
     template<class T, RETURN(T::*meth)(INPUTS...) const>
-    constexpr static delegate const_method(T const* obj) noexcept
+    constexpr static delegate const_method(T const& obj) noexcept
     {
-        return delegate(obj, &call_const_method<T, meth>);
+        return delegate(&obj, &call_const_method<T, meth>);
     }
 
     template<class T>
-    constexpr static delegate functor(T* obj) noexcept
+    constexpr static delegate functor(T& obj) noexcept
     {
-        return delegate(obj, &call_method<T, &T::operator()>);
+        return delegate(&obj, &call_method<T, &T::operator()>);
     }
 
     template<class T>
-    constexpr static delegate const_functor(T const* obj) noexcept
+    constexpr static delegate const_functor(T const& obj) noexcept
     {
-        return delegate(obj, &call_const_method<T, &T::operator()>);
+        return delegate(&obj, &call_const_method<T, &T::operator()>);
     }
 
     constexpr RETURN operator()(INPUTS ... params) const
@@ -87,35 +87,7 @@ public:
     {
     }
 
-    constexpr ~delegate()
-    {
-        m_func = nullptr;
-        m_obj = nullptr;
-    }
-
-    constexpr delegate(delegate const&) noexcept = default;
-    constexpr delegate& operator=(delegate const&) noexcept = default;
-
-    constexpr delegate(delegate&& other) noexcept
-        : m_obj(other.m_obj)
-        , m_func(other.m_func)
-    {
-        other.m_obj = nullptr;
-        other.m_func = nullptr;
-    }
-
-    constexpr delegate& operator=(delegate&& other) noexcept
-    {
-        if (&other != this)
-        {
-            m_obj = other.m_obj;
-            m_func = other.m_func;
-
-            other.m_obj = nullptr;
-            other.m_func = nullptr;
-        }
-        return *this;
-    }
+    constexpr ~delegate() = default;
 
 private:
     using CallablePtr = void*;
@@ -202,7 +174,7 @@ void method_test()
 
     IObjectCall object;
 
-    auto delayed_call = Delegate::method<IObjectCall, &IObjectCall::call>(&object);
+    auto delayed_call = Delegate::method<IObjectCall, &IObjectCall::call>(object);
     for (int i = 1; i <= 1024; i *= 2)
     {
         delayed_call(i);
@@ -232,7 +204,7 @@ void const_method_test()
 
         IObjectConstCall object;
 
-        auto delayed_call = Delegate::const_method<IObjectConstCall, &IObjectConstCall::call>(&object);
+        auto delayed_call = Delegate::const_method<IObjectConstCall, &IObjectConstCall::call>(object);
         for (int i = 1; i <= 1024; i *= 2)
         {
             delayed_call(i);
@@ -250,7 +222,7 @@ void const_method_test()
 
         IObjectConstCall const object2;
 
-        auto delayed_call = Delegate::const_method<IObjectConstCall, &IObjectConstCall::call>(&object2);
+        auto delayed_call = Delegate::const_method<IObjectConstCall, &IObjectConstCall::call>(object2);
         for (int i = 1; i <= 1024; i *= 2)
         {
             delayed_call(i);
@@ -269,7 +241,7 @@ void functor_test()
         std::cout << "mutable functor: " << val << std::endl;
     };
 
-    auto delayed_call = Delegate::functor(&functor);
+    auto delayed_call = Delegate::functor(functor);
     for (int i = 1; i <= 1024; i *= 2)
     {
         delayed_call(i);
@@ -288,7 +260,7 @@ void const_functor_test()
             std::cout << "functor ptr: " << val << std::endl;
         };
 
-        auto delayed_call = Delegate::const_functor(&functor);
+        auto delayed_call = Delegate::const_functor(functor);
         for (int i = 1; i <= 1024; i *= 2)
         {
             delayed_call(i);
@@ -301,7 +273,7 @@ void const_functor_test()
             std::cout << "functor const ptr: " << val << std::endl;
         };
 
-        auto delayed_call = Delegate::const_functor(&functor);
+        auto delayed_call = Delegate::const_functor(functor);
         for (int i = 1; i <= 1024; i *= 2)
         {
             delayed_call(i);
