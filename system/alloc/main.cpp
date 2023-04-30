@@ -21,9 +21,9 @@ void* operator new(size_t sz)
 #ifdef _MSC_VER 
     const size_t allocated_step = sz + 16 + 3;
 #else
-    size_t* ptr = (size_t*)(mem);
+    volatile size_t* ptr = (volatile size_t*)(mem);
     ptr -= 1;
-    const size_t allocated_step = *ptr;
+    size_t allocated_step =  *ptr;
 #endif
 
     allocated += allocated_step;
